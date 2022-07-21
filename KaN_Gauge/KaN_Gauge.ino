@@ -1,7 +1,11 @@
 
 // ======================================  Includes ============================================
 
-
+/*
+ * KaN Gauge
+ * K. Nason
+ * 7/20/2022
+ */
 
 
 
@@ -43,7 +47,6 @@ TaskHandle_t TASK_CAN;
 void configMode(){
   inConfigMode = 0;
   int i = 0;
-  int maxSet = 10;
   
   while (inConfigMode == 0){
 
@@ -114,8 +117,9 @@ void configMode(){
       buttonPress2 = 0;
       lastInput2 = (millis());
       dataSet[i] ++;
-      setupData();
-      if (dataSet[i] > maxSet){
+      setupData(); 
+      if (maxSet == 1){
+        maxSet = 0;
         dataSet[i] = 0;
       }
     }
@@ -315,9 +319,9 @@ void printData(int g){
         u8g2.setCursor(0,0);
         u8g2.setFont(u8g2_font_helvB24_tf );
 
-        if (ptrData->scaledValue < 10 && ptrData->scaledValue > -1){
-          u8g2.print("0");
-        }
+//        if (ptrData->scaledValue < 10 && ptrData->scaledValue > -1){
+//          u8g2.print("0");
+//        }
 
         if (ptrData->dataType == 1){
           u8g2.print((int)ptrData->scaledValue);
@@ -334,9 +338,9 @@ void printData(int g){
         
         u8g2.setCursor(0,30);
         u8g2.setFont(u8g2_font_helvB24_tf);
-        if ((ptrData2->scaledValue < 10 && ptrData2->scaledValue > -1)){
-          u8g2.print("0");
-        }
+//        if ((ptrData2->scaledValue < 10 && ptrData2->scaledValue > -1)){
+//          u8g2.print("0");
+//        }
         
         if (ptrData2->dataType == 1){
           u8g2.print( (int) ptrData2->scaledValue);
@@ -653,8 +657,69 @@ sensorData *selectData(int g){
   case 9:
     return &intakeTemperature_f;
     break;
-   
+
+  case 10:
+    return &accelerator;
+    break;
+    
+  case 11:
+    return &ignitionTiming;
+    break;
+
+  case 12:
+    return &injectorDuty;
+    break;
+
+  case 13:
+    return &injectorPulse;
+    break;
+
+  case 14:
+    return &throttle1;
+    break;
+    
+  case 15:
+    return &throttle2;
+    break; 
+
+  case 16:
+    return &vvtPosition;
+    break;
+
+  case 17:
+    return &airMass;
+    break;
+
+  case 18:
+    return &estimatedAirflow;
+    break;
+  
+  case 19:
+    return &fuel;
+    break;    
+
+  case 20:
+    return &mcuTemp;
+    break;
+
+  case 21:
+    return &auxTemp1;
+    break;
+    
+  case 22:
+    return &auxTemp2;
+    break;
+
+  case 23:
+    return &batteryVoltage;
+    break;
+                                                                     
+  case 24:
+    return &lambda;
+    break;
+                
   default:
+    maxSet = 1;
     return &afr;
   }
 }

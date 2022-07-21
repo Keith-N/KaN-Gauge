@@ -22,7 +22,7 @@
  * Adjust timers and CAN settings
  */
 
-const String BUILD = "1.0.6_TEST";
+const String BUILD = "1.0.7_TEST";
 
 // Times in ms
 int dataTimeout = 3000;
@@ -95,5 +95,6 @@ int reset = 0;
 int startup = 1;
 int newStartup = 1;
 int inConfigMode = 1;
+int maxSet = 0;
 
 int dataSet[] = {0,0,0,0,0};

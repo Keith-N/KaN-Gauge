@@ -8,8 +8,8 @@ struct sensorData{
   float scaleMultiplier;
   int offset;
   float scaledValue;
-  int minimum;
-  int maximum;
+  float minimum;
+  float maximum;
   int canID;
   int alertHigh;
   int alertLow;
@@ -384,6 +384,20 @@ sensorData afr = {
 };
 
 
+sensorData lambda = {
+  "Lambda", // Name
+  "",  // Units
+  ((0.001)*(1/14.7)),  // Multiplier for scaling
+   0,  // Data Offset
+  0,  // Scaled value
+  0.8, // Mimumum Value
+  1.2,  // Maximum Value
+  (BASE_CAN_ID + 4), // Address
+  20,
+  10,
+  "lam",
+  0 
+};
 
 sensorData oilPressure_psi = {
   "Oil", // Name
