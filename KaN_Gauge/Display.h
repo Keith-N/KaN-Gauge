@@ -1,0 +1,101 @@
+
+#include <U8g2lib.h>
+#include "BMP.h"
+
+//Setup U8G2 for 128x64 SH1105 OLED, Name u8g2
+U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
+//U8G2_SH1106_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, I2C_SCL, I2C_SDA, U8X8_PIN_NONE);
+
+// BMP data for displaying on OLED
+#define dispWidth 128
+#define dispHeight 64
+
+// -----------------------------------      OLED Functions     ---------------------------------------------
+
+
+void oledSetup(void) {
+  // Setup default configuration for font
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setFontRefHeightExtendedText();
+  u8g2.setDrawColor(1);
+  u8g2.setFontPosTop();
+  u8g2.setFontDirection(0);
+}
+
+void printBMP_BMM(){
+  u8g2.clearBuffer();
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMM);
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setCursor(0,0);
+  u8g2.print(BUILD);
+  u8g2.sendBuffer();
+}
+
+void printBMP_BMM2(){
+  u8g2.clearBuffer();
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMM2);
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setCursor(0,0);
+  u8g2.print(BUILD);
+  u8g2.sendBuffer();
+}
+
+void printBMP_1(){
+  u8g2.clearBuffer();
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_1);
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setCursor(0,0);
+  u8g2.print(BUILD);
+  u8g2.sendBuffer();
+}
+
+void printBMP_2(){
+  u8g2.clearBuffer();
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_2);
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setCursor(0,0);
+  u8g2.print(BUILD);
+  u8g2.sendBuffer();
+}
+
+void printBMP_3(){
+  u8g2.clearBuffer();
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_3);
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setCursor(0,0);
+  u8g2.print(BUILD);
+  u8g2.sendBuffer();
+}
+
+void printBMP_rusEFI(){
+  u8g2.clearBuffer();
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMPrusEFI);
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setCursor(0,0);
+  u8g2.print(BUILD);
+  u8g2.sendBuffer();
+}
+
+void drawBarGraph(int locX, int locY, float current, float minimum, float maximum){
+
+  // Draw a rectangle frame accross the display then fill with a bar
+  // based on the current value and min/max
+  
+  float c = (((current-minimum)) / (maximum-minimum));
+  if (c<0){
+    c=0;
+  }
+  u8g2.drawFrame(locX,locY,(u8g2.getDisplayWidth()),10);
+  int barWidth =  (c*(u8g2.getDisplayWidth()));
+  u8g2.drawBox(locX,locY,barWidth,10);
+ }
+
+ void resetDisplay(){
+    // Reset the OLED
+    digitalWrite(OLED_RES, LOW);
+    delay(500);
+    digitalWrite(OLED_RES, HIGH);
+    delay(500);
+    u8g2.begin();
+    reset = 1;
+ }
