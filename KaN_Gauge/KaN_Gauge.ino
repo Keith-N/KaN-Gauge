@@ -295,7 +295,14 @@ void nextConfig(){
    }
    saveStartup();
    break;
-
+   
+   case 16:
+   startup2++;
+   if (startup2 > 5) {
+    startup2 = 0;
+   }
+   saveStartup();
+   break;
 
    default:
      gaugeType++;
@@ -323,6 +330,7 @@ int getPercent(float current, float minimum, float maximum){
 void saveStartup(){
     preferences.begin("config", false);
     preferences.putUInt("startup",startup);
+    preferences.putUInt("startup2",startup2);
     preferences.end(); 
 }
 
@@ -721,10 +729,20 @@ void printData(int g){
      case 15:
       u8g2.clearBuffer();
       u8g2.setCursor(0,0);
-      u8g2.print("Setup startup screen");
+      u8g2.print("startup logo");
       u8g2.setCursor(0,25);
       u8g2.print("Current : ");
       u8g2.print(startup);
+      u8g2.sendBuffer();
+      break;
+
+     case 16:
+      u8g2.clearBuffer();
+      u8g2.setCursor(0,0);
+      u8g2.print("startup logo 2");
+      u8g2.setCursor(0,25);
+      u8g2.print("Current : ");
+      u8g2.print(startup2);
       u8g2.sendBuffer();
       break;
      
@@ -911,6 +929,10 @@ void selectGauge(int g){
     gaugeType = 15;
     break;
 
+    case 6:
+    gaugeType = 16;
+    break;
+
     default:
     disableWifi();
     gauge=0;
@@ -994,6 +1016,7 @@ void setup() {
     // use to force a startup image
     #ifdef SETUP_STARTUP
     startup = newStartup;
+    startup2 = newStartup2;
     saveStartup();
     #endif
   
@@ -1008,7 +1031,8 @@ void setup() {
   dataSet[5] = preferences.getUInt("dataLED2",0);
   dataSet[6] = preferences.getUInt("dataLED4",0);
   ledType = preferences.getUInt("ledType",0);
-  startup = preferences.getUInt("startup",0);
+  startup = preferences.getUInt("startup",1);
+  startup2 = preferences.getUInt("startup2",2);
   preferences.end();
 
   // Return to data display if at config screens
@@ -1026,11 +1050,11 @@ void setup() {
    switch (startup){
 
     case 0:
-    printBMP_KaN();
+    printBuild();
     break;
     
     case 1:
-    printBMP_BMM();
+    printBMP_KaN();
     break;
     
     case 2:
@@ -1038,10 +1062,16 @@ void setup() {
     break;
     
     case 3:
+    printBMP_BMM();
+    break;
+    
+    case 4:
     break;
     
     default:
+    printBuild();
     break;
+    
    }
   #endif
 
@@ -1070,16 +1100,35 @@ void setup() {
   #ifdef USE_BMP_2
   while(millis()<(startTime)){}
   
-   switch (startup){
+   switch (startup2){
+    case 0:
+    printBuild();
+    break;
+    
+    case 1:
+    printBMP_KaN();
+    break;
+    
+    case 2:
+    printBMP_rusEFI();
+    break;
+    
+    case 3:
+    printBMP_BMM();
+    break;
+    
+    case 4:
+    break;
+    
     default:
-    printBMP_rusEFI();    
+    printBuild();
+    break;
    }
    
    while(millis()<(startTime + startTime)){}
   #endif
   
-  
-  
+    
 }
 
 

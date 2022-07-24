@@ -31,6 +31,14 @@ void printBMP_BMM(){
   u8g2.sendBuffer();
 }
 
+void printBuild(){
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setCursor(0,0);
+  u8g2.print(BUILD);
+  u8g2.sendBuffer();
+}
+
 void printBMP_KaN(){
   u8g2.clearBuffer();
   u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_KaN);

@@ -4,21 +4,20 @@
  * Use to enable/disable features
  */
 
-
-
-
 // Allow configuration to the startup logo
 //#define CONFIG_STARTUP
 
-// Force the startup BMP to newStartup
+// Force the startup logo to newStartup values, writes on boot
 //#define SETUP_STARTUP
 /*
- * 0 - Default
- * 1 - BMM
+ * 0 - Build Version
+ * 1 - KaN
  * 2 - rusEFI
- * 3 -  KaN
+ * 3 - BMM
+ * 4 - Empty
  */
 int newStartup = 1;
+int newStartup2 = 1;
 
 // Enable first and second startup logos
 #define USE_BMP
@@ -103,6 +102,7 @@ int displayHeight = 64;
 int reset = 0;
 
 int startup = 0;
+int startup2 =0;
 int inConfigMode = 1;
 int maxSet = 0;
 
