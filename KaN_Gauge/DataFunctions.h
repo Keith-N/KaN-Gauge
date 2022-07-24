@@ -21,8 +21,9 @@ sensorData *ptrData;
 sensorData *ptrData2;
 sensorData *ptrData3;
 sensorData *ptrData4;
-sensorData *ptrDataLed;
-
+sensorData *ptrDataLed1;
+sensorData *ptrDataLed2;
+sensorData *ptrDataLed4;
 
 // ========================================================== Functions =========================================================================
 void incrementTestData(){

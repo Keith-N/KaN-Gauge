@@ -3,18 +3,34 @@
  * Defines
  * Use to enable/disable features
  */
-#define SETUP_STARTUP
+
+// Allow configuration to the startup logo
+//#define CONFIG_STARTUP
+
+// Force the startup logo to newStartup values, writes on boot
+//#define SETUP_STARTUP
+/*
+ * 0 - Build Version
+ * 1 - KaN
+ * 2 - rusEFI
+ * 3 - BMM
+ * 4 - Empty
+ */
+int newStartup = 1;
+int newStartup2 = 1;
+
+// Enable first and second startup logos
 #define USE_BMP
+#define USE_BMP_2
+
+#define OTA_ENABLE
+
 //#define SHOW_INFO
 //#define RX_TIMEOUT
-#define OTA_ENABLE
+
 //#define CAN_FILTERED
 //#define LED_SINGLE
-#define USE_DATATYPE
 
-
-#define EN_DISP_RES
-#define EN_ESP_RES
 
 #define DUAL_CORE_CAN
 /*
@@ -22,7 +38,7 @@
  * Adjust timers and CAN settings
  */
 
-const String BUILD = "1.0.7_TEST";
+const String BUILD = "1.1.0";
 
 // Times in ms
 int dataTimeout = 3000;
@@ -85,16 +101,11 @@ int displayWidth = 128;
 int displayHeight = 64;
 int reset = 0;
 
-/*
- * 0 - Default
- * 1 - BMM
- * 2 -
- * 3 -
- */
-
-int startup = 1;
-int newStartup = 1;
+int startup = 0;
+int startup2 =0;
 int inConfigMode = 1;
 int maxSet = 0;
 
-int dataSet[] = {0,0,0,0,0};
+int dataSet[] = {0,0,0,0,0,0,0};
+int ledType = 0;
+String ledTypeText[] = {"All LEDs", "Red LEDs", "Single LED ALL", "Single LED Red", "None"};

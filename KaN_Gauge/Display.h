@@ -24,52 +24,34 @@ void oledSetup(void) {
 
 void printBMP_BMM(){
   u8g2.clearBuffer();
-  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMM);
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_BMM);
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setCursor(0,0);
   u8g2.print(BUILD);
   u8g2.sendBuffer();
 }
 
-void printBMP_BMM2(){
+void printBuild(){
   u8g2.clearBuffer();
-  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMM2);
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setCursor(0,0);
   u8g2.print(BUILD);
   u8g2.sendBuffer();
 }
 
-void printBMP_1(){
+void printBMP_KaN(){
   u8g2.clearBuffer();
-  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_1);
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_KaN);
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setCursor(0,0);
   u8g2.print(BUILD);
   u8g2.sendBuffer();
 }
 
-void printBMP_2(){
-  u8g2.clearBuffer();
-  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_2);
-  u8g2.setFont(u8g2_font_6x10_tf);
-  u8g2.setCursor(0,0);
-  u8g2.print(BUILD);
-  u8g2.sendBuffer();
-}
-
-void printBMP_3(){
-  u8g2.clearBuffer();
-  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_3);
-  u8g2.setFont(u8g2_font_6x10_tf);
-  u8g2.setCursor(0,0);
-  u8g2.print(BUILD);
-  u8g2.sendBuffer();
-}
 
 void printBMP_rusEFI(){
   u8g2.clearBuffer();
-  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMPrusEFI);
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_rusEFI);
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setCursor(0,0);
   u8g2.print(BUILD);
