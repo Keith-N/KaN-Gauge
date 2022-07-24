@@ -48,7 +48,6 @@ void PIN_SETUP(){
   //Setup input button and interrupt
   pinMode(USER_INPUT2, INPUT_PULLUP);
   pinMode(USER_INPUT, INPUT_PULLUP);
-  //pinMode(SPARE_1, INPUT_PULLUP);
   
   pinMode(OLED_RES, OUTPUT);
   digitalWrite(OLED_RES,HIGH);
@@ -85,8 +84,8 @@ int allLed[] = { LED_11, LED_1, LED_2, LED_3, LED_4, LED_5, LED_6, LED_7, LED_8,
 
 
 void ledOn(){
- for (int i = 0; i<10; i++){
-   digitalWrite(indicatorLed[i],HIGH);
+ for (int i = 0; i<12; i++){
+   digitalWrite(allLed[i],HIGH);
    }
 }
 
@@ -107,20 +106,27 @@ void sequentialLed(int p){
   
   p = p/10;
   
-  for (int i=0; i<10; i++){
+  for (int i=0; i<12; i++){
      digitalWrite(indicatorLed[i],LOW);
    }
-
- #ifdef LED_SINGLE
-   digitalWrite(indicatorLed[p],HIGH);
- #else
 
   for (int i = 0; i<p; i++){
     digitalWrite(indicatorLed[i],HIGH);
     }
- #endif
-    
 
+    
+}
+
+// Illuminate LED 0-10
+void singleLed(int p){
+  
+  p = p/10;
+  
+  for (int i=0; i<12; i++){
+     digitalWrite(indicatorLed[i],LOW);
+   }
+   
+   digitalWrite(indicatorLed[p],HIGH);   
 }
 
 void sequentialLedAll(int p){
@@ -131,20 +137,21 @@ void sequentialLedAll(int p){
     digitalWrite(allLed[i],LOW);
     }
       
-  #ifdef LED_SINGLE
-     digitalWrite(allLed[p],HIGH);
-  #else
-
   for (int i = 0; i<p; i++){
     digitalWrite(allLed[i],HIGH);
     }
-  #endif
 
-  #ifdef SERIAL_DEBUG
-    Serial.print("LEDs ON : ");
-    Serial.println("p");
-  #endif
- 
+
+}
+
+void singleLedAll(int p){
+  
+  p = p*12/100;
+      
+  for (int i=0; i<12; i++){
+    digitalWrite(allLed[i],LOW);
+    }  
+  digitalWrite(allLed[p],HIGH);
 }
 
 void toggleLeftLed(){

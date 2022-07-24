@@ -7,8 +7,6 @@
  * 7/20/2022
  */
 
-
-
 /*
  * 
  * Arduino Setup:
@@ -99,48 +97,102 @@ void configMode(){
         u8g2.clearBuffer();
         u8g2.setFont(u8g2_font_6x12_tf);
         u8g2.setCursor(0,0);
-        u8g2.print("LEDs for 4x data");
+        u8g2.print("LEDs for 1x data");
         u8g2.setCursor(0,20);
-        u8g2.print(ptrDataLed->dataName);
+        u8g2.print(ptrDataLed1->dataName);
         u8g2.print(" ");
-        u8g2.print(ptrDataLed->units);
+        u8g2.print(ptrDataLed1->units);
         u8g2.setCursor(0,45);
         u8g2.setFont(u8g2_font_6x10_tf);
         u8g2.print("<-Next         Type->");   
-        break;       
-        
+        break;
+
+       case 5:
+        u8g2.clearBuffer();
+        u8g2.setFont(u8g2_font_6x12_tf);
+        u8g2.setCursor(0,0);
+        u8g2.print("LEDs for 2x data");
+        u8g2.setCursor(0,20);
+        u8g2.print(ptrDataLed2->dataName);
+        u8g2.print(" ");
+        u8g2.print(ptrDataLed2->units);
+        u8g2.setCursor(0,45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");   
+        break; 
+
+        case 6:
+        u8g2.clearBuffer();
+        u8g2.setFont(u8g2_font_6x12_tf);
+        u8g2.setCursor(0,0);
+        u8g2.print("LEDs for 4x data");
+        u8g2.setCursor(0,20);
+        u8g2.print(ptrDataLed4->dataName);
+        u8g2.print(" ");
+        u8g2.print(ptrDataLed4->units);
+        u8g2.setCursor(0,45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");   
+        break;
+
+        case 7:
+        u8g2.clearBuffer();
+        u8g2.setFont(u8g2_font_6x12_tf);
+        u8g2.setCursor(0,0);
+        u8g2.print("LED type");
+        u8g2.setCursor(0,20);
+        u8g2.print(ledType);
+        u8g2.print(" ");
+        u8g2.print(ledTypeText[ledType]);
+        u8g2.setCursor(0,45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");   
+        break;
+
+        default:
+        inConfigMode = 1;
+        buttonPress = 1;
+        setupData();
+        saveDataSettings();
+        break;
       }
-      //u8g2.print(dataSet[i]);
+      
       u8g2.sendBuffer();
     
     if (buttonPress2 == 1){
       buttonPress2 = 0;
       lastInput2 = (millis());
-      dataSet[i] ++;
-      setupData(); 
-      if (maxSet == 1){
-        maxSet = 0;
-        dataSet[i] = 0;
-      }
+
+      switch(i){
+           
+        case 7:
+          ledType ++;
+          if (ledType > 4){
+            ledType = 0;
+          }
+          break; 
+          
+        default:
+          dataSet[i] ++;
+          setupData(); 
+          if (maxSet == 1){
+            maxSet = 0;
+            dataSet[i] = 0;
+            }  
+        } 
+        
     }
 
     if (buttonPress == 1){
       buttonPress = 0;
       lastInput = (millis());
-      i ++;
-      if (i > 4){
-        inConfigMode = 1;
-        buttonPress = 1;
-        }
-      }
+      i++;
       if (inConfigMode == 1) break;
   }
 
-    setupData();
-    saveDataSettings();
    
 }
-
+}
 
 
 /*
@@ -152,7 +204,9 @@ void setupData(){
   ptrData2 =  selectData(dataSet[1]);
   ptrData3 =  selectData(dataSet[2]);
   ptrData4 =  selectData(dataSet[3]);
-  ptrDataLed = selectData(dataSet[4]);
+  ptrDataLed1 = selectData(dataSet[4]);
+  ptrDataLed2 = selectData(dataSet[5]);
+  ptrDataLed4 = selectData(dataSet[6]);
 }
 
 
@@ -167,7 +221,10 @@ void saveDataSettings(){
   preferences.putUInt("data1",dataSet[1]);
   preferences.putUInt("data2",dataSet[2]);
   preferences.putUInt("data3",dataSet[3]);
-  preferences.putUInt("dataLED",dataSet[4]);
+  preferences.putUInt("dataLED1",dataSet[4]);
+  preferences.putUInt("dataLED2",dataSet[5]);
+  preferences.putUInt("dataLED4",dataSet[4]);
+  preferences.putUInt("ledType",ledType);
   preferences.end();
 }
 
@@ -229,19 +286,28 @@ void nextConfig(){
    case 14:
      inConfigMode = 0;
      break;
-    }
+    
+
+   case 15:
+   startup++;
+   if (startup > 5) {
+    startup = 0;
+   }
+   saveStartup();
+   break;
 
 
-   if (gaugeType <= numGaugeType){
+   default:
      gaugeType++;
      if (gaugeType > numGaugeType){
         gaugeType = 0;
-        }
-        preferences.begin("config", false);
-        preferences.putUInt("gaugeType",gaugeType);
-        preferences.end(); 
-      }         
-   
+      }
+      preferences.begin("config", false);
+      preferences.putUInt("gaugeType",gaugeType);
+      preferences.end(); 
+      break;
+ }
+       
    lastInput2 = millis();
 }
 
@@ -299,6 +365,10 @@ void printData(int g){
       u8g2.setFont(u8g2_font_fub35_tf );
       u8g2.setCursor(0,26);
       
+      //        if (ptrData->scaledValue < 10 && ptrData->scaledValue > -1){
+      //          u8g2.print("0");
+      //        }
+
         if (ptrData->dataType == 1){
           u8g2.print((int)ptrData->scaledValue);
         }
@@ -306,8 +376,32 @@ void printData(int g){
         u8g2.print(ptrData->scaledValue);
         }  
       
-      percent = getPercent(ptrData->scaledValue,ptrData->minimum,ptrData->maximum);
+      percent = getPercent(ptrDataLed1->scaledValue,ptrDataLed1->minimum,ptrDataLed1->maximum);
+      
+      switch (ledType){
+      case 0:
       sequentialLedAll(percent);
+      break;
+
+      case 1:
+      sequentialLed(percent);
+      break;
+
+      case 2:
+      singleLedAll(percent);
+      break;
+
+      case 3:
+      singleLed(percent);
+      break;
+
+      case 4:
+      break;
+
+      default:
+      sequentialLedAll(percent);
+      break;
+     }
       
       u8g2.sendBuffer();
       break;
@@ -355,8 +449,32 @@ void printData(int g){
         u8g2.setCursor(105,45);
         u8g2.print(ptrData2->units);
                   
-        percent = getPercent(ptrData2->scaledValue,ptrData2->minimum,ptrData2->maximum);
-        sequentialLedAll(percent);
+        percent = getPercent(ptrDataLed2->scaledValue,ptrDataLed2->minimum,ptrDataLed2->maximum);
+      
+      switch (ledType){
+      case 0:
+      sequentialLedAll(percent);
+      break;
+
+      case 1:
+      sequentialLed(percent);
+      break;
+
+      case 2:
+      singleLedAll(percent);
+      break;
+
+      case 3:
+      singleLed(percent);
+      break;
+
+      case 4:
+      break;
+
+      default:
+      sequentialLedAll(percent);
+      break;
+     }
         
         u8g2.sendBuffer();
       break;
@@ -418,8 +536,33 @@ void printData(int g){
         } 
 
       
-     percent = getPercent(ptrDataLed->scaledValue,ptrDataLed->minimum,ptrDataLed->maximum);
-     sequentialLed(percent);
+     percent = getPercent(ptrDataLed4->scaledValue,ptrDataLed4->minimum,ptrDataLed4->maximum);
+
+     switch (ledType){
+      case 0:
+      sequentialLedAll(percent);
+      break;
+
+      case 1:
+      sequentialLed(percent);
+      break;
+
+      case 2:
+      singleLedAll(percent);
+      break;
+
+      case 3:
+      singleLed(percent);
+      break;
+
+      case 4:
+      break;
+
+      default:
+      sequentialLedAll(percent);
+      break;
+     }
+     
      u8g2.sendBuffer();
       
   break;
@@ -483,7 +626,8 @@ void printData(int g){
       ledOff();
       u8g2.sendBuffer();
       break;
-    
+
+// WIFI
     case 10:
       // OTA / WiFi Setup
       ledOff();
@@ -528,6 +672,7 @@ void printData(int g){
       break;
 
 
+// INFO
     case 12:
       // Print build, and CAN info
       // Useful for checking CAN connection
@@ -555,6 +700,7 @@ void printData(int g){
       u8g2.sendBuffer();
       break;
 
+// CONFIG MODE
      case 14:
       u8g2.clearBuffer();
       u8g2.setCursor(0,0);
@@ -568,9 +714,19 @@ void printData(int g){
       u8g2.print("Press -> to enter");
       }
       u8g2.sendBuffer();
-
       ledOff();
      break;
+
+// STARTUP CHANGE
+     case 15:
+      u8g2.clearBuffer();
+      u8g2.setCursor(0,0);
+      u8g2.print("Setup startup screen");
+      u8g2.setCursor(0,25);
+      u8g2.print("Current : ");
+      u8g2.print(startup);
+      u8g2.sendBuffer();
+      break;
      
     // Use gauge type 0 as default
     default:
@@ -732,7 +888,6 @@ void selectGauge(int g){
     preferences.begin("config", true);
     gaugeType = preferences.getUInt("gaugeType",0);
     preferences.end(); 
-   
     break;
 
     case 1:
@@ -750,6 +905,10 @@ void selectGauge(int g){
     case 4:
     disableWifi();
     gaugeType = 14;
+    break;
+
+    case 5:
+    gaugeType = 15;
     break;
 
     default:
@@ -828,12 +987,15 @@ void setup() {
   ptrData2=&coolantTemperature;
   ptrData3=&intakeTemperature;
   ptrData4=&manifoldPressure;
-  ptrDataLed=&afr;
+  ptrDataLed1=&afr;
+  ptrDataLed2=&afr;
+  ptrDataLed4=&afr;
 
+    // use to force a startup image
     #ifdef SETUP_STARTUP
     startup = newStartup;
     saveStartup();
-  #endif
+    #endif
   
   // Get the previous gauge values to start from last gauge
   preferences.begin("config", true);
@@ -842,7 +1004,10 @@ void setup() {
   dataSet[1] = preferences.getUInt("data1",0);
   dataSet[2] = preferences.getUInt("data2",0);
   dataSet[3] = preferences.getUInt("data3",0);
-  dataSet[4] = preferences.getUInt("dataLED",0);
+  dataSet[4] = preferences.getUInt("dataLED1",0);
+  dataSet[5] = preferences.getUInt("dataLED2",0);
+  dataSet[6] = preferences.getUInt("dataLED4",0);
+  ledType = preferences.getUInt("ledType",0);
   startup = preferences.getUInt("startup",0);
   preferences.end();
 
@@ -861,7 +1026,7 @@ void setup() {
    switch (startup){
 
     case 0:
-    printBMP_1();
+    printBMP_KaN();
     break;
     
     case 1:
@@ -869,16 +1034,14 @@ void setup() {
     break;
     
     case 2:
-    printBMP_2();
+    printBMP_rusEFI();
     break;
     
     case 3:
-    printBMP_3();
     break;
     
     default:
-    printBMP_rusEFI();
-    
+    break;
    }
   #endif
 
@@ -903,17 +1066,19 @@ void setup() {
   ledSweep(0,12,40,20);
   setupData();
 
+  
+  #ifdef USE_BMP_2
   while(millis()<(startTime)){}
   
-  #ifdef USE_BMP
    switch (startup){
     default:
     printBMP_rusEFI();    
    }
+   
+   while(millis()<(startTime + startTime)){}
   #endif
   
-  while(millis()<(startTime + startTime)){}
-
+  
   
 }
 
