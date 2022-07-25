@@ -22,11 +22,26 @@ void oledSetup(void) {
   u8g2.setFontDirection(0);
 }
 
+
 void printBMP_BMM(){
   u8g2.clearBuffer();
   u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_BMM);
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setCursor(0,0);
+  //u8g2.print(BUILD);
+  u8g2.sendBuffer();
+}
+
+void printGitQR(){
+  u8g2.clearBuffer();
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,GITHUB_QR);
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setCursor(0,0);
+  u8g2.print("KaN");
+  u8g2.setCursor(10,10);
+  u8g2.print("Gauge");
+  u8g2.setCursor(0,30);
+ 
   u8g2.print(BUILD);
   u8g2.sendBuffer();
 }
@@ -39,12 +54,27 @@ void printBuild(){
   u8g2.sendBuffer();
 }
 
+
+void printInitialStart(){
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setCursor(0,0);
+  u8g2.print("Initializing ...");
+  
+  #ifdef RESET_STORED
+    u8g2.setCursor(0,25);
+    u8g2.print("Resetting data!");
+  #endif
+  
+  u8g2.sendBuffer();
+}
+
 void printBMP_KaN(){
   u8g2.clearBuffer();
   u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_KaN);
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setCursor(0,0);
-  u8g2.print(BUILD);
+  //u8g2.print(BUILD);
   u8g2.sendBuffer();
 }
 
@@ -54,9 +84,10 @@ void printBMP_rusEFI(){
   u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_rusEFI);
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setCursor(0,0);
-  u8g2.print(BUILD);
+  //u8g2.print(BUILD);
   u8g2.sendBuffer();
 }
+
 
 void drawBarGraph(int locX, int locY, float current, float minimum, float maximum){
 

@@ -5,6 +5,16 @@
 #include <Update.h>
 #include <WiFiAP.h>
 
+
+// WiFi OTA
+const char *host = "KaN Gauge";
+const char *ssid = "KaN Gauge";
+const char *password = "update1234";
+
+String wifiStatus = "";
+
+
+
 WebServer server(80);
 
 #define jquery_min_js_v3_2_1_gz_len 30178

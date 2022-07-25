@@ -1,5 +1,5 @@
-#define PCBREV_1.0
-#ifdef PCBREV_1.0
+#define PCBREV_1.1_
+#ifdef PCBREV_1.1_
 
   #define BOOT      0
   #define UART_TX   1
@@ -105,10 +105,7 @@ void blinkLed(int wait){
 void sequentialLed(int p){
   
   p = p/10;
-  
-  for (int i=0; i<12; i++){
-     digitalWrite(indicatorLed[i],LOW);
-   }
+  ledOff();
 
   for (int i = 0; i<p; i++){
     digitalWrite(indicatorLed[i],HIGH);
@@ -121,10 +118,7 @@ void sequentialLed(int p){
 void singleLed(int p){
   
   p = p/10;
-  
-  for (int i=0; i<12; i++){
-     digitalWrite(indicatorLed[i],LOW);
-   }
+  ledOff();
    
    digitalWrite(indicatorLed[p],HIGH);   
 }
@@ -132,10 +126,7 @@ void singleLed(int p){
 void sequentialLedAll(int p){
   
   p = p*12/100;
-      
-  for (int i=0; i<12; i++){
-    digitalWrite(allLed[i],LOW);
-    }
+  ledOff();
       
   for (int i = 0; i<p; i++){
     digitalWrite(allLed[i],HIGH);
@@ -147,10 +138,7 @@ void sequentialLedAll(int p){
 void singleLedAll(int p){
   
   p = p*12/100;
-      
-  for (int i=0; i<12; i++){
-    digitalWrite(allLed[i],LOW);
-    }  
+  ledOff();
   digitalWrite(allLed[p],HIGH);
 }
 

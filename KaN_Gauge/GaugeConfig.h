@@ -4,41 +4,80 @@
  * Use to enable/disable features
  */
 
-// Allow configuration to the startup logo
-//#define CONFIG_STARTUP
 
-// Force the startup logo to newStartup values, writes on boot
-//#define SETUP_STARTUP
-/*
- * 0 - Build Version
- * 1 - KaN
- * 2 - rusEFI
- * 3 - BMM
- * 4 - Empty
- */
-int newStartup = 1;
-int newStartup2 = 1;
-
+String ver = "1.1.1";
 // Enable first and second startup logos
 #define USE_BMP
 #define USE_BMP_2
 
+// Select boot logos
+//#define DEFAULT_START
+//#define BMM_START
+#define BLANK_START
+//#define TESTING_BUILD
+
+// Allow OTA updates
 #define OTA_ENABLE
 
-//#define SHOW_INFO
+// Alert if too long between CAN messages
 //#define RX_TIMEOUT
 
-//#define CAN_FILTERED
-//#define LED_SINGLE
+// Reset the stored NVS data on boot
+// #define RESET_STORED
+// setup test build defines
 
 
-#define DUAL_CORE_CAN
+#ifdef TESTING_BUILD
+  #define CONFIG_STARTUP
+
+  // Force the startup logo to newStartup values, writes on boot
+  //#define SETUP_STARTUP
+
+  
+#endif
+
+/*
+ * 0 - Not Set, save new values, shows build version
+ * 1 - KaN
+ * 2 - rusEFI
+ * 3 - BMM
+ * 4 - Empty
+ * 
+ * # - Any non defined value shows Build Version
+ * 
+ * 9 - Update using new startup settings
+ */
+
+#ifdef DEFAULT_START
+  int newStartup = 1;
+  int newStartup2 = 2;
+#elif defined(BMM_START)
+  int newStartup = 3;
+  int newStartup2 = 2;
+#elif defined(BLANK_START)
+  int newStartup = 4;
+  int newStartup2 = 4;
+#else
+  int newStartup = 0;
+  int newStartup2 = 0;
+#endif
+
+
+
 /*
  * Variables
  * Adjust timers and CAN settings
  */
 
-const String BUILD = "1.1.0";
+#ifdef TESTING_BUILD
+  String BUILD = ver + "*";
+#elif defined(RESET_STORED)
+  String BUILD = ver + " NVS";
+#elif defined(BMM_START)
+  String BUILD = ver + " BMM";
+#else
+  String BUILD = ver;
+#endif
 
 // Times in ms
 int dataTimeout = 3000;
@@ -56,7 +95,7 @@ const int CAN_BASE_ID = 512;
 const int CAN_RATE_k = 500;
 int filterList[] = {512, 513};
 const int numFilter = 1;
-int currentFilter =0;
+int currentFilter = 0;
 
 // Starting filter and mask
 // reconfigured based on saved gauge
@@ -68,13 +107,6 @@ int maskID = 0;
 const int CAN_RX_BUFFER = 5;
 const int CAN_RX_BUFFER_FILTERED = 1;
 
-// WiFi ota
-// Information is retrieved from device flash
-const char *host = "gauge_update";
-const char *ssid = "gauge_update";
-const char *password = "update1234";
-String rev;
-String wifiStatus = "";
 
 //Misc
 int gauge = 0;
@@ -102,7 +134,8 @@ int displayHeight = 64;
 int reset = 0;
 
 int startup = 0;
-int startup2 =0;
+int startup2 = 0;
+
 int inConfigMode = 1;
 int maxSet = 0;
 

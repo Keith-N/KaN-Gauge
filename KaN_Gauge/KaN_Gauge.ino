@@ -3,6 +3,7 @@
 
 /*
  * KaN Gauge
+ * https://github.com/Keith-N/KaN-Gauge
  * K. Nason
  * 7/20/2022
  */
@@ -188,12 +189,9 @@ void configMode(){
       lastInput = (millis());
       i++;
       if (inConfigMode == 1) break;
-  }
-
-   
+      }   
+   }
 }
-}
-
 
 /*
  * Setup pointers from the selected data settings for all 4 displayed values and LEDs
@@ -226,6 +224,29 @@ void saveDataSettings(){
   preferences.putUInt("dataLED4",dataSet[4]);
   preferences.putUInt("ledType",ledType);
   preferences.end();
+}
+
+void saveStartup(int s1, int s2){
+  
+    // open in R/W
+    preferences.begin("startup", false);
+    preferences.putUInt("logo1",s1);
+    preferences.end(); 
+    preferences.begin("startup", false);
+    preferences.putUInt("logo2",s2);
+    preferences.end(); 
+}
+
+/*
+ * Verify that startup logos have been set. If not set them to the default value
+ */
+
+void checkStartupLogo(){
+ if ((startup == 0) || (startup2 == 0)){
+    saveStartup(newStartup, newStartup2);
+    startup = newStartup;
+    startup2 = newStartup2;
+  }
 }
 
 /*
@@ -293,7 +314,7 @@ void nextConfig(){
    if (startup > 5) {
     startup = 0;
    }
-   saveStartup();
+   saveStartup(startup,startup2);
    break;
    
    case 16:
@@ -301,7 +322,7 @@ void nextConfig(){
    if (startup2 > 5) {
     startup2 = 0;
    }
-   saveStartup();
+   saveStartup(startup,startup2);
    break;
 
    default:
@@ -326,13 +347,6 @@ int getPercent(float current, float minimum, float maximum){
   return( (int) 100 * (current-minimum )/ (maximum-minimum));
 }
 
-
-void saveStartup(){
-    preferences.begin("config", false);
-    preferences.putUInt("startup",startup);
-    preferences.putUInt("startup2",startup2);
-    preferences.end(); 
-}
 
 // ================================= Gauges ===========================================
 
@@ -679,6 +693,10 @@ void printData(int g){
       u8g2.sendBuffer();   
       break;
 
+  case 11:
+  printGitQR();
+  break;
+
 
 // INFO
     case 12:
@@ -708,9 +726,12 @@ void printData(int g){
       u8g2.sendBuffer();
       break;
 
+
+
 // CONFIG MODE
      case 14:
       u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.setCursor(0,0);
       if (inConfigMode == 0){
       configMode();
@@ -728,6 +749,7 @@ void printData(int g){
 // STARTUP CHANGE
      case 15:
       u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.setCursor(0,0);
       u8g2.print("startup logo");
       u8g2.setCursor(0,25);
@@ -738,6 +760,7 @@ void printData(int g){
 
      case 16:
       u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.setCursor(0,0);
       u8g2.print("startup logo 2");
       u8g2.setCursor(0,25);
@@ -926,12 +949,18 @@ void selectGauge(int g){
     break;
 
     case 5:
+    gaugeType = 11;
+    break;
+
+#ifdef CONFIG_STARTUP
+    case 6:
     gaugeType = 15;
     break;
 
-    case 6:
+    case 7:
     gaugeType = 16;
     break;
+#endif
 
     default:
     disableWifi();
@@ -999,6 +1028,17 @@ void canTask(void * pvParameters){
 
 void setup() {
 
+
+ #ifdef RESET_STORED
+  preferences.begin("config", false);
+  preferences.clear();
+  preferences.end();
+
+  preferences.begin("startup", false);
+  preferences.clear();
+  preferences.end();
+ #endif
+
   // Configure GPIO and interrupt
   PIN_SETUP();
   attachInterrupt(digitalPinToInterrupt(USER_INPUT),buttonISR,FALLING);
@@ -1014,11 +1054,11 @@ void setup() {
   ptrDataLed4=&afr;
 
     // use to force a startup image
-    #ifdef SETUP_STARTUP
+  #ifdef SETUP_STARTUP
     startup = newStartup;
     startup2 = newStartup2;
     saveStartup();
-    #endif
+  #endif
   
   // Get the previous gauge values to start from last gauge
   preferences.begin("config", true);
@@ -1030,17 +1070,22 @@ void setup() {
   dataSet[4] = preferences.getUInt("dataLED1",0);
   dataSet[5] = preferences.getUInt("dataLED2",0);
   dataSet[6] = preferences.getUInt("dataLED4",0);
-  ledType = preferences.getUInt("ledType",0);
-  startup = preferences.getUInt("startup",1);
-  startup2 = preferences.getUInt("startup2",2);
+  ledType = preferences.getUInt("ledType",0); 
   preferences.end();
-
+  
+  preferences.begin("startup", true);
+  startup = preferences.getUInt("logo1",0);
+  startup2 = preferences.getUInt("logo2",0);
+  preferences.end();
+  
+  checkStartupLogo();
+  
   // Return to data display if at config screens
   if (gauge>2){
     gauge = 0;
   }
   selectGauge(gauge);
-  
+
   // Start the OLED display
   u8g2.begin();
   oledSetup();
@@ -1051,18 +1096,22 @@ void setup() {
 
     case 0:
     printBuild();
+    while(millis()<(startTime)){}
     break;
     
     case 1:
     printBMP_KaN();
+    while(millis()<(startTime)){}
     break;
     
     case 2:
     printBMP_rusEFI();
+    while(millis()<(startTime)){}
     break;
     
     case 3:
     printBMP_BMM();
+    while(millis()<(startTime)){}
     break;
     
     case 4:
@@ -1070,6 +1119,7 @@ void setup() {
     
     default:
     printBuild();
+    while(millis()<(startTime)){}
     break;
     
    }
@@ -1093,28 +1143,33 @@ void setup() {
       0);         /* Core where the task should run */ 
 
   //Sweep the LEDs and wait so that the the startup is seen
+  if(ledType == 4){  
+  }
+  else {
   ledSweep(0,12,40,20);
+  }
+  
   setupData();
 
   
   #ifdef USE_BMP_2
-  while(millis()<(startTime)){}
-  
    switch (startup2){
     case 0:
-    printBuild();
     break;
     
     case 1:
     printBMP_KaN();
+    while(millis()<(startTime + startTime)){}
     break;
     
     case 2:
     printBMP_rusEFI();
+    while(millis()<(startTime + startTime)){}
     break;
     
     case 3:
     printBMP_BMM();
+    while(millis()<(startTime + startTime)){}
     break;
     
     case 4:
@@ -1122,18 +1177,17 @@ void setup() {
     
     default:
     printBuild();
+    while(millis()<(startTime + startTime)){}
     break;
-   }
-   
-   while(millis()<(startTime + startTime)){}
+   } 
   #endif
-  
-    
+   
 }
 
 
 void loop(){
 
+   
 // Update the display with the currently selected data
    printData(gaugeType);
 
@@ -1154,4 +1208,5 @@ void loop(){
      gaugeType = 12;
     }
   #endif
+
 }
