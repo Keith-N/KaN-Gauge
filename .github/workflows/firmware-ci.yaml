@@ -21,9 +21,6 @@ jobs:
           enable-deltas-report: true
       - uses: arduino/report-size-deltas@v1
 
-      - name: Enumerate Files
-        run: find .
-
       - name: Upload BINs
         uses: actions/upload-artifact@v3
         with:
