@@ -222,6 +222,6 @@ void ota(void) {
 
 void disableWifi(){
     WiFi.disconnect();
-    wifiToggled = false;
+    wifiToggle = false;
     wifiStatus = "Disconnected";
 }

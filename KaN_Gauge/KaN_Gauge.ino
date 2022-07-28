@@ -988,7 +988,10 @@ void canSetupFiltered(int filterID, int maskID){
 
   // Setup Filter and mask from given values
   const ACAN_ESP32_Filter filter = ACAN_ESP32_Filter::singleStandardFilter (ACAN_ESP32_Filter::data, filterID, maskID);
-  const uint32_t errorCode = ACAN_ESP32::can.begin (settings, filter);
+  const uint32_t errorCode = ACAN_ESP32::can.begin(settings, filter);
+
+  // TODO: check error code
+  (void)errorCode;
 }
 
 /*
@@ -1005,7 +1008,10 @@ void canSetup(){
   settings.mRxPin = CAN_RX;
   settings.mTxPin = CAN_TX; 
   const ACAN_ESP32_Filter filter = ACAN_ESP32_Filter::acceptStandardFrames () ;
-  const uint32_t errorCode = ACAN_ESP32::can.begin (settings,filter);
+  const uint32_t errorCode = ACAN_ESP32::can.begin(settings,filter);
+
+  // TODO: check error code
+  (void)errorCode;
 }
 
 
