@@ -29,7 +29,8 @@ sensorData test = {
   (1),  //Address
   90, //Alert High
   10,  // Alert Low
-  "tst"
+  "tst",
+  0
 };
 
 // -- ID 512 --
@@ -44,7 +45,8 @@ sensorData warningStatus= {
   (BASE_CAN_ID + 0),  //Address
   0,
   0,
-  "wrn"
+  "wrn",
+  0
 };
 
 int warningCounter;
@@ -83,7 +85,8 @@ sensorData ignitionTiming = {
   (BASE_CAN_ID + 1), //Address
   50,
   -50,
-  "ign"
+  "ign",
+  0
 };
 
 sensorData injectorDuty = {
@@ -475,6 +478,7 @@ sensorData airMass = {
   9999,
   -9999,
   "air",
+  0
 };
 
 sensorData estimatedAirflow = {
@@ -488,7 +492,8 @@ sensorData estimatedAirflow = {
   (BASE_CAN_ID + 5), // Address 
     999,
   -999,
-  "air" 
+  "air",
+  0
 };
 
 sensorData injectorPulse = {
@@ -502,5 +507,6 @@ sensorData injectorPulse = {
   (BASE_CAN_ID + 5), // Address 
     999,
   -999,
-  "inj" 
+  "inj",
+  0
 };
