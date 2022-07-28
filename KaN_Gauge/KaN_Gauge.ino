@@ -295,8 +295,8 @@ void nextConfig(){
  switch(gaugeType){
 
    case 10:
-     wifiToggled = (1 - wifiToggled);
-     if (wifiToggled = 1){
+     wifiToggle = !wifiToggle;
+     if (wifiToggle){
       otaSetup();
      }
      else{

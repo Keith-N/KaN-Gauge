@@ -118,7 +118,7 @@ int buttonPress2 = 0;
 int lastMessage = 0;
 int testMode = 0;
 int longPress = 0;
-int wifiToggled = 0;
+bool wifiToggle = false;
 int percent = 0;
 int rxTimeout= 0;
 
