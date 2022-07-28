@@ -17,4 +17,4 @@ jobs:
           fqbn: esp32:esp32:esp32
           libraries: |
             - name: U8g2
-              source-url: https://github.com/olikraus/u8g2.git
+            - name: ACAN_ESP32
