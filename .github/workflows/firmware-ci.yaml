@@ -13,4 +13,4 @@ jobs:
           sketch-paths: KaN_Gauge/
           libraries: |
             - name: U8g2
-              source-url: https://github.com/olikraus/u8g2
+              source-url: https://github.com/olikraus/u8g2.git
