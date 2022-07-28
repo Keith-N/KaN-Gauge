@@ -1,0 +1,14 @@
+name: FW CI
+
+on: [push, pull_request]
+
+jobs:
+  build-firmware:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: arduino/compile-sketches@v1
+        with:
+          sketch-paths: KaN_Gauge/
+          libraries: 
