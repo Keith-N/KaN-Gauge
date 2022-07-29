@@ -4,6 +4,7 @@
 
 //Setup U8G2 for 128x64 SH1105 OLED, Name u8g2
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
+//U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
 //U8G2_SH1106_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, I2C_SCL, I2C_SDA, U8X8_PIN_NONE);
 
 // BMP data for displaying on OLED
@@ -32,6 +33,15 @@ void printBMP_BMM(){
   u8g2.sendBuffer();
 }
 
+void printBMP_GG(){
+  u8g2.clearBuffer();
+  u8g2.drawXBM(0,0,dispWidth,dispHeight,BMP_GG);
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.setCursor(0,0);
+  //u8g2.print(BUILD);
+  u8g2.sendBuffer();
+}
+
 void printGitQR(){
   u8g2.clearBuffer();
   u8g2.drawXBM(0,0,dispWidth,dispHeight,GITHUB_QR);
@@ -41,8 +51,12 @@ void printGitQR(){
   u8g2.setCursor(10,10);
   u8g2.print("Gauge");
   u8g2.setCursor(0,30);
- 
   u8g2.print(BUILD);
+
+  #ifdef DEBUG_BUILD
+    u8g2.setCursor(0,50);
+    u8g2.print("DEBUG");
+  #endif
   u8g2.sendBuffer();
 }
 

@@ -11,10 +11,6 @@ int lastTestIncrement = 0;
 int testTime = 50;
 float testIncrementValue = 1.01;
 
-int Temperature = 0;
-int Pressure =  0;
-int Speed = 0;
-
 
 //Pointer for current data
 sensorData *ptrData;
@@ -28,13 +24,15 @@ sensorData *ptrDataLed4;
 // ========================================================== Functions =========================================================================
 void incrementTestData(){
   //Increment test data
+  
   if ((lastTestIncrement+testTime) < millis()){
     lastTestIncrement = millis();
-    test.scaledValue =  test.scaledValue + testIncrementValue;
-    if (test.scaledValue > 110){
-      test.scaledValue = 0;
-    }
+    testData.scaledValue =  testData.scaledValue + testIncrementValue;
+    if (testData.scaledValue > 110){
+      testData.scaledValue = 0;
+    }  
   }
+  
 }
 
 

@@ -9,11 +9,13 @@
  */
 
 /*
- * 
  * Arduino Setup:
  * ESP32 - Add to 'Preferences > Additional Boards Manager URL' then install ESP32 from Boards Manager.   
  * https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
  * 
+ * Install Libraries
+ * u8g2
+ * ACAN ESP32
 */
 
 // Libraries  
@@ -914,6 +916,12 @@ sensorData *selectData(int g){
   case 24:
     return &lambda;
     break;
+
+#ifdef DEBUG_BUILD
+  case 25:
+    return &testData;
+    break;
+#endif
                 
   default:
     maxSet = 1;
@@ -1021,6 +1029,12 @@ void canTask(void * pvParameters){
         lastMessage = millis();
         rxTimeout = 0;
       }
+
+  // Increment Testing Data if in DEBUG
+  #ifdef DEBUG_BUILD
+    incrementTestData();
+  #endif
+  
   }
 }
 
@@ -1115,6 +1129,8 @@ void setup() {
     break;
     
     case 4:
+    printBMP_GG();
+    while(millis()<(startTime)){}
     break;
     
     default:
@@ -1173,6 +1189,8 @@ void setup() {
     break;
     
     case 4:
+    printBMP_GG();
+    while(millis()<(startTime + startTime)){}
     break;
     
     default:

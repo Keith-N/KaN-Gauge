@@ -18,7 +18,7 @@ struct sensorData{
 };
 
 
-sensorData test = {
+sensorData testData = {
   "Test Data", // Name
   "%@#",    // Units
   1,  // Multiplier for scaling
@@ -26,7 +26,7 @@ sensorData test = {
   0,  // Scaled value
   0,  // Minimum Value
   100, //Maximum Value
-  (1),  //Address
+  (0),  //Address
   90, //Alert High
   10,  // Alert Low
   "tst"
