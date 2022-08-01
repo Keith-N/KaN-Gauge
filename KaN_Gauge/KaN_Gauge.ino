@@ -223,7 +223,7 @@ void saveDataSettings(){
   preferences.putUInt("data3",dataSet[3]);
   preferences.putUInt("dataLED1",dataSet[4]);
   preferences.putUInt("dataLED2",dataSet[5]);
-  preferences.putUInt("dataLED4",dataSet[4]);
+  preferences.putUInt("dataLED4",dataSet[6]);
   preferences.putUInt("ledType",ledType);
   preferences.end();
 }
