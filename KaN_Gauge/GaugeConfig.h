@@ -5,15 +5,19 @@
  */
 
 
-String ver = "1.1.1";
+String build = "1.1.2";
 // Enable first and second startup logos
 #define USE_BMP
 #define USE_BMP_2
 
+// Select display controller
+//#define SSD1306
+#define SH1106
+
 // Select boot logos 
-//#define DEFAULT_START
+#define DEFAULT_START
 //#define BMM_START
-#define GG_START
+//#define GG_START
 //#define DEBUG_BUILD
 
 // Allow OTA updates
@@ -68,15 +72,15 @@ String ver = "1.1.1";
  */
 
 #ifdef DEBUG_BUILD
-  String BUILD = ver + "*";
+  String buildType ="Debug";
 #elif defined(RESET_STORED)
-  String BUILD = ver + " NVS";
+  String buildType ="NVS";
 #elif defined(BMM_START)
-  String BUILD = ver + " BMM";
+  String buildType ="BMM";
 #elif defined(GG_START)
-  String BUILD = ver + " GG";
+  String buildType ="GG";
 #else
-  String BUILD = ver;
+  String buildType = "";
 #endif
 
 #ifdef SSD1306
@@ -124,7 +128,7 @@ int buttonPress2 = 0;
 int lastMessage = 0;
 int testMode = 0;
 int longPress = 0;
-int wifiToggled = 0;
+bool wifiToggled = false;
 int percent = 0;
 int rxTimeout= 0;
 

@@ -1,5 +1,5 @@
-#define PCBREV_1.1_
-#ifdef PCBREV_1.1_
+#define PCBREV_1_1_
+#ifdef PCBREV_1_1_
 
   #define BOOT      0
   #define UART_TX   1

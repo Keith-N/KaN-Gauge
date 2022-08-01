@@ -73,9 +73,9 @@ void SAVE_DATA(CANMessage CANmsg) {
             manifoldPressure.scaledValue = ((((float)word(CANmsg.data[1],CANmsg.data[0])) * (manifoldPressure.scaleMultiplier)) + manifoldPressure.offset);
             manifoldPressure_psi.scaledValue = ((((float)word(CANmsg.data[1],CANmsg.data[0])) * (manifoldPressure_psi.scaleMultiplier)) + manifoldPressure_psi.offset);      
             coolantTemperature.scaledValue = ((((float)(CANmsg.data[2])) * (coolantTemperature.scaleMultiplier)) + coolantTemperature.offset);
-            coolantTemperature_f.scaledValue = ((((float)(CANmsg.data[2])) * (coolantTemperature_f.scaleMultiplier)) + coolantTemperature_f.offset);
+            coolantTemperature_f.scaledValue = ((coolantTemperature.scaledValue * (coolantTemperature_f.scaleMultiplier)) + coolantTemperature_f.offset);
             intakeTemperature.scaledValue = ((((float)(CANmsg.data[3])) * (intakeTemperature.scaleMultiplier)) + intakeTemperature.offset);
-            intakeTemperature_f.scaledValue = ((((float)(CANmsg.data[3])) * (intakeTemperature_f.scaleMultiplier)) + intakeTemperature_f.offset);
+            intakeTemperature_f.scaledValue = ((intakeTemperature.scaledValue * intakeTemperature_f.scaleMultiplier) + intakeTemperature_f.offset);
             
             auxTemp1.scaledValue = ((((float)(CANmsg.data[4])) * (auxTemp1.scaleMultiplier)) + auxTemp1.offset);
             auxTemp2.scaledValue = ((((float)(CANmsg.data[5])) * (auxTemp2.scaleMultiplier)) + auxTemp2.offset);
@@ -86,8 +86,10 @@ void SAVE_DATA(CANMessage CANmsg) {
           case(516):
             afr.scaledValue = ((((float)word(CANmsg.data[1],CANmsg.data[0])) * (afr.scaleMultiplier)) + afr.offset);
             lambda.scaledValue = ((((float)word(CANmsg.data[1],CANmsg.data[0])) * (lambda.scaleMultiplier)) + lambda.offset);
+            
             oilPressure_psi.scaledValue = ((((float)word(CANmsg.data[3],CANmsg.data[2])) * (oilPressure_psi.scaleMultiplier)) + oilPressure_psi.offset);
             oilPressure.scaledValue = ((((float)word(CANmsg.data[3],CANmsg.data[2])) * (oilPressure.scaleMultiplier)) + oilPressure.offset);
+            
             vvtPosition.scaledValue = ((((float)word(CANmsg.data[5],CANmsg.data[4])) * (vvtPosition.scaleMultiplier)) + vvtPosition.offset);
             batteryVoltage.scaledValue = ((((float)word(CANmsg.data[7],CANmsg.data[6])) * (batteryVoltage.scaleMultiplier)) + batteryVoltage.offset);
             break;

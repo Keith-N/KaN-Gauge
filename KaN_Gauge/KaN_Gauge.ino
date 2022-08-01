@@ -277,6 +277,11 @@ void buttonISR2(){
 void nextGauge() {
    
    gauge++;
+   
+   if (wifiToggled == true){
+    disableWifi();
+   }
+   
    selectGauge(gauge);
    buttonPress = 0;
    
@@ -293,12 +298,11 @@ void nextGauge() {
 void nextConfig(){
   
  buttonPress2 = 0;
- 
- switch(gaugeType){
 
+ switch(gaugeType){
    case 10:
-     wifiToggled = (1 - wifiToggled);
-     if (wifiToggled = 1){
+     wifiToggled = !wifiToggled;     
+     if (wifiToggled == true){
       otaSetup();
      }
      else{
@@ -393,7 +397,7 @@ void printData(int g){
       //          u8g2.print("0");
       //        }
 
-        if (ptrData->dataType == 1){
+        if (ptrData->useInt == true){
           u8g2.print((int)ptrData->scaledValue);
         }
         else{
@@ -437,11 +441,7 @@ void printData(int g){
         u8g2.setCursor(0,0);
         u8g2.setFont(u8g2_font_helvB24_tf );
 
-//        if (ptrData->scaledValue < 10 && ptrData->scaledValue > -1){
-//          u8g2.print("0");
-//        }
-
-        if (ptrData->dataType == 1){
+        if (ptrData->useInt == true){
           u8g2.print((int)ptrData->scaledValue);
         }
         else{
@@ -456,11 +456,8 @@ void printData(int g){
         
         u8g2.setCursor(0,30);
         u8g2.setFont(u8g2_font_helvB24_tf);
-//        if ((ptrData2->scaledValue < 10 && ptrData2->scaledValue > -1)){
-//          u8g2.print("0");
-//        }
         
-        if (ptrData2->dataType == 1){
+        if (ptrData2->useInt == true){
           u8g2.print( (int) ptrData2->scaledValue);
         }
         else{
@@ -529,7 +526,7 @@ void printData(int g){
       u8g2.setFont(u8g2_font_t0_22b_tn);
       
       u8g2.setCursor(0,(displayHeight/4)+h);
-      if (ptrData->dataType == 1){
+      if (ptrData->useInt == true){
           u8g2.print((int)ptrData->scaledValue);
         }
       else{
@@ -537,14 +534,14 @@ void printData(int g){
         }
            
       u8g2.setCursor((displayWidth/2),(displayHeight/4)+h);
-      if (ptrData2->dataType == 1){
+      if (ptrData2->useInt == true){
           u8g2.print((int)ptrData2->scaledValue);
         }
       else{
         u8g2.print(ptrData2->scaledValue);
         } 
       u8g2.setCursor(0,(displayHeight*3/4)+h);
-      if (ptrData3->dataType == 1){
+      if (ptrData3->useInt == true){
           u8g2.print((int)ptrData3->scaledValue);
         }
       else{
@@ -552,7 +549,7 @@ void printData(int g){
         } 
       
       u8g2.setCursor((displayWidth/2),(displayHeight*3/4)+h);
-      if (ptrData4->dataType == 1){
+      if (ptrData4->useInt == true){
           u8g2.print((int)ptrData4->scaledValue);
         }
       else{
@@ -662,7 +659,7 @@ void printData(int g){
 
       
       #ifdef OTA_ENABLE
-        if (wifiStatus == "Connected"){
+        if (wifiToggled == true){
           u8g2.print(" Enabled");
           u8g2.setCursor(0,16);
           u8g2.print("SSID: ");
@@ -723,7 +720,7 @@ void printData(int g){
       u8g2.print("Buffer: ");
       u8g2.print((int)ACAN_ESP32::can.driverReceiveBufferCount());
       u8g2.setCursor(100,45);
-      u8g2.print(BUILD);
+      u8g2.print(build);
       ledOff();
       u8g2.sendBuffer();
       break;
@@ -952,7 +949,6 @@ void selectGauge(int g){
     break;
 
     case 4:
-    disableWifi();
     gaugeType = 14;
     break;
 
@@ -970,8 +966,7 @@ void selectGauge(int g){
     break;
 #endif
 
-    default:
-    disableWifi();
+    default: 
     gauge=0;
     gaugeType=0;
   }
@@ -982,7 +977,7 @@ void selectGauge(int g){
 /*
  * This function is used to setup filtering on incoming CAN messages, restricting to only standard frames (11bit)
  */
-
+//
 void canSetupFiltered(int filterID, int maskID){
   
   // Setup CAN for desired bit rate, can be adjusted in config
@@ -996,7 +991,8 @@ void canSetupFiltered(int filterID, int maskID){
 
   // Setup Filter and mask from given values
   const ACAN_ESP32_Filter filter = ACAN_ESP32_Filter::singleStandardFilter (ACAN_ESP32_Filter::data, filterID, maskID);
-  const uint32_t errorCode = ACAN_ESP32::can.begin (settings, filter);
+  //const uint32_t errorCode = 
+  ACAN_ESP32::can.begin (settings, filter);
 }
 
 /*
@@ -1013,7 +1009,8 @@ void canSetup(){
   settings.mRxPin = CAN_RX;
   settings.mTxPin = CAN_TX; 
   const ACAN_ESP32_Filter filter = ACAN_ESP32_Filter::acceptStandardFrames () ;
-  const uint32_t errorCode = ACAN_ESP32::can.begin (settings,filter);
+  //const uint32_t errorCode = 
+  ACAN_ESP32::can.begin (settings,filter);
 }
 
 
@@ -1042,7 +1039,6 @@ void canTask(void * pvParameters){
 
 void setup() {
 
-
  #ifdef RESET_STORED
   preferences.begin("config", false);
   preferences.clear();
@@ -1055,6 +1051,7 @@ void setup() {
 
   // Configure GPIO and interrupt
   PIN_SETUP();
+  ledOff();
   attachInterrupt(digitalPinToInterrupt(USER_INPUT),buttonISR,FALLING);
   attachInterrupt(digitalPinToInterrupt(USER_INPUT2),buttonISR2,FALLING);
   
@@ -1198,8 +1195,7 @@ void setup() {
     while(millis()<(startTime + startTime)){}
     break;
    } 
-  #endif
-   
+  #endif  
 }
 
 
