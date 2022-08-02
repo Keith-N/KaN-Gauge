@@ -11,10 +11,6 @@ const char *host = "KaN Gauge";
 const char *ssid = "KaN Gauge";
 const char *password = "update1234";
 
-String wifiStatus = "";
-
-
-
 WebServer server(80);
 
 #define jquery_min_js_v3_2_1_gz_len 30178
@@ -146,15 +142,15 @@ void otaSetup(void) {
    // WiFi.softAPConfig(local_ip,gateway,local_mask);
     
 
-    /*use mdns for host name resolution*/
-    if (!MDNS.begin(host))
-    { // http://esp32.local
-        //Serial.println("Error setting up MDNS responder!");
-        while (1)
-        {
-            delay(100);
-        }
-    }
+//    /*use mdns for host name resolution*/
+//    if (!MDNS.begin(host))
+//    { // http://esp32.local
+//        //Serial.println("Error setting up MDNS responder!");
+//        while (1)
+//        {
+//            delay(100);
+//        }
+//    }
     
      /*return javascript jquery */
     server.on("/jquery.min.js", HTTP_GET, onJavaScript);
@@ -173,46 +169,57 @@ void otaSetup(void) {
     /*handling uploading firmware file */
     server.on(
         "/update", HTTP_POST, []()
+        
         {
     server.sendHeader("Connection", "close");
     server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
     ESP.restart(); },
+    
         []()
+
         {
             HTTPUpload &upload = server.upload();
+
+            // Uploading File
             if (upload.status == UPLOAD_FILE_START)
             {
-
                 digitalWrite(LED_11,HIGH);
-                digitalWrite(LED_12,HIGH);
+
                 //Serial.printf("Update: %s\n", upload.filename.c_str());
                 if (!Update.begin(UPDATE_SIZE_UNKNOWN))
                 { // start with max available size
                     Update.printError(Serial);
                 }
             }
+            // File Uploaded, flash
             else if (upload.status == UPLOAD_FILE_WRITE)
             {
+          
+                
                 /* flashing firmware to ESP*/
                 if (Update.write(upload.buf, upload.currentSize) != upload.currentSize)
                 {
                     Update.printError(Serial);
                 }
             }
+
+            // Update finished
             else if (upload.status == UPLOAD_FILE_END)
             {
+              digitalWrite(LED_12,HIGH);
+                // If update is a success
                 if (Update.end(true))
-                { // true to set the size to the current progress
-                    //Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+                { 
+                  
                 }
+                // If update fails
                 else
                 {
-                    Update.printError(Serial);
+                    //Update.printError(Serial);
                 }
             }
         });
     server.begin();
-    wifiStatus = "Connected";
 }
 
 
@@ -221,7 +228,10 @@ void ota(void) {
 }
 
 void disableWifi(){
-    WiFi.disconnect();
-    wifiToggle = false;
-    wifiStatus = "Disconnected";
-}
+    WiFi.softAPdisconnect();
+//    delay(100);
+//    WiFi.disconnect();
+    delay(100);
+    WiFi.mode(WIFI_OFF);
+    delay(100);
+    wifiToggled = false ;}

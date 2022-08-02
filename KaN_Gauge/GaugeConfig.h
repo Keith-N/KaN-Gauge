@@ -5,16 +5,20 @@
  */
 
 
-String ver = "1.1.1";
+String build = "1.1.2";
 // Enable first and second startup logos
 #define USE_BMP
 #define USE_BMP_2
 
-// Select boot logos
-//#define DEFAULT_START
+// Select display controller
+//#define SSD1306
+#define SH1106
+
+// Select boot logos 
+#define DEFAULT_START
 //#define BMM_START
-#define BLANK_START
-//#define TESTING_BUILD
+//#define GG_START
+//#define DEBUG_BUILD
 
 // Allow OTA updates
 #define OTA_ENABLE
@@ -24,16 +28,15 @@ String ver = "1.1.1";
 
 // Reset the stored NVS data on boot
 // #define RESET_STORED
-// setup test build defines
 
 
-#ifdef TESTING_BUILD
+// setup Debug build defines
+#ifdef DEBUG_BUILD
   #define CONFIG_STARTUP
 
   // Force the startup logo to newStartup values, writes on boot
   //#define SETUP_STARTUP
 
-  
 #endif
 
 /*
@@ -41,7 +44,7 @@ String ver = "1.1.1";
  * 1 - KaN
  * 2 - rusEFI
  * 3 - BMM
- * 4 - Empty
+ * 4 - GG
  * 
  * # - Any non defined value shows Build Version
  * 
@@ -54,14 +57,13 @@ String ver = "1.1.1";
 #elif defined(BMM_START)
   int newStartup = 3;
   int newStartup2 = 2;
-#elif defined(BLANK_START)
+#elif defined(GG_START)
   int newStartup = 4;
-  int newStartup2 = 4;
+  int newStartup2 = 2;
 #else
   int newStartup = 0;
   int newStartup2 = 0;
 #endif
-
 
 
 /*
@@ -69,14 +71,22 @@ String ver = "1.1.1";
  * Adjust timers and CAN settings
  */
 
-#ifdef TESTING_BUILD
-  String BUILD = ver + "*";
+#ifdef DEBUG_BUILD
+  String buildType ="Debug";
 #elif defined(RESET_STORED)
-  String BUILD = ver + " NVS";
+  String buildType ="NVS";
 #elif defined(BMM_START)
-  String BUILD = ver + " BMM";
+  String buildType ="BMM";
+#elif defined(GG_START)
+  String buildType ="GG";
 #else
-  String BUILD = ver;
+  String buildType = "";
+#endif
+
+#ifdef SSD1306
+  String displayType = "SSD1306";
+#elif  defined(SH1106)
+  String displayType = "SH1106";
 #endif
 
 // Times in ms
@@ -118,7 +128,7 @@ int buttonPress2 = 0;
 int lastMessage = 0;
 int testMode = 0;
 int longPress = 0;
-bool wifiToggle = false;
+bool wifiToggled = false;
 int percent = 0;
 int rxTimeout= 0;
 

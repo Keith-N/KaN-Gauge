@@ -9,11 +9,13 @@
  */
 
 /*
- * 
  * Arduino Setup:
  * ESP32 - Add to 'Preferences > Additional Boards Manager URL' then install ESP32 from Boards Manager.   
  * https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
  * 
+ * Install Libraries
+ * u8g2
+ * ACAN ESP32
 */
 
 // Libraries  
@@ -221,7 +223,7 @@ void saveDataSettings(){
   preferences.putUInt("data3",dataSet[3]);
   preferences.putUInt("dataLED1",dataSet[4]);
   preferences.putUInt("dataLED2",dataSet[5]);
-  preferences.putUInt("dataLED4",dataSet[4]);
+  preferences.putUInt("dataLED4",dataSet[6]);
   preferences.putUInt("ledType",ledType);
   preferences.end();
 }
@@ -275,6 +277,11 @@ void buttonISR2(){
 void nextGauge() {
    
    gauge++;
+   
+   if (wifiToggled == true){
+    disableWifi();
+   }
+   
    selectGauge(gauge);
    buttonPress = 0;
    
@@ -291,16 +298,15 @@ void nextGauge() {
 void nextConfig(){
   
  buttonPress2 = 0;
- 
- switch(gaugeType){
 
+ switch(gaugeType){
    case 10:
-     wifiToggle = !wifiToggle;
-     if (wifiToggle){
-      otaSetup();
+     wifiToggled = !wifiToggled;     
+     if (wifiToggled) {
+       otaSetup();
      }
      else{
-      disableWifi();
+       disableWifi();
      }
      break;
 
@@ -391,7 +397,7 @@ void printData(int g){
       //          u8g2.print("0");
       //        }
 
-        if (ptrData->dataType == 1){
+        if (ptrData->useInt == true){
           u8g2.print((int)ptrData->scaledValue);
         }
         else{
@@ -435,11 +441,7 @@ void printData(int g){
         u8g2.setCursor(0,0);
         u8g2.setFont(u8g2_font_helvB24_tf );
 
-//        if (ptrData->scaledValue < 10 && ptrData->scaledValue > -1){
-//          u8g2.print("0");
-//        }
-
-        if (ptrData->dataType == 1){
+        if (ptrData->useInt == true){
           u8g2.print((int)ptrData->scaledValue);
         }
         else{
@@ -454,11 +456,8 @@ void printData(int g){
         
         u8g2.setCursor(0,30);
         u8g2.setFont(u8g2_font_helvB24_tf);
-//        if ((ptrData2->scaledValue < 10 && ptrData2->scaledValue > -1)){
-//          u8g2.print("0");
-//        }
         
-        if (ptrData2->dataType == 1){
+        if (ptrData2->useInt == true){
           u8g2.print( (int) ptrData2->scaledValue);
         }
         else{
@@ -527,7 +526,7 @@ void printData(int g){
       u8g2.setFont(u8g2_font_t0_22b_tn);
       
       u8g2.setCursor(0,(displayHeight/4)+h);
-      if (ptrData->dataType == 1){
+      if (ptrData->useInt == true){
           u8g2.print((int)ptrData->scaledValue);
         }
       else{
@@ -535,14 +534,14 @@ void printData(int g){
         }
            
       u8g2.setCursor((displayWidth/2),(displayHeight/4)+h);
-      if (ptrData2->dataType == 1){
+      if (ptrData2->useInt == true){
           u8g2.print((int)ptrData2->scaledValue);
         }
       else{
         u8g2.print(ptrData2->scaledValue);
         } 
       u8g2.setCursor(0,(displayHeight*3/4)+h);
-      if (ptrData3->dataType == 1){
+      if (ptrData3->useInt == true){
           u8g2.print((int)ptrData3->scaledValue);
         }
       else{
@@ -550,7 +549,7 @@ void printData(int g){
         } 
       
       u8g2.setCursor((displayWidth/2),(displayHeight*3/4)+h);
-      if (ptrData4->dataType == 1){
+      if (ptrData4->useInt == true){
           u8g2.print((int)ptrData4->scaledValue);
         }
       else{
@@ -660,7 +659,7 @@ void printData(int g){
 
       
       #ifdef OTA_ENABLE
-        if (wifiStatus == "Connected"){
+        if (wifiToggled == true){
           u8g2.print(" Enabled");
           u8g2.setCursor(0,16);
           u8g2.print("SSID: ");
@@ -721,7 +720,7 @@ void printData(int g){
       u8g2.print("Buffer: ");
       u8g2.print((int)ACAN_ESP32::can.driverReceiveBufferCount());
       u8g2.setCursor(100,45);
-      u8g2.print(BUILD);
+      u8g2.print(build);
       ledOff();
       u8g2.sendBuffer();
       break;
@@ -914,6 +913,12 @@ sensorData *selectData(int g){
   case 24:
     return &lambda;
     break;
+
+#ifdef DEBUG_BUILD
+  case 25:
+    return &testData;
+    break;
+#endif
                 
   default:
     maxSet = 1;
@@ -944,7 +949,6 @@ void selectGauge(int g){
     break;
 
     case 4:
-    disableWifi();
     gaugeType = 14;
     break;
 
@@ -962,8 +966,7 @@ void selectGauge(int g){
     break;
 #endif
 
-    default:
-    disableWifi();
+    default: 
     gauge=0;
     gaugeType=0;
   }
@@ -974,7 +977,7 @@ void selectGauge(int g){
 /*
  * This function is used to setup filtering on incoming CAN messages, restricting to only standard frames (11bit)
  */
-
+//
 void canSetupFiltered(int filterID, int maskID){
   
   // Setup CAN for desired bit rate, can be adjusted in config
@@ -988,10 +991,9 @@ void canSetupFiltered(int filterID, int maskID){
 
   // Setup Filter and mask from given values
   const ACAN_ESP32_Filter filter = ACAN_ESP32_Filter::singleStandardFilter (ACAN_ESP32_Filter::data, filterID, maskID);
-  const uint32_t errorCode = ACAN_ESP32::can.begin(settings, filter);
 
-  // TODO: check error code
-  (void)errorCode;
+  //const uint32_t errorCode = 
+  ACAN_ESP32::can.begin (settings, filter);
 }
 
 /*
@@ -1008,10 +1010,9 @@ void canSetup(){
   settings.mRxPin = CAN_RX;
   settings.mTxPin = CAN_TX; 
   const ACAN_ESP32_Filter filter = ACAN_ESP32_Filter::acceptStandardFrames () ;
-  const uint32_t errorCode = ACAN_ESP32::can.begin(settings,filter);
 
-  // TODO: check error code
-  (void)errorCode;
+  //const uint32_t errorCode = 
+  ACAN_ESP32::can.begin (settings,filter);
 }
 
 
@@ -1027,13 +1028,18 @@ void canTask(void * pvParameters){
         lastMessage = millis();
         rxTimeout = 0;
       }
+
+  // Increment Testing Data if in DEBUG
+  #ifdef DEBUG_BUILD
+    incrementTestData();
+  #endif
+  
   }
 }
 
 // ======================================  MAIN  ============================================
 
 void setup() {
-
 
  #ifdef RESET_STORED
   preferences.begin("config", false);
@@ -1047,6 +1053,7 @@ void setup() {
 
   // Configure GPIO and interrupt
   PIN_SETUP();
+  ledOff();
   attachInterrupt(digitalPinToInterrupt(USER_INPUT),buttonISR,FALLING);
   attachInterrupt(digitalPinToInterrupt(USER_INPUT2),buttonISR2,FALLING);
   
@@ -1121,6 +1128,8 @@ void setup() {
     break;
     
     case 4:
+    printBMP_GG();
+    while(millis()<(startTime)){}
     break;
     
     default:
@@ -1179,6 +1188,8 @@ void setup() {
     break;
     
     case 4:
+    printBMP_GG();
+    while(millis()<(startTime + startTime)){}
     break;
     
     default:
@@ -1186,8 +1197,7 @@ void setup() {
     while(millis()<(startTime + startTime)){}
     break;
    } 
-  #endif
-   
+  #endif  
 }
 
 
