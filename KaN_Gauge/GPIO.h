@@ -1,5 +1,4 @@
 #define PCBREV_1_1_
-
 #ifdef PCBREV_1_1_
 
   #define BOOT      0

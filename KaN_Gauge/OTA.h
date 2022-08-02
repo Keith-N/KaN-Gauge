@@ -234,4 +234,5 @@ void disableWifi(){
     delay(100);
     WiFi.mode(WIFI_OFF);
     delay(100);
-    wifiToggled = false ;}
+    wifiToggled = false ;
+}
