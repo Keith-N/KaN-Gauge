@@ -302,11 +302,11 @@ void nextConfig(){
  switch(gaugeType){
    case 10:
      wifiToggled = !wifiToggled;     
-     if (wifiToggled == true){
-      otaSetup();
+     if (wifiToggled) {
+       otaSetup();
      }
      else{
-      disableWifi();
+       disableWifi();
      }
      break;
 
