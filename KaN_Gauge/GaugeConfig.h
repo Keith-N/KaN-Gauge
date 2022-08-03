@@ -11,8 +11,8 @@ String build = "1.1.2";
 #define USE_BMP_2
 
 // Select display controller
-//#define SSD1306
-#define SH1106
+#define SSD1306
+//#define SH1106
 
 // Select boot logos 
 #define DEFAULT_START
