@@ -5,7 +5,7 @@
  */
 
 
-String build = "1.1.2";
+String build = "1.1.3";
 // Enable first and second startup logos
 #define USE_BMP
 #define USE_BMP_2
