@@ -911,7 +911,51 @@ sensorData *selectData(int g){
     break;
                                                                      
   case 24:
-    return &lambda;
+    return &lambda_afr;
+    break;
+
+  case 25:
+    return &lambda1;
+    break;
+
+  case 26:
+    return &lambda2;
+    break; 
+
+  case 27:
+    return &fuelPressureLow;
+    break; 
+
+  case 28:
+    return &fuelPressureHigh;
+    break;
+
+  case 29:
+    return &fuelConsumed;
+    break;
+
+  case 30:
+    return &fuelConsumption;
+    break;
+
+  case 31:
+    return &fuelTrim;
+    break;
+
+  case 32:
+    return &vvtIntake1;
+    break;
+
+  case 33:
+    return &vvtIntake2;
+    break;
+
+  case 34:
+    return &vvtExhaust1;
+    break;
+
+  case 35:
+    return &vvtExhaust2;
     break;
 
 #ifdef DEBUG_BUILD

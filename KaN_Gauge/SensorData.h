@@ -364,7 +364,7 @@ sensorData afr = {
 };
 
 
-sensorData lambda = {
+sensorData lambda_afr = {
   "Lambda", // Name
   "",  // Units
   ((0.001)*(1/14.7)),  // Multiplier for scaling
@@ -478,4 +478,164 @@ sensorData injectorPulse = {
     999,
   -999,
   false 
+};
+
+
+// NEW - Fueling 3
+sensorData lambda1 = {
+  "Lambda",             // Name
+  "",                   // Units
+  (0.001),                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0.7,                    // Minimum Value
+  1.3,                    // Maximum Value
+  (BASE_CAN_ID + 7),    // Address
+  100,                 // Alert High
+  -100,                // Alert Low
+  false   
+};
+
+sensorData lambda2 = {
+  "Lambda 2",            // Name
+  "",                   // Units
+  (0.001),                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0.7,                    // Minimum Value
+  1.3,                    // Maximum Value
+  (BASE_CAN_ID + 7),    // Address
+  100,                 // Alert High
+  -100,                // Alert Low
+  false                // Show as integer
+};
+
+sensorData fuelPressureLow = {
+  "Fuel",             // Name
+  "kpa",                   // Units
+  (0.033333),                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0,                    // Minimum Value
+  0,                    // Maximum Value
+  (BASE_CAN_ID + 7),    // Address
+  999,                 // Alert High
+  -999,                // Alert Low
+  false                // Show as integer
+};
+
+sensorData fuelPressureHigh = {
+  "Fuel",             // Name
+  "bar",                   // Units
+  1,                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0,                    // Minimum Value
+  0,                    // Maximum Value
+  (BASE_CAN_ID + 7),    // Address
+  999,                 // Alert High
+  -999,                // Alert Low
+  false                // Show as integer
+};
+
+
+// NEW CAMs
+sensorData vvtIntake1 = {
+  "Intake VVT 1",             // Name
+  "",                   // Units
+  1,                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0,                    // Minimum Value
+  0,                    // Maximum Value
+  (BASE_CAN_ID + 8),    // Address
+  999,                 // Alert High
+  -999,                // Alert Low
+  false                // Show as integer
+};
+
+sensorData vvtIntake2 = {
+  "Intake VVT 2",             // Name
+  "",                   // Units
+  1,                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0,                    // Minimum Value
+  0,                    // Maximum Value
+  (BASE_CAN_ID + 8),    // Address
+  999,                 // Alert High
+  -999,                // Alert Low
+  false                // Show as integer
+};
+
+sensorData vvtExhaust1 = {
+  "Exhaust VVT 1",             // Name
+  "",                   // Units
+  1,                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0,                    // Minimum Value
+  0,                    // Maximum Value
+  (BASE_CAN_ID + 8),    // Address
+  999,                 // Alert High
+  -999,                // Alert Low
+  false                // Show as integer
+};
+
+sensorData vvtExhaust2 = {
+  "Exhaust VVT 2",             // Name
+  "",                   // Units
+  1,                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0,                    // Minimum Value
+  0,                    // Maximum Value
+  (BASE_CAN_ID + 8),    // Address
+  999,                 // Alert High
+  -999,                // Alert Low
+  false                // Show as integer
+};
+
+// NEW fueling 2
+
+sensorData fuelConsumed = {
+  "Fuel Consumed",             // Name
+  "g",                   // Units
+  1,                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0,                    // Minimum Value
+  0,                    // Maximum Value
+  (BASE_CAN_ID + 6),    // Address
+  999,                 // Alert High
+  -999,                // Alert Low
+  false                // Show as integer
+};
+
+sensorData fuelConsumption = {
+  "Fuel Consumption",             // Name
+  "g/s",                   // Units
+  1,                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0,                    // Minimum Value
+  0,                    // Maximum Value
+  (BASE_CAN_ID + 6),    // Address
+  999,                 // Alert High
+  -999,                // Alert Low
+  false                // Show as integer
+};
+
+sensorData fuelTrim = {
+  "Fuel Trim",             // Name
+  "%",                   // Units
+  1,                    // Multiplier for scaling
+  0,                    // Data Offset
+  0,                    // Scaled value
+  0,                    // Minimum Value
+  0,                    // Maximum Value
+  (BASE_CAN_ID + 6),    // Address
+  999,                 // Alert High
+  -999,                // Alert Low
+  false                // Show as integer
 };
