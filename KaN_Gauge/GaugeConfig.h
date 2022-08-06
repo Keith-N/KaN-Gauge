@@ -4,21 +4,20 @@
  * Use to enable/disable features
  */
 
-
 String build = "1.1.3";
 // Enable first and second startup logos
 #define USE_BMP
 #define USE_BMP_2
 
 // Select display controller
-#define SSD1306
-//#define SH1106
+//#define SSD1306
+#define SH1106
 
-// Select boot logos 
+// Select boot logos
 #define DEFAULT_START
 //#define BMM_START
 //#define GG_START
-//#define DEBUG_BUILD
+#define DEBUG_BUILD
 
 // Allow OTA updates
 #define OTA_ENABLE
@@ -29,13 +28,12 @@ String build = "1.1.3";
 // Reset the stored NVS data on boot
 // #define RESET_STORED
 
-
 // setup Debug build defines
 #ifdef DEBUG_BUILD
-  #define CONFIG_STARTUP
+#define CONFIG_STARTUP
 
-  // Force the startup logo to newStartup values, writes on boot
-  //#define SETUP_STARTUP
+// Force the startup logo to newStartup values, writes on boot
+//#define SETUP_STARTUP
 
 #endif
 
@@ -45,26 +43,25 @@ String build = "1.1.3";
  * 2 - rusEFI
  * 3 - BMM
  * 4 - GG
- * 
+ *
  * # - Any non defined value shows Build Version
- * 
+ *
  * 9 - Update using new startup settings
  */
 
 #ifdef DEFAULT_START
-  int newStartup = 1;
-  int newStartup2 = 2;
+int newStartup = 1;
+int newStartup2 = 2;
 #elif defined(BMM_START)
-  int newStartup = 3;
-  int newStartup2 = 2;
+int newStartup = 3;
+int newStartup2 = 2;
 #elif defined(GG_START)
-  int newStartup = 4;
-  int newStartup2 = 2;
+int newStartup = 4;
+int newStartup2 = 2;
 #else
-  int newStartup = 0;
-  int newStartup2 = 0;
+int newStartup = 0;
+int newStartup2 = 0;
 #endif
-
 
 /*
  * Variables
@@ -72,21 +69,21 @@ String build = "1.1.3";
  */
 
 #ifdef DEBUG_BUILD
-  String buildType ="Debug";
+String buildType = "Debug";
 #elif defined(RESET_STORED)
-  String buildType ="NVS";
+String buildType = "NVS";
 #elif defined(BMM_START)
-  String buildType ="BMM";
+String buildType = "BMM";
 #elif defined(GG_START)
-  String buildType ="GG";
+String buildType = "GG";
 #else
-  String buildType = "";
+String buildType = "";
 #endif
 
 #ifdef SSD1306
-  String displayType = "SSD1306";
-#elif  defined(SH1106)
-  String displayType = "SH1106";
+String displayType = "SSD1306";
+#elif defined(SH1106)
+String displayType = "SH1106";
 #endif
 
 // Times in ms
@@ -98,7 +95,6 @@ int startTime = 1600;
 
 int blinkOn_1 = 250;
 int blinOff_1 = 250;
-
 
 // CAN Settings
 const int CAN_BASE_ID = 512;
@@ -117,8 +113,7 @@ int maskID = 0;
 const int CAN_RX_BUFFER = 5;
 const int CAN_RX_BUFFER_FILTERED = 1;
 
-
-//Misc
+// Misc
 int gauge = 0;
 int gaugeType = 0;
 int lastInput = 0;
@@ -130,7 +125,7 @@ int testMode = 0;
 int longPress = 0;
 bool wifiToggled = false;
 int percent = 0;
-int rxTimeout= 0;
+int rxTimeout = 0;
 
 int numGaugeType = 2;
 
@@ -149,6 +144,6 @@ int startup2 = 0;
 int inConfigMode = 1;
 int maxSet = 0;
 
-int dataSet[] = {0,0,0,0,0,0,0};
+int dataSet[] = {0, 0, 0, 0, 0, 0, 0};
 int ledType = 0;
 String ledTypeText[] = {"All LEDs", "Red LEDs", "Single LED ALL", "Single LED Red", "None"};
