@@ -10,17 +10,22 @@ String build = "1.1.3";
 #define USE_BMP_2
 
 // Select display controller
-//#define SSD1306
-#define SH1106
+
+//#define USE_SAVED_DISP_CONTROLLER
+#define FORCED_DISP_CONTROLLER
+#define SSD1306
+//#define SH1106
 
 // Select boot logos
 #define DEFAULT_START
 //#define BMM_START
 //#define GG_START
-#define DEBUG_BUILD
+//#define DEBUG_BUILD
 
 // Allow OTA updates
 #define OTA_ENABLE
+
+
 
 // Alert if too long between CAN messages
 //#define RX_TIMEOUT
@@ -126,6 +131,9 @@ int longPress = 0;
 bool wifiToggled = false;
 int percent = 0;
 int rxTimeout = 0;
+
+int displayController = 0;
+int newDisplayController = 0;
 
 int numGaugeType = 2;
 

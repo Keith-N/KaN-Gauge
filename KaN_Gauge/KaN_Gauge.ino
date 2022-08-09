@@ -237,13 +237,20 @@ void saveDataSettings()
 
 void saveStartup(int s1, int s2)
 {
-
   // open in R/W
   preferences.begin("startup", false);
   preferences.putUInt("logo1", s1);
   preferences.end();
   preferences.begin("startup", false);
   preferences.putUInt("logo2", s2);
+  preferences.end();
+}
+
+void saveDisplayController(int d)
+{
+  // open in R/W
+  preferences.begin("startup", false);
+  preferences.putUInt("display", d);
   preferences.end();
 }
 
@@ -258,6 +265,15 @@ void checkStartupLogo()
     saveStartup(newStartup, newStartup2);
     startup = newStartup;
     startup2 = newStartup2;
+  }
+}
+
+void checkDisplayController()
+{
+  if (displayController == 0)
+  {
+    displayController = newDisplayController;
+    saveDisplayController(newDisplayController);
   }
 }
 
@@ -1181,7 +1197,23 @@ void setup()
   preferences.begin("startup", true);
   startup = preferences.getUInt("logo1", 0);
   startup2 = preferences.getUInt("logo2", 0);
+  displayController = preferences.getUInt("display", 0);
   preferences.end();
+
+#ifdef USE_SAVED_DISP_CONTROLLER
+  switch (displayController)
+  {
+    case 1:
+      break;
+  
+    case 2:
+      break;
+
+    default:
+      break;
+  }
+
+#endif
 
   checkStartupLogo();
 
