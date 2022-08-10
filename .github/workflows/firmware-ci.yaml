@@ -19,4 +19,4 @@ jobs:
             - name: U8g2
             - name: ACAN_ESP32
           enable-deltas-report: true
-      - uses: arduino/report-size-deltas@v1
+      # - uses: arduino/report-size-deltas@v1
