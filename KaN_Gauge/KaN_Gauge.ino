@@ -36,6 +36,12 @@ CANMessage CANmsg;
 Preferences preferences;
 TaskHandle_t TASK_CAN;
 
+static void printDataNameAndUnits(sensorData* data) {
+  u8g2.print(data->dataName);
+  u8g2.print(" ");
+  u8g2.print(data->units);
+}
+
 // ======================================  Input Functions  ============================================
 
 /*
@@ -62,36 +68,28 @@ void configMode()
     switch (i)
     {
     case 0:
-      u8g2.print(ptrData->dataName);
-      u8g2.print(" ");
-      u8g2.print(ptrData->units);
+      printDataNameAndUnits(ptrData);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.print("<-Next         Type->");
       break;
 
     case 1:
-      u8g2.print(ptrData2->dataName);
-      u8g2.print(" ");
-      u8g2.print(ptrData2->units);
+      printDataNameAndUnits(ptrData2);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.print("<-Next         Type->");
       break;
 
     case 2:
-      u8g2.print(ptrData3->dataName);
-      u8g2.print(" ");
-      u8g2.print(ptrData3->units);
+      printDataNameAndUnits(ptrData3);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.print("<-Next         Type->");
       break;
 
     case 3:
-      u8g2.print(ptrData4->dataName);
-      u8g2.print(" ");
-      u8g2.print(ptrData4->units);
+      printDataNameAndUnits(ptrData4);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.print("<-Next         Type->");
@@ -103,9 +101,7 @@ void configMode()
       u8g2.setCursor(0, 0);
       u8g2.print("LEDs for 1x data");
       u8g2.setCursor(0, 20);
-      u8g2.print(ptrDataLed1->dataName);
-      u8g2.print(" ");
-      u8g2.print(ptrDataLed1->units);
+      printDataNameAndUnits(ptrDataLed1);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.print("<-Next         Type->");
@@ -117,9 +113,7 @@ void configMode()
       u8g2.setCursor(0, 0);
       u8g2.print("LEDs for 2x data");
       u8g2.setCursor(0, 20);
-      u8g2.print(ptrDataLed2->dataName);
-      u8g2.print(" ");
-      u8g2.print(ptrDataLed2->units);
+      printDataNameAndUnits(ptrDataLed2);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.print("<-Next         Type->");
@@ -131,9 +125,7 @@ void configMode()
       u8g2.setCursor(0, 0);
       u8g2.print("LEDs for 4x data");
       u8g2.setCursor(0, 20);
-      u8g2.print(ptrDataLed4->dataName);
-      u8g2.print(" ");
-      u8g2.print(ptrDataLed4->units);
+      printDataNameAndUnits(ptrDataLed4);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.print("<-Next         Type->");
@@ -393,6 +385,30 @@ int getPercent(float current, float minimum, float maximum)
 
 // ================================= Gauges ===========================================
 
+static void printDataFormatted(sensorData* data) {
+  if (data->useInt)
+  {
+    u8g2.print((int)data->scaledValue);
+  }
+  else
+  {
+    u8g2.print(data->scaledValue);
+  }
+}
+
+static void printOnOff(const char* label, bool on) {
+  u8g2.print(label);
+
+  if (on)
+  {
+    u8g2.print("On");
+  }
+  else
+  {
+    u8g2.print("Off");
+  }
+}
+
 /*
  * Print the selected gauge and data on the display
  */
@@ -423,9 +439,7 @@ void printData(int g)
     u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_6x12_tf);
     u8g2.setCursor(0, 0);
-    u8g2.print(ptrData->dataName);
-    u8g2.print(" ");
-    u8g2.print(ptrData->units);
+    printDataNameAndUnits(ptrData);
 
     u8g2.setFont(u8g2_font_fub35_tf);
     u8g2.setCursor(0, 26);
@@ -434,14 +448,7 @@ void printData(int g)
     //          u8g2.print("0");
     //        }
 
-    if (ptrData->useInt == true)
-    {
-      u8g2.print((int)ptrData->scaledValue);
-    }
-    else
-    {
-      u8g2.print(ptrData->scaledValue);
-    }
+    printDataFormatted(ptrData);
 
     percent = getPercent(ptrDataLed1->scaledValue, ptrDataLed1->minimum, ptrDataLed1->maximum);
 
@@ -480,14 +487,7 @@ void printData(int g)
     u8g2.setCursor(0, 0);
     u8g2.setFont(u8g2_font_helvB24_tf);
 
-    if (ptrData->useInt == true)
-    {
-      u8g2.print((int)ptrData->scaledValue);
-    }
-    else
-    {
-      u8g2.print(ptrData->scaledValue);
-    }
+    printDataFormatted(ptrData);
 
     u8g2.setFont(u8g2_font_6x10_tf);
     u8g2.setCursor(105, 0);
@@ -498,14 +498,7 @@ void printData(int g)
     u8g2.setCursor(0, 30);
     u8g2.setFont(u8g2_font_helvB24_tf);
 
-    if (ptrData2->useInt == true)
-    {
-      u8g2.print((int)ptrData2->scaledValue);
-    }
-    else
-    {
-      u8g2.print(ptrData2->scaledValue);
-    }
+    printDataFormatted(ptrData2);
 
     u8g2.setFont(u8g2_font_6x10_tf);
     u8g2.setCursor(105, 30);
@@ -549,63 +542,27 @@ void printData(int g)
     u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_6x10_tf);
     u8g2.setCursor(0, 0);
-    u8g2.print(ptrData->dataName);
-    u8g2.print(" ");
-    u8g2.print(ptrData->units);
+    printDataNameAndUnits(ptrData);
     u8g2.setCursor((displayWidth / 2), 0);
-    u8g2.print(ptrData2->dataName);
-    u8g2.print(" ");
-    u8g2.print(ptrData2->units);
+    printDataNameAndUnits(ptrData2);
     u8g2.setCursor(0, displayHeight / 2);
-    u8g2.print(ptrData3->dataName);
-    u8g2.print(" ");
-    u8g2.print(ptrData3->units);
+    printDataNameAndUnits(ptrData3);
     u8g2.setCursor((displayWidth / 2), displayHeight / 2);
-    u8g2.print(ptrData4->dataName);
-    u8g2.print(" ");
-    u8g2.print(ptrData4->units);
+    printDataNameAndUnits(ptrData4);
 
     // Setup sensor values
     u8g2.setFont(u8g2_font_t0_22b_tn);
 
     u8g2.setCursor(0, (displayHeight / 4) + h);
-    if (ptrData->useInt == true)
-    {
-      u8g2.print((int)ptrData->scaledValue);
-    }
-    else
-    {
-      u8g2.print(ptrData->scaledValue);
-    }
+    printDataFormatted(ptrData);
 
     u8g2.setCursor((displayWidth / 2), (displayHeight / 4) + h);
-    if (ptrData2->useInt == true)
-    {
-      u8g2.print((int)ptrData2->scaledValue);
-    }
-    else
-    {
-      u8g2.print(ptrData2->scaledValue);
-    }
+    printDataFormatted(ptrData2);
     u8g2.setCursor(0, (displayHeight * 3 / 4) + h);
-    if (ptrData3->useInt == true)
-    {
-      u8g2.print((int)ptrData3->scaledValue);
-    }
-    else
-    {
-      u8g2.print(ptrData3->scaledValue);
-    }
+    printDataFormatted(ptrData3);
 
     u8g2.setCursor((displayWidth / 2), (displayHeight * 3 / 4) + h);
-    if (ptrData4->useInt == true)
-    {
-      u8g2.print((int)ptrData4->scaledValue);
-    }
-    else
-    {
-      u8g2.print(ptrData4->scaledValue);
-    }
+    printDataFormatted(ptrData4);
 
     percent = getPercent(ptrDataLed4->scaledValue, ptrDataLed4->minimum, ptrDataLed4->maximum);
 
@@ -659,50 +616,19 @@ void printData(int g)
     // Print ECU status of rev limit, fuel pump, CEL, o2 heater,
     u8g2.setFont(u8g2_font_6x10_tf);
     u8g2.clearBuffer();
-    u8g2.setCursor(0, 0);
 
-    u8g2.print("Rev Limit ");
-    if (revLimit > 0)
-    {
-      u8g2.print("On");
-    }
-    else
-    {
-      u8g2.print("Off");
-    }
+    u8g2.setCursor(0, 0);
+    printOnOff("Rev Limit ", revLimit > 0);
 
     u8g2.setCursor(0, 15);
-    u8g2.print("Fuel Pump ");
-    if (fuelPump > 0)
-    {
-      u8g2.print("On");
-    }
-    else
-    {
-      u8g2.print("Off");
-    }
+    printOnOff("Fuel Pump ", fuelPump > 0);
 
     u8g2.setCursor(0, 30);
-    u8g2.print("Check Engine ");
-    if (checkEngine > 0)
-    {
-      u8g2.print("On");
-    }
-    else
-    {
-      u8g2.print("Off");
-    }
+    printOnOff("Check Engine ", checkEngine > 0);
 
     u8g2.setCursor(0, 45);
-    u8g2.print("EGO Heater ");
-    if (egoHeater > 0)
-    {
-      u8g2.print("On");
-    }
-    else
-    {
-      u8g2.print("Off");
-    }
+    printOnOff("EGO Heater ", egoHeater > 0);
+
     ledOff();
     u8g2.sendBuffer();
     break;
