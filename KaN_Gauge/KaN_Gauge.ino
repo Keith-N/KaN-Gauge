@@ -409,6 +409,36 @@ static void printOnOff(const char* label, bool on) {
   }
 }
 
+static void renderLeds(int ledType, sensorData* data) {
+  int percent = getPercent(data->scaledValue, data->minimum, data->maximum);
+
+  switch (ledType)
+  {
+  case 0:
+    sequentialLedAll(percent);
+    break;
+
+  case 1:
+    sequentialLed(percent);
+    break;
+
+  case 2:
+    singleLedAll(percent);
+    break;
+
+  case 3:
+    singleLed(percent);
+    break;
+
+  case 4:
+    break;
+
+  default:
+    sequentialLedAll(percent);
+    break;
+  }
+}
+
 /*
  * Print the selected gauge and data on the display
  */
@@ -450,33 +480,7 @@ void printData(int g)
 
     printDataFormatted(ptrData);
 
-    percent = getPercent(ptrDataLed1->scaledValue, ptrDataLed1->minimum, ptrDataLed1->maximum);
-
-    switch (ledType)
-    {
-    case 0:
-      sequentialLedAll(percent);
-      break;
-
-    case 1:
-      sequentialLed(percent);
-      break;
-
-    case 2:
-      singleLedAll(percent);
-      break;
-
-    case 3:
-      singleLed(percent);
-      break;
-
-    case 4:
-      break;
-
-    default:
-      sequentialLedAll(percent);
-      break;
-    }
+    renderLeds(ledType, ptrDataLed1);
 
     u8g2.sendBuffer();
     break;
@@ -506,33 +510,7 @@ void printData(int g)
     u8g2.setCursor(105, 45);
     u8g2.print(ptrData2->units);
 
-    percent = getPercent(ptrDataLed2->scaledValue, ptrDataLed2->minimum, ptrDataLed2->maximum);
-
-    switch (ledType)
-    {
-    case 0:
-      sequentialLedAll(percent);
-      break;
-
-    case 1:
-      sequentialLed(percent);
-      break;
-
-    case 2:
-      singleLedAll(percent);
-      break;
-
-    case 3:
-      singleLed(percent);
-      break;
-
-    case 4:
-      break;
-
-    default:
-      sequentialLedAll(percent);
-      break;
-    }
+    renderLeds(ledType, ptrDataLed2);
 
     u8g2.sendBuffer();
     break;
@@ -564,33 +542,7 @@ void printData(int g)
     u8g2.setCursor((displayWidth / 2), (displayHeight * 3 / 4) + h);
     printDataFormatted(ptrData4);
 
-    percent = getPercent(ptrDataLed4->scaledValue, ptrDataLed4->minimum, ptrDataLed4->maximum);
-
-    switch (ledType)
-    {
-    case 0:
-      sequentialLedAll(percent);
-      break;
-
-    case 1:
-      sequentialLed(percent);
-      break;
-
-    case 2:
-      singleLedAll(percent);
-      break;
-
-    case 3:
-      singleLed(percent);
-      break;
-
-    case 4:
-      break;
-
-    default:
-      sequentialLedAll(percent);
-      break;
-    }
+    renderLeds(ledType, ptrDataLed4);
 
     u8g2.sendBuffer();
 

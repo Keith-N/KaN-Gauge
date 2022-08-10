@@ -129,7 +129,6 @@ int lastMessage = 0;
 int testMode = 0;
 int longPress = 0;
 bool wifiToggled = false;
-int percent = 0;
 int rxTimeout = 0;
 
 int displayController = 0;
