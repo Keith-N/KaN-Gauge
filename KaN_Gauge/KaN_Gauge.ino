@@ -1110,49 +1110,30 @@ void setup()
 #ifdef USE_BMP
   switch (startup)
   {
-
   case 0:
+  default:
     printBuild();
-    while (millis() < (startTime))
-    {
-    }
     break;
 
   case 1:
     printBMP_KaN();
-    while (millis() < (startTime))
-    {
-    }
     break;
 
   case 2:
     printBMP_rusEFI();
-    while (millis() < (startTime))
-    {
-    }
     break;
 
   case 3:
     printBMP_BMM();
-    while (millis() < (startTime))
-    {
-    }
     break;
 
   case 4:
     printBMP_GG();
-    while (millis() < (startTime))
-    {
-    }
-    break;
-
-  default:
-    printBuild();
-    while (millis() < (startTime))
-    {
-    }
     break;
   }
+
+  // Wait some time for the splash screen to show
+  while (millis() < (startTime)) ;
 #endif
 
 #ifdef CAN_FILTERED
