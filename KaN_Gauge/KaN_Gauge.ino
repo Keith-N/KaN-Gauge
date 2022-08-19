@@ -36,7 +36,8 @@ CANMessage CANmsg;
 Preferences preferences;
 TaskHandle_t TASK_CAN;
 
-static void printDataNameAndUnits(sensorData* data) {
+static void printDataNameAndUnits(sensorData *data)
+{
   u8g2.print(data->dataName);
   u8g2.print(" ");
   u8g2.print(data->units);
@@ -137,8 +138,8 @@ void configMode()
       u8g2.setCursor(0, 0);
       u8g2.print("LED type");
       u8g2.setCursor(0, 20);
-      u8g2.print(ledType);
-      u8g2.print(" ");
+      // u8g2.print(ledType);
+      // u8g2.print(" ");
       u8g2.print(ledTypeText[ledType]);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
@@ -165,7 +166,7 @@ void configMode()
 
       case 7:
         ledType++;
-        if (ledType > 4)
+        if (ledType > 6)
         {
           ledType = 0;
         }
@@ -213,7 +214,6 @@ void setupData()
  */
 void saveDataSettings()
 {
-
   // open in R/W
   preferences.begin("config", false);
   preferences.putUInt("data0", dataSet[0]);
@@ -266,6 +266,23 @@ void checkDisplayController()
   {
     displayController = newDisplayController;
     saveDisplayController(newDisplayController);
+  }
+}
+
+void checkForError()
+{
+
+  #ifdef RESET_WARNING
+    if (lastWarningTime < (millis() - warningResetTime))
+    {
+      newWarning = false;
+    }
+  #endif
+  if ((warningCounter > lastWarningCount) || (checkEngine > 0))
+  {
+    newWarning = true;
+    lastWarningCount = warningCounter;
+    lastWarningTime = millis();
   }
 }
 
@@ -360,6 +377,11 @@ void nextConfig()
     saveStartup(startup, startup2);
     break;
 
+  case 17:
+    warningCounter++;
+    lastError++;
+    break;
+    
   default:
     gaugeType++;
     if (gaugeType > numGaugeType)
@@ -385,7 +407,8 @@ int getPercent(float current, float minimum, float maximum)
 
 // ================================= Gauges ===========================================
 
-static void printDataFormatted(sensorData* data) {
+static void printDataFormatted(sensorData *data)
+{
   if (data->useInt)
   {
     u8g2.print((int)data->scaledValue);
@@ -396,7 +419,8 @@ static void printDataFormatted(sensorData* data) {
   }
 }
 
-static void printOnOff(const char* label, bool on) {
+static void printOnOff(const char *label, bool on)
+{
   u8g2.print(label);
 
   if (on)
@@ -409,7 +433,8 @@ static void printOnOff(const char* label, bool on) {
   }
 }
 
-static void renderLeds(int ledType, sensorData* data) {
+static void renderLeds(int ledType, sensorData *data)
+{
   int percent = getPercent(data->scaledValue, data->minimum, data->maximum);
 
   switch (ledType)
@@ -433,6 +458,34 @@ static void renderLeds(int ledType, sensorData* data) {
   case 4:
     break;
 
+  case 5:
+    sequentialLed(percent);
+
+    if (newWarning == true)
+    {
+      toggleLeftLed();
+    }
+
+    if (data->scaledValue > data->alertHigh || data->scaledValue < data->alertLow)
+    {
+      toggleRightLed();
+    }
+    break;
+
+  case 6:
+    singleLed(percent);
+
+    if (newWarning == true)
+    {
+      toggleLeftLed();
+    }
+
+    if (data->scaledValue > data->alertHigh || data->scaledValue < data->alertLow)
+    {
+      toggleRightLed();
+    }
+    break;
+
   default:
     sequentialLedAll(percent);
     break;
@@ -450,19 +503,6 @@ void printData(int g)
 
   switch (g)
   {
-    /*
-        Print data to display and setup LEDs
-        1 - Single gauge with LEDs
-        2 - Dual gauge with LEDs for data #2
-        3 - Single gauge with bar graph and LEDs
-
-        Info or other funtion gauges
-        8 - Show ECU error status
-        9 - Show ECU outputs status
-        10 - Show Wifi OTA status
-        11 - Show build and CAN info
-
-    */
 
   case 0:
     // 1x Sensor Gauge
@@ -473,10 +513,6 @@ void printData(int g)
 
     u8g2.setFont(u8g2_font_fub35_tf);
     u8g2.setCursor(0, 26);
-
-    //        if (ptrData->scaledValue < 10 && ptrData->scaledValue > -1){
-    //          u8g2.print("0");
-    //        }
 
     printDataFormatted(ptrData);
 
@@ -706,6 +742,19 @@ void printData(int g)
     u8g2.sendBuffer();
     break;
 
+  case 17:
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.setCursor(0, 0);
+    u8g2.print("Warning Count");
+    u8g2.setCursor(0, 25);
+    u8g2.print("Current : ");
+    u8g2.print(warningCounter);
+    u8g2.setCursor(0, 45);
+    u8g2.print("Press -> to +1");
+    u8g2.sendBuffer();
+    break;
+    
   // Use gauge type 0 as default
   default:
     ledOff();
@@ -849,7 +898,7 @@ sensorData *selectData(int g)
     break;
 
   case 24:
-    return &lambda_afr;
+    return &ethanol;
     break;
 
   case 25:
@@ -940,13 +989,17 @@ void selectGauge(int g)
     gaugeType = 11;
     break;
 
-#ifdef CONFIG_STARTUP
+#ifdef DEBUG_BUILD
   case 6:
     gaugeType = 15;
     break;
 
   case 7:
     gaugeType = 16;
+    break;
+
+  case 8:
+    gaugeType = 17;
     break;
 #endif
 
@@ -1081,14 +1134,14 @@ void setup()
 #ifdef USE_SAVED_DISP_CONTROLLER
   switch (displayController)
   {
-    case 1:
-      break;
-  
-    case 2:
-      break;
+  case 1:
+    break;
 
-    default:
-      break;
+  case 2:
+    break;
+
+  default:
+    break;
   }
 
 #endif
@@ -1133,7 +1186,8 @@ void setup()
   }
 
   // Wait some time for the splash screen to show
-  while (millis() < (startTime)) ;
+  while (millis() < (startTime))
+    ;
 #endif
 
 #ifdef CAN_FILTERED
@@ -1210,8 +1264,13 @@ void setup()
 void loop()
 {
 
-  // Update the display with the currently selected data
-  printData(gaugeType);
+  // Slow down display updates to improve legibility
+  if ((millis() - lastDisplayUpdate) > displayUpdateRate)
+  {
+    // Update the display with the currently selected data
+    lastDisplayUpdate = millis();
+    printData(gaugeType);
+  }
 
   // Check if either button was pressed
   if (buttonPress > 0)
@@ -1223,6 +1282,8 @@ void loop()
   {
     nextConfig();
   }
+
+  checkForError();
 
   // Alert if communication with ECU is lost
   // Compare current time to last recieved message

@@ -12,22 +12,22 @@ struct sensorData
   float minimum;
   float maximum;
   int canID;
-  int alertHigh;
-  int alertLow;
+  float alertHigh;
+  float alertLow;
   bool useInt;
 };
 
 sensorData testData = {
-    "Test Data", // Name
+    "Test", // Name
     "%@#",       // Units
     1,           // Multiplier for scaling
     0,           // Data Offset
     0,           // Scaled value
-    0,           // Minimum Value
+    10,           // Minimum Value
     100,         // Maximum Value
     (0),         // Address
-    90,          // Alert High
-    10,          // Alert Low
+    75,          // Alert High
+    25,          // Alert Low
     false        // Show as int
 };
 
@@ -64,9 +64,9 @@ sensorData rpm = {
     0,                 // Minimum Value
     7000,              // Maximum Value
     (BASE_CAN_ID + 1), // Address
-    6800,
-    -100,
-    true};
+    6800,              // Alert High
+    -100,              // Alert Low
+    true};             // Show as int
 
 sensorData ignitionTiming = {
     "Ign Timing",      // Name
@@ -131,7 +131,7 @@ sensorData accelerator = {
     0,                 // Minimum Value
     100,               // Maximum Value
     (BASE_CAN_ID + 2), // Address
-    100,
+    200,
     -100,
     true};
 
@@ -144,8 +144,8 @@ sensorData throttle1 = {
     0,                 // Minimum Value
     100,               // Maximum Value
     (BASE_CAN_ID + 2), // Address
-    100,
-    0,
+    200,
+    -200,
     true};
 
 sensorData throttle2 = {
@@ -157,8 +157,8 @@ sensorData throttle2 = {
     0,                 // Minimum Value
     100,               // Maximum Value
     (BASE_CAN_ID + 2), // Address
-    100,
-    -100,
+    200,
+    -200,
     true};
 
 // -- ID 515 --
@@ -199,7 +199,7 @@ sensorData coolantTemperature_f = {
     0,                 // Minimum Value
     120,               // Maximum Value
     (BASE_CAN_ID + 3), // Address
-    110,
+    250,
     50,
     true};
 
@@ -213,8 +213,8 @@ sensorData intakeTemperature_f = {
     0,                 // Minimum Value
     55,                // Maximum Value
     (BASE_CAN_ID + 3), // Address
-    100,
-    -100,
+    120,
+    50,
     true};
 
 sensorData coolantTemperature = {
@@ -226,8 +226,8 @@ sensorData coolantTemperature = {
     0,                 // Minimum Value
     120,               // Maximum Value
     (BASE_CAN_ID + 3), // Address
-    110,
-    50,
+    120,
+    10,
     true};
 
 sensorData intakeTemperature = {
@@ -240,7 +240,7 @@ sensorData intakeTemperature = {
     55,                // Maximum Value
     (BASE_CAN_ID + 3), // Address
     100,
-    -100,
+    10,
     true};
 
 sensorData auxTemp1 = {
@@ -305,7 +305,7 @@ sensorData mcuTemp = {
     200,               // Maximum Value
     (BASE_CAN_ID + 3), // Address
     80,
-    1000,
+    -10,
     true};
 
 sensorData fuel = {
@@ -318,12 +318,12 @@ sensorData fuel = {
     100,               // Maximum Value
     (BASE_CAN_ID + 3), // Address
     200,
-    20,
+    15,
     true};
 
 // -- ID 516 --
 sensorData afr = {
-    "AFR_",            // Name
+    "AFR_OLD",            // Name
     "",                // Units
     0.001,             // Multiplier for scaling
     0,                 // Data Offset
@@ -331,12 +331,12 @@ sensorData afr = {
     10,                // Mimumum Value
     20,                // Maximum Value
     (BASE_CAN_ID + 4), // Address
-    20,
-    10,
+    28,
+    -10,
     false};
 
 sensorData lambda_afr = {
-    "Lambda_",              // Name
+    "Lambda_OLD",              // Name
     "",                     // Units
     ((0.001) * (1 / 14.7)), // Multiplier for scaling
     0,                      // Data Offset
@@ -344,8 +344,8 @@ sensorData lambda_afr = {
     0.8,                    // Mimumum Value
     1.2,                    // Maximum Value
     (BASE_CAN_ID + 4),      // Address
-    20,
-    10,
+    28,
+    -10,
     false};
 
 sensorData oilPressure_psi = {
@@ -451,8 +451,8 @@ sensorData lambda1 = {
     0.7,               // Minimum Value
     1.3,               // Maximum Value
     (BASE_CAN_ID + 7), // Address
-    100,               // Alert High
-    -100,              // Alert Low
+    10,               // Alert High
+    -10,              // Alert Low
     false};
 
 sensorData lambda2 = {
@@ -596,4 +596,18 @@ sensorData fuelTrim = {
     999,               // Alert High
     -999,              // Alert Low
     false              // Show as integer
+};
+
+sensorData ethanol = {
+    "Ethanol",        // Name
+    "%",               // Units
+    1,                 // Multiplier for scaling
+    0,                 // Data Offset
+    0,                 // Scaled value
+    0,                 // Minimum Value
+    100,                 // Maximum Value
+    (BASE_CAN_ID + 1), // Address
+    999,               // Alert High
+    -999,              // Alert Low
+    true              // Show as integer
 };

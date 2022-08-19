@@ -8,7 +8,7 @@
 
 // Configure how test data increments
 int lastTestIncrement = 0;
-int testTime = 50;
+int testTime = 75;
 float testIncrementValue = 1.01;
 
 // Pointer for current data
@@ -32,6 +32,8 @@ void incrementTestData()
     if (testData.scaledValue > 110)
     {
       testData.scaledValue = 0;
+      warningCounter++;
+      lastError++;
     }
   }
 }
@@ -61,6 +63,7 @@ void SAVE_DATA(CANMessage CANmsg)
     injectorDuty.scaledValue = ((((float)word(CANmsg.data[5], CANmsg.data[4])) * (injectorDuty.scaleMultiplier)) + injectorDuty.offset);
     vss.scaledValue = ((((float)(CANmsg.data[6])) * (vss.scaleMultiplier)) + vss.offset);
     vss_mph.scaledValue = ((((float)(CANmsg.data[6])) * (vss_mph.scaleMultiplier)) + vss_mph.offset);
+    ethanol.scaledValue = ((((float)(CANmsg.data[7])) * (ethanol.scaleMultiplier)) + ethanol.offset);
 
     break;
 
@@ -87,7 +90,7 @@ void SAVE_DATA(CANMessage CANmsg)
 
   case (516):
     afr.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (afr.scaleMultiplier)) + afr.offset);
-    lambda_afr.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (lambda_afr.scaleMultiplier)) + lambda_afr.offset);
+    //lambda_afr.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (lambda_afr.scaleMultiplier)) + lambda_afr.offset);
 
     oilPressure_psi.scaledValue = ((((float)word(CANmsg.data[3], CANmsg.data[2])) * (oilPressure_psi.scaleMultiplier)) + oilPressure_psi.offset);
     oilPressure.scaledValue = ((((float)word(CANmsg.data[3], CANmsg.data[2])) * (oilPressure.scaleMultiplier)) + oilPressure.offset);
@@ -112,14 +115,14 @@ void SAVE_DATA(CANMessage CANmsg)
     lambda1.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (lambda1.scaleMultiplier)) + lambda1.offset);
     lambda2.scaledValue = ((((float)word(CANmsg.data[3], CANmsg.data[2])) * (lambda2.scaleMultiplier)) + lambda2.offset);
     fuelPressureLow.scaledValue = ((((float)word(CANmsg.data[5], CANmsg.data[4])) * (fuelPressureLow.scaleMultiplier)) + fuelPressureLow.offset);
-    fuelPressureHigh.scaledValue = ((((float)word(CANmsg.data[5], CANmsg.data[4])) * (fuelPressureHigh.scaleMultiplier)) + fuelPressureHigh.offset);
+    fuelPressureHigh.scaledValue = ((((float)word(CANmsg.data[7], CANmsg.data[6])) * (fuelPressureHigh.scaleMultiplier)) + fuelPressureHigh.offset);
     break;
 
   case (520):
     vvtIntake1.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (vvtIntake1.scaleMultiplier)) + vvtIntake1.offset);
     vvtIntake2.scaledValue = ((((float)word(CANmsg.data[3], CANmsg.data[2])) * (vvtIntake2.scaleMultiplier)) + vvtIntake2.offset);
     vvtExhaust1.scaledValue = ((((float)word(CANmsg.data[5], CANmsg.data[4])) * (vvtExhaust1.scaleMultiplier)) + vvtExhaust1.offset);
-    vvtExhaust2.scaledValue = ((((float)word(CANmsg.data[5], CANmsg.data[4])) * (vvtExhaust2.scaleMultiplier)) + vvtExhaust2.offset);
+    vvtExhaust2.scaledValue = ((((float)word(CANmsg.data[7], CANmsg.data[6])) * (vvtExhaust2.scaleMultiplier)) + vvtExhaust2.offset);
     break;
   }
 }

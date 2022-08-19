@@ -4,7 +4,7 @@
  * Use to enable/disable features
  */
 
-String build = "1.1.3";
+String build = "1.1.4";
 // Enable first and second startup logos
 #define USE_BMP
 #define USE_BMP_2
@@ -25,8 +25,6 @@ String build = "1.1.3";
 // Allow OTA updates
 #define OTA_ENABLE
 
-
-
 // Alert if too long between CAN messages
 //#define RX_TIMEOUT
 
@@ -35,7 +33,7 @@ String build = "1.1.3";
 
 // setup Debug build defines
 #ifdef DEBUG_BUILD
-#define CONFIG_STARTUP
+
 
 // Force the startup logo to newStartup values, writes on boot
 //#define SETUP_STARTUP
@@ -153,4 +151,14 @@ int maxSet = 0;
 
 int dataSet[] = {0, 0, 0, 0, 0, 0, 0};
 int ledType = 0;
-String ledTypeText[] = {"All LEDs", "Red LEDs", "Single LED ALL", "Single LED Red", "None"};
+String ledTypeText[] = {"All LEDs", "Red LEDs", "Single LED ALL", "Single LED Red", "None", "LEDs with Alert", "Single LED with Alert"};
+
+int lastWarningCount;
+bool newWarning;
+int lastWarningTime = 0;
+int warningResetTime = 5000;
+
+#define RESET_WARNING
+int displayUpdateRate = 100;
+//define DISPLAY_UPDATE_RATE
+int lastDisplayUpdate = 0;

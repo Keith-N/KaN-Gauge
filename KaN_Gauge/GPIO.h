@@ -116,7 +116,7 @@ void sequentialLed(int p)
   }
 }
 
-// Illuminate LED 0-10
+// Illuminate single LED 0-10
 void singleLed(int p)
 {
 
@@ -126,6 +126,7 @@ void singleLed(int p)
   digitalWrite(indicatorLed[p], HIGH);
 }
 
+// Illuminate all LED 0-12
 void sequentialLedAll(int p)
 {
 
@@ -138,6 +139,7 @@ void sequentialLedAll(int p)
   }
 }
 
+// Illuminate single LED 0-12
 void singleLedAll(int p)
 {
 
@@ -146,6 +148,8 @@ void singleLedAll(int p)
   digitalWrite(allLed[p], HIGH);
 }
 
+
+// Toggle the indicator LEDs
 void toggleLeftLed()
 {
   digitalWrite(LED_11, !digitalRead(LED_11));
@@ -156,6 +160,8 @@ void toggleRightLed()
   digitalWrite(LED_12, !digitalRead(LED_12));
 }
 
+
+// Perform a sweep of all LEDs, on then off
 void ledSweep(int startLed, int endLed, int t, int t2)
 {
 
