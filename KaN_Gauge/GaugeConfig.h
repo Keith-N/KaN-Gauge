@@ -31,14 +31,8 @@ String build = "1.1.5";
 // Reset the stored NVS data on boot
 // #define RESET_STORED
 
-// setup Debug build defines
-//#ifdef DEBUG_BUILD
-
-
 // Force the startup logo to newStartup values, writes on boot
 //#define SETUP_STARTUP
-
-#endif
 
 /*
  * 0 - Not Set, save new values, shows build version
