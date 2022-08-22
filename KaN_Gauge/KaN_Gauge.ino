@@ -272,12 +272,12 @@ void checkDisplayController()
 void checkForError()
 {
 
-  #ifdef RESET_WARNING
-    if (lastWarningTime < (millis() - warningResetTime))
-    {
-      newWarning = false;
-    }
-  #endif
+#ifdef RESET_WARNING
+  if (lastWarningTime < (millis() - warningResetTime))
+  {
+    newWarning = false;
+  }
+#endif
   if ((warningCounter > lastWarningCount) || (checkEngine > 0))
   {
     newWarning = true;
@@ -381,7 +381,7 @@ void nextConfig()
     warningCounter++;
     lastError++;
     break;
-    
+
   default:
     gaugeType++;
     if (gaugeType > numGaugeType)
@@ -754,7 +754,7 @@ void printData(int g)
     u8g2.print("Press -> to +1");
     u8g2.sendBuffer();
     break;
-    
+
   // Use gauge type 0 as default
   default:
     ledOff();
@@ -770,33 +770,6 @@ void printData(int g)
 
 sensorData *selectData(int g)
 {
-
-  /*
-   * setup pointer to select proper sensor/data from sensorData
-      warningStatus
-      warningCounter
-      rpm
-      ignitionTiming
-      injectorDuty
-      vss
-      accelerator
-      throttle1
-      throttle2
-      manifoldPressure
-      coolantTemperature
-      intakeTemperature
-      auxTemp1
-      auxTemp2
-      mcuTemp
-      fuel
-      afr
-      oilPressure
-      vvtPosition
-      batteryVoltage
-      airMass
-      estimatedAirFlow
-      injectorPulse
-   */
 
   switch (g)
   {
@@ -945,8 +918,16 @@ sensorData *selectData(int g)
     return &vvtExhaust2;
     break;
 
-#ifdef DEBUG_BUILD
   case 36:
+    return &oilPressure;
+    break;
+
+  case 37:
+    return &oilPressure_psi;
+    break;
+
+#ifdef DEBUG_BUILD
+  case 38:
     return &testData;
     break;
 #endif

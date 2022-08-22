@@ -90,8 +90,7 @@ void SAVE_DATA(CANMessage CANmsg)
 
   case (516):
     afr.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (afr.scaleMultiplier)) + afr.offset);
-    //lambda_afr.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (lambda_afr.scaleMultiplier)) + lambda_afr.offset);
-
+ 
     oilPressure_psi.scaledValue = ((((float)word(CANmsg.data[3], CANmsg.data[2])) * (oilPressure_psi.scaleMultiplier)) + oilPressure_psi.offset);
     oilPressure.scaledValue = ((((float)word(CANmsg.data[3], CANmsg.data[2])) * (oilPressure.scaleMultiplier)) + oilPressure.offset);
 

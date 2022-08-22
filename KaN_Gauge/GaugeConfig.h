@@ -4,7 +4,7 @@
  * Use to enable/disable features
  */
 
-String build = "1.1.4";
+String build = "1.1.5"; 
 // Enable first and second startup logos
 #define USE_BMP
 #define USE_BMP_2
@@ -32,7 +32,7 @@ String build = "1.1.4";
 // #define RESET_STORED
 
 // setup Debug build defines
-#ifdef DEBUG_BUILD
+//#ifdef DEBUG_BUILD
 
 
 // Force the startup logo to newStartup values, writes on boot

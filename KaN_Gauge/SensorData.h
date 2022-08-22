@@ -323,7 +323,7 @@ sensorData fuel = {
 
 // -- ID 516 --
 sensorData afr = {
-    "AFR_OLD",            // Name
+    "AFR",            // Name
     "",                // Units
     0.001,             // Multiplier for scaling
     0,                 // Data Offset
@@ -331,19 +331,6 @@ sensorData afr = {
     10,                // Mimumum Value
     20,                // Maximum Value
     (BASE_CAN_ID + 4), // Address
-    28,
-    -10,
-    false};
-
-sensorData lambda_afr = {
-    "Lambda_OLD",              // Name
-    "",                     // Units
-    ((0.001) * (1 / 14.7)), // Multiplier for scaling
-    0,                      // Data Offset
-    0,                      // Scaled value
-    0.8,                    // Mimumum Value
-    1.2,                    // Maximum Value
-    (BASE_CAN_ID + 4),      // Address
     28,
     -10,
     false};
