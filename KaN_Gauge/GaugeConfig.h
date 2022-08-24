@@ -126,7 +126,7 @@ int rxTimeout = 0;
 int displayController = 0;
 int newDisplayController = 0;
 
-int numGaugeType = 2;
+int numGaugeType = 3;
 
 int lastOnTime1 = 0;
 int lastOnTime2 = 0;
@@ -143,7 +143,7 @@ int startup2 = 0;
 int inConfigMode = 1;
 int maxSet = 0;
 
-int dataSet[] = {0, 0, 0, 0, 0, 0, 0};
+int dataSet[] = {0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0};
 int ledType = 0;
 String ledTypeText[] = {"All LEDs", "Red LEDs", "Single LED ALL", "Single LED Red", "None", "LEDs with Alert", "Single LED with Alert"};
 
@@ -153,6 +153,7 @@ int lastWarningTime = 0;
 int warningResetTime = 5000;
 
 #define RESET_WARNING
-int displayUpdateRate = 100;
+int displayUpdateRate = 0;
+int displayUpdateTime[] = {0, 50, 75, 100, 150, 200, 250};
 //define DISPLAY_UPDATE_RATE
 int lastDisplayUpdate = 0;

@@ -31,6 +31,20 @@ sensorData testData = {
     false        // Show as int
 };
 
+sensorData noData = {
+    "None",           // Name
+    "",           // Units
+    0,           // Multiplier for scaling
+    0,           // Data Offset
+    0,           // Scaled value
+    0,           // Minimum Value
+    100,         // Maximum Value
+    (0),         // Address
+    100,         // Alert High
+    -100,         // Alert Low
+    false        // Show as int
+};
+
 // -- ID 512 --
 sensorData warningStatus = {
     "Warning",         // Name

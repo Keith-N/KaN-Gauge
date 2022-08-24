@@ -62,13 +62,11 @@ void configMode()
     u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_6x12_tf);
     u8g2.setCursor(0, 0);
-    u8g2.print("Data # ");
-    u8g2.print((i + 1));
-    u8g2.setCursor(0, 20);
-
     switch (i)
     {
     case 0:
+      u8g2.print("1x Gauge Data");
+      u8g2.setCursor(0, 20);
       printDataNameAndUnits(ptrData);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
@@ -76,6 +74,8 @@ void configMode()
       break;
 
     case 1:
+      u8g2.print("2x Gauge Data");
+      u8g2.setCursor(0, 20);
       printDataNameAndUnits(ptrData2);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
@@ -83,6 +83,8 @@ void configMode()
       break;
 
     case 2:
+      u8g2.print("4x Gauge Data 3");
+      u8g2.setCursor(0, 20);
       printDataNameAndUnits(ptrData3);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
@@ -90,16 +92,24 @@ void configMode()
       break;
 
     case 3:
+      u8g2.print("4x Gauge Data 4");
+      u8g2.setCursor(0, 20);
       printDataNameAndUnits(ptrData4);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.print("<-Next         Type->");
       break;
 
+    case 7:
+      u8g2.print("Alt 1x Gauge Data");
+      u8g2.setCursor(0, 20);
+      printDataNameAndUnits(ptrData5);
+      u8g2.setCursor(0, 45);
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.print("<-Next         Type->");
+      break;
+
     case 4:
-      u8g2.clearBuffer();
-      u8g2.setFont(u8g2_font_6x12_tf);
-      u8g2.setCursor(0, 0);
       u8g2.print("LEDs for 1x data");
       u8g2.setCursor(0, 20);
       printDataNameAndUnits(ptrDataLed1);
@@ -109,9 +119,6 @@ void configMode()
       break;
 
     case 5:
-      u8g2.clearBuffer();
-      u8g2.setFont(u8g2_font_6x12_tf);
-      u8g2.setCursor(0, 0);
       u8g2.print("LEDs for 2x data");
       u8g2.setCursor(0, 20);
       printDataNameAndUnits(ptrDataLed2);
@@ -121,9 +128,6 @@ void configMode()
       break;
 
     case 6:
-      u8g2.clearBuffer();
-      u8g2.setFont(u8g2_font_6x12_tf);
-      u8g2.setCursor(0, 0);
       u8g2.print("LEDs for 4x data");
       u8g2.setCursor(0, 20);
       printDataNameAndUnits(ptrDataLed4);
@@ -132,18 +136,33 @@ void configMode()
       u8g2.print("<-Next         Type->");
       break;
 
-    case 7:
-      u8g2.clearBuffer();
-      u8g2.setFont(u8g2_font_6x12_tf);
-      u8g2.setCursor(0, 0);
+    case 8:
+      u8g2.print("LEDs for Alt 1x");
+      u8g2.setCursor(0, 20);
+      printDataNameAndUnits(ptrDataLed5);
+      u8g2.setCursor(0, 45);
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.print("<-Next         Type->");
+      break;
+
+    case 9:
       u8g2.print("LED type");
       u8g2.setCursor(0, 20);
-      // u8g2.print(ledType);
-      // u8g2.print(" ");
       u8g2.print(ledTypeText[ledType]);
       u8g2.setCursor(0, 45);
       u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.print("<-Next         Type->");
+      break;
+
+      case 10:
+      u8g2.print("Display Update Rate");
+      u8g2.setCursor(0, 20);
+      u8g2.print(displayUpdateTime[displayUpdateRate]);
+      u8g2.print(" ");
+      u8g2.print("ms");
+      u8g2.setCursor(0, 45);
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.print("<-Next         + ->");
       break;
 
     default:
@@ -164,11 +183,18 @@ void configMode()
       switch (i)
       {
 
-      case 7:
+      case 9:
         ledType++;
         if (ledType > 6)
         {
           ledType = 0;
+        }
+        break;
+
+      case 10:
+        displayUpdateRate++;
+        if (displayUpdateRate > 6){
+          displayUpdateRate = 0;
         }
         break;
 
@@ -198,6 +224,11 @@ void configMode()
  * Setup pointers from the selected data settings for all 4 displayed values and LEDs
  */
 
+
+void clearDisplay(){
+  u8g2.clearBuffer();
+  u8g2.sendBuffer();
+}
 void setupData()
 {
   ptrData = selectData(dataSet[0]);
@@ -207,6 +238,9 @@ void setupData()
   ptrDataLed1 = selectData(dataSet[4]);
   ptrDataLed2 = selectData(dataSet[5]);
   ptrDataLed4 = selectData(dataSet[6]);
+  ptrData5 = selectData(dataSet[7]);
+  ptrDataLed5 = selectData(dataSet[8]);
+  
 }
 
 /*
@@ -223,7 +257,10 @@ void saveDataSettings()
   preferences.putUInt("dataLED1", dataSet[4]);
   preferences.putUInt("dataLED2", dataSet[5]);
   preferences.putUInt("dataLED4", dataSet[6]);
+  preferences.putUInt("data5", dataSet[7]);
+  preferences.putUInt("dataLED5", dataSet[8]);
   preferences.putUInt("ledType", ledType);
+  preferences.putUInt("displayRate", displayUpdateRate);
   preferences.end();
 }
 
@@ -267,6 +304,14 @@ void checkDisplayController()
     displayController = newDisplayController;
     saveDisplayController(newDisplayController);
   }
+}
+
+void saveMinMaxData(){
+
+}
+
+void restoreMinMaxData(){
+  
 }
 
 void checkForError()
@@ -495,6 +540,34 @@ static void renderLeds(int ledType, sensorData *data)
 /*
  * Print the selected gauge and data on the display
  */
+
+
+void printLeds(int g){
+  switch (g)
+  {
+    case 0:
+      renderLeds(ledType, ptrDataLed1);
+      break;
+
+    case 1:
+      renderLeds(ledType, ptrDataLed2);
+      break;
+
+    case 2:
+      renderLeds(ledType, ptrDataLed4);
+      break;
+
+    case 3:
+      renderLeds(ledType, ptrDataLed5);
+      break;
+
+    default:
+      break;
+
+  }
+
+}
+
 void printData(int g)
 {
 
@@ -515,8 +588,6 @@ void printData(int g)
     u8g2.setCursor(0, 26);
 
     printDataFormatted(ptrData);
-
-    renderLeds(ledType, ptrDataLed1);
 
     u8g2.sendBuffer();
     break;
@@ -545,8 +616,6 @@ void printData(int g)
     u8g2.print(ptrData2->dataName);
     u8g2.setCursor(105, 45);
     u8g2.print(ptrData2->units);
-
-    renderLeds(ledType, ptrDataLed2);
 
     u8g2.sendBuffer();
     break;
@@ -578,11 +647,30 @@ void printData(int g)
     u8g2.setCursor((displayWidth / 2), (displayHeight * 3 / 4) + h);
     printDataFormatted(ptrData4);
 
-    renderLeds(ledType, ptrDataLed4);
-
     u8g2.sendBuffer();
 
     break;
+
+    case 3:
+    // 1x Sensor Gauge Alternate
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_6x12_tf);
+    u8g2.setCursor(0, 0);
+    printDataNameAndUnits(ptrData5);
+
+    u8g2.setFont(u8g2_font_fub35_tf);
+    u8g2.setCursor(0, 26);
+
+    printDataFormatted(ptrData5);
+
+     if (ptrData5->scaleMultiplier == 0)
+    {
+      u8g2.clearBuffer();
+    }
+
+    u8g2.sendBuffer();
+    break;
+
     // ----------------- Info / Settings ------------------------------
 
   case 8:
@@ -926,8 +1014,12 @@ sensorData *selectData(int g)
     return &oilPressure_psi;
     break;
 
-#ifdef DEBUG_BUILD
   case 38:
+    return &noData;
+    break;
+
+#ifdef DEBUG_BUILD
+  case 39:
     return &testData;
     break;
 #endif
@@ -1095,6 +1187,7 @@ void setup()
 
   // Get the previous gauge values to start from last gauge
   preferences.begin("config", true);
+  
   gauge = preferences.getUInt("gauge", 0);
   dataSet[0] = preferences.getUInt("data0", 0);
   dataSet[1] = preferences.getUInt("data1", 0);
@@ -1103,7 +1196,11 @@ void setup()
   dataSet[4] = preferences.getUInt("dataLED1", 0);
   dataSet[5] = preferences.getUInt("dataLED2", 0);
   dataSet[6] = preferences.getUInt("dataLED4", 0);
+  dataSet[7] = preferences.getUInt("data5", 0);
+  dataSet[8] = preferences.getUInt("dataLED5", 0);
   ledType = preferences.getUInt("ledType", 0);
+  displayUpdateRate = preferences.getUInt("displayRate",0);
+  
   preferences.end();
 
   preferences.begin("startup", true);
@@ -1246,12 +1343,24 @@ void loop()
 {
 
   // Slow down display updates to improve legibility
-  if ((millis() - lastDisplayUpdate) > displayUpdateRate)
-  {
-    // Update the display with the currently selected data
-    lastDisplayUpdate = millis();
+  if (gaugeType < 5){
+    if ((millis() - lastDisplayUpdate) > displayUpdateTime[displayUpdateRate])
+    {
+      // Update the display with the currently selected data
+      lastDisplayUpdate = millis();
+      printData(gaugeType);
+    }
+    else{
+      u8g2.sendBuffer();
+    }
+   }
+  else{
+    // If data is not being displayed do not slow down
     printData(gaugeType);
   }
+
+
+  printLeds(gaugeType);
 
   // Check if either button was pressed
   if (buttonPress > 0)
