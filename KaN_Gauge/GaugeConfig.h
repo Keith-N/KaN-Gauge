@@ -1,4 +1,4 @@
-
+   
 /*
  * Defines
  * Use to enable/disable features
@@ -13,17 +13,20 @@ String build = "1.1.5";
 
 //#define USE_SAVED_DISP_CONTROLLER
 #define FORCED_DISP_CONTROLLER
-#define SSD1306
-//#define SH1106
+//#define SSD1306
+#define SH1106
 
 // Select boot logos
 #define DEFAULT_START
 //#define BMM_START
 //#define GG_START
-//#define DEBUG_BUILD
+#define DEBUG_BUILD
 
 // Allow OTA updates
 #define OTA_ENABLE
+
+// Override default min/max
+// #define CUSTOM_MINMAX
 
 // Alert if too long between CAN messages
 //#define RX_TIMEOUT

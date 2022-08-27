@@ -21,6 +21,7 @@ sensorData *ptrDataLed1;
 sensorData *ptrDataLed2;
 sensorData *ptrDataLed4;
 sensorData *ptrDataLed5;
+sensorData *newSensorConfig;
 
 // ========================================================== Functions =========================================================================
 void incrementTestData()
@@ -127,4 +128,3 @@ void SAVE_DATA(CANMessage CANmsg)
     break;
   }
 }
-

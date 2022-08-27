@@ -17,6 +17,8 @@ struct sensorData
   bool useInt;
 };
 
+
+
 sensorData testData = {
     "Test", // Name
     "%@#",       // Units

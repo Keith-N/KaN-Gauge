@@ -1,16 +1,44 @@
-#include <WiFi.h>
+/*#include <WiFi.h>
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
 #include <Update.h>
-#include <WiFiAP.h>
+#include <WiFiAP.h>*/
+
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include <Update.h>
+#include "SPIFFS.h"
+#include <FS.h>
+#define U_PART U_SPIFFS
 
 // WiFi OTA
 const char *host = "KaN Gauge";
 const char *ssid = "KaN Gauge";
 const char *password = "update1234";
 
-WebServer server(80);
+const char* PARAM_MESSAGE = "message";
+const char* INPUT_1 = "A";
+const char* INPUT_2 = "B";
+const char* INPUT_3 = "C";
+
+int selectedSensor;
+int selectedLimit;
+String inputNewValue;
+float inputNewValueF;
+
+bool readyToSetLimits = false;
+bool updatedLimits = false;
+
+size_t content_len;
+File file;
+bool opened = false;
+
+
+AsyncWebServer server(80);
+
+
 
 #define jquery_min_js_v3_2_1_gz_len 30178
 PROGMEM const char jquery_min_js_v3_2_1_gz[] = {
@@ -46,88 +74,506 @@ PROGMEM const char jquery_min_js_v3_2_1_gz[] = {
     0x11, 0x06, 0x53, 0x5e, 0x08, 0x01, 0x17, 0x72, 0x5c, 0x1c, 0xd6, 0x86, 0x08, 0x16, 0x60, 0x30, 0x76, 0x81, 0x45, 0x08, 0x66, 0x5d, 0x52, 0x03, 0x85, 0x74, 0xd3, 0xd4, 0x37, 0x54, 0x75, 0xa7, 0x65, 0x47, 0xd4, 0x5c, 0x06, 0x34, 0xc9, 0xa2, 0xb7, 0x6f, 0xce, 0xde, 0x63, 0x69, 0x5a, 0x57, 0x07, 0xcc, 0xfb, 0x96, 0x2c, 0x05, 0x5b, 0x65, 0x43, 0x9c, 0x22, 0xc6, 0x13, 0xda, 0x8a, 0x24, 0x69, 0x04, 0xef, 0x2f, 0x60, 0x0b, 0x65, 0x57, 0x2e, 0xd5, 0x8e, 0xd2, 0xf1, 0x30, 0xc7, 0x91, 0x3a, 0x9c, 0xdd, 0xe2, 0x3c, 0xd5, 0x9c, 0xb8, 0x37, 0x2b, 0x61, 0x78, 0xca, 0xae, 0xbb, 0xf1, 0x50, 0xd8, 0x66, 0xb3, 0xdc, 0x69, 0xb4, 0x42, 0x31, 0xd5, 0xa4, 0xc5, 0x1a, 0x07, 0xf1, 0x15, 0xc7, 0x8f, 0x8f, 0x9e, 0x69, 0x12, 0x53, 0xd0, 0xa5, 0x2a, 0x2e, 0x18, 0xc1, 0x43, 0x0b, 0x2e, 0xac, 0x30, 0xcc, 0xe9, 0xc4, 0x94, 0x93, 0xd4, 0xa9, 0x86, 0x98, 0xcf, 0x17, 0x18, 0x06, 0xa2, 0x44, 0xe5, 0xa4, 0xe7, 0x6d, 0x40, 0xc5, 0xa6, 0x87, 0x49, 0xc8, 0xf2, 0xf3, 0x09, 0x57, 0x24, 0x1d, 0x8c, 0xba, 0x0e, 0x94, 0x38, 0xec, 0x96, 0x73, 0x4d, 0x68, 0x93, 0x8f, 0x6d, 0x14, 0xcf, 0x40, 0x92, 0xa2, 0xf7, 0x0a, 0x3e, 0x7c, 0x24, 0xb0, 0xbe, 0x59, 0xfe, 0xd4, 0x84, 0x30, 0xe3, 0xec, 0xa4, 0xf1, 0x86, 0x2f, 0xf7, 0xc7, 0x47, 0x72, 0xa6, 0x10, 0x1e, 0x06, 0xb0, 0xc6, 0xad, 0xa6, 0xb9, 0x32, 0x87, 0xe0, 0x0a, 0x6e, 0x67, 0x0f, 0xbb, 0xd3, 0x08, 0x34, 0xfc, 0xac, 0x32, 0xa0, 0x1d, 0x06, 0xa0, 0xc3, 0x94, 0xce, 0xa2, 0xd5, 0x68, 0x5e, 0x40, 0x30, 0x0a, 0x7b, 0xab, 0x6c, 0xae, 0xdf, 0x22, 0x96, 0x58, 0xbb, 0xba, 0x6a, 0x96, 0x8d, 0xaa, 0x99, 0xcb, 0x98, 0x33, 0x78, 0xa1, 0xba, 0xcc, 0x62, 0x07, 0x92, 0xad, 0xf1, 0x3b, 0xc6, 0xb3, 0x7b, 0x8e, 0x13, 0x97, 0x5d, 0x25, 0xac, 0xc7, 0x9b, 0xf9, 0xe7, 0x37, 0xc0, 0xae, 0xe0, 0xe2, 0x09, 0xa9, 0xfb, 0x90, 0x1a, 0x33, 0x6f, 0x11, 0x33, 0x02, 0x64, 0x1f, 0x51, 0x6f, 0x47, 0xd8, 0x35, 0xa8, 0x7a, 0x20, 0x1c, 0xb7, 0x91, 0x7a, 0x47, 0x7e, 0xd6, 0x0c, 0x59, 0xad, 0xa5, 0xc5, 0x02, 0xed, 0xd2, 0x04, 0x33, 0xaf, 0x82, 0x38, 0xc0, 0x53, 0xc8, 0xb9, 0xb5, 0x7f, 0x79, 0x9f, 0xe3, 0xa4, 0xc6, 0x0b, 0xfc, 0x4b, 0xea, 0x78, 0x8a, 0xdf, 0xde, 0xc4, 0x15, 0xc1, 0x8b, 0x70, 0x19, 0x5c, 0xe8, 0x34, 0x95, 0xc2, 0x1f, 0x0e, 0xdf, 0x08, 0x7e, 0x3c, 0x13, 0xf6, 0xb3, 0xcf, 0xc1, 0xe8, 0x23, 0xa0, 0xbf, 0x6e, 0x77, 0x91, 0xa4, 0x73, 0xee, 0xad, 0x85, 0x80, 0x52, 0x79, 0x62, 0xca, 0xba, 0x39, 0xb8, 0xc9, 0xe7, 0x42, 0x2c, 0x38, 0xea, 0x9b, 0xc5, 0x73, 0x5d, 0x92, 0x36, 0x9e, 0xcb, 0x52, 0x6b, 0xdf, 0x4e, 0x1e, 0x13, 0x17, 0xb6, 0x34, 0xfe, 0xc6, 0x36, 0x4e, 0x8c, 0xef, 0x63, 0xe6, 0x4c, 0x1e, 0xf7, 0xc9, 0x7e, 0x30, 0x50, 0xe3, 0x7d, 0xe8, 0x92, 0x1c, 0x51, 0x36, 0x44, 0xa9, 0x87, 0x98, 0x6f, 0xa8, 0x13, 0x7a, 0xcf, 0xe6, 0x83, 0xc2, 0xf3, 0xd9, 0x54, 0x0f, 0x88, 0x8d, 0xcc, 0xc3, 0xdd, 0xa3, 0x99, 0x58, 0x4c, 0x46, 0xff, 0x96, 0x77, 0x3e, 0xae, 0xfa, 0x15, 0xd7, 0xfe, 0x9e, 0x26, 0x02, 0x3a, 0x39, 0x1d, 0xea, 0xbe, 0xe6, 0x52, 0x7f, 0x34, 0x4a, 0xbd, 0x62, 0x68, 0xcb, 0x94, 0x6b, 0x1b, 0x48, 0x79, 0x18, 0x3a, 0x59, 0x00, 0x77, 0x6f, 0xf7, 0xa1, 0x4f, 0x35, 0xd2, 0x57, 0x13, 0xb1, 0x54, 0x59, 0x67, 0x3b, 0xe2, 0x92, 0xc3, 0x3a, 0x8c, 0x31, 0xb1, 0x9d, 0xcb, 0x32, 0xf1, 0x2b, 0x7f, 0x91, 0xe5, 0x65, 0x56, 0xed, 0xeb, 0x96, 0x34, 0xd6, 0x6e, 0x01, 0x32, 0x28, 0x6f, 0x45, 0x76, 0x88, 0xde, 0xf2, 0x72, 0x29, 0xfd, 0x6d, 0x0c, 0xa4, 0x76, 0x25, 0x3b, 0x75, 0xc2, 0x26, 0xbe, 0x85, 0xbd, 0x9b, 0x98, 0xd7, 0x92, 0x8e, 0xd2, 0x6b, 0x8f, 0xcb, 0x0b, 0x4e, 0x27, 0x75, 0x92, 0xc5, 0xed, 0x4e, 0x82, 0xee, 0x6a, 0x97, 0x45, 0x57, 0xb9, 0xc2, 0xb4, 0xa3, 0x71, 0xcd, 0x32, 0xeb, 0xb9, 0xfe, 0x63, 0xfb, 0x89, 0x02, 0xb5, 0xf5, 0x1e, 0x9b, 0xac, 0xad, 0x57, 0xcf, 0x7c, 0xa9, 0xbe, 0x59, 0x94, 0x91, 0x4c, 0xc5, 0x1d, 0x71, 0xa7, 0xfc, 0x2f, 0xfe, 0x9f, 0xbc, 0x32, 0x5a, 0xfd, 0x65, 0x24, 0xe1, 0x6c, 0xa5, 0x61, 0xb6, 0xb0, 0x8e, 0xdd, 0x8e, 0xe5, 0xe2, 0xc1, 0x83, 0x66, 0x9b, 0x25, 0x62, 0xb7, 0xd8, 0x85, 0x41, 0x7a, 0x2d, 0xea, 0x1c, 0xec, 0x35, 0xed, 0x8c, 0x8a, 0x94, 0x45, 0xa9, 0x93, 0x7c, 0x3d, 0x1f, 0xf7, 0xb8, 0xe4, 0x05, 0x45, 0xb0, 0x97, 0x9f, 0xb6, 0xa2, 0xeb, 0xba, 0xc8, 0xba, 0x6d, 0x68, 0x51, 0x87, 0x4d, 0x7f, 0xea, 0xc9, 0xe1, 0xb5, 0x47, 0x6d, 0x91, 0xe4, 0x74, 0x2e, 0xa7, 0x5f, 0x35, 0xd1, 0x9e, 0x10, 0xcc, 0xc2, 0x5b, 0x42, 0x3e, 0x5a, 0x71, 0x3e, 0xce, 0x11, 0xa5, 0x39, 0x85, 0x2d, 0x3e, 0xdb, 0xb6, 0xc7, 0x94, 0x61, 0x71, 0xf7, 0xe2, 0x8a, 0x12, 0xde, 0xb7, 0xa6, 0x23, 0x55, 0xe5, 0xa3, 0x74, 0xec, 0xaf, 0xbb, 0x84, 0x9f, 0x85, 0x31, 0x34, 0x07, 0x36, 0x6e, 0x6d, 0x45, 0x8d, 0xb8, 0xcc, 0x38, 0x7e, 0xf9, 0x04, 0xf8, 0x3c, 0x44, 0x31, 0x43, 0xe5, 0x5e, 0xd3, 0x12, 0x9a, 0xbf, 0xd5, 0x83, 0xe5, 0x17, 0xaf, 0x02, 0xb8, 0x62, 0x83, 0x8d, 0x5e, 0x26, 0xca, 0x80, 0xc2, 0xc3, 0x2d, 0x05, 0xfc, 0x82, 0x3b, 0x23, 0xa8, 0x52, 0x86, 0xb1, 0x4d, 0xab, 0x5d, 0xe2, 0x0d, 0xaa, 0x46, 0x2f, 0xb7, 0xf8, 0xc9, 0x3c, 0xcf, 0x53, 0x8d, 0xa3, 0xd6, 0x8e, 0x83, 0x2c, 0x0f, 0x59, 0xd4, 0x5b, 0x26, 0xdb, 0xa3, 0x5e, 0x61, 0x44, 0x2f, 0x29, 0x8c, 0x65, 0xd2, 0xa8, 0xa6, 0x23, 0x0d, 0xd9, 0xbb, 0x46, 0x68, 0x5d, 0x1e, 0xe9, 0xa1, 0x37, 0xd2, 0x4e, 0x28, 0x9c, 0x35, 0xfb, 0x0d, 0x14, 0xb8, 0x17, 0x6c, 0xda, 0xd2, 0xed, 0x23, 0x9c, 0xb4, 0x15, 0xc7, 0x43, 0x15, 0x04, 0x80, 0xb1, 0x18, 0x2f, 0x1b, 0x94, 0xbb, 0xd4, 0x00, 0xd0, 0x5b, 0x2a, 0xb3, 0x39, 0x89, 0x38, 0xe6, 0xc3, 0xfe, 0x49, 0x44, 0xf4, 0x25, 0x5b, 0xe9, 0xbb, 0x93, 0x57, 0x3e, 0x87, 0x36, 0xad, 0x73, 0xfb, 0xc1, 0x17, 0xa9, 0xdb, 0xa8, 0x9b, 0x3b, 0xf6, 0x79, 0x24, 0x3b, 0x2c, 0x17, 0xfb, 0x8a, 0xc9, 0x15, 0x33, 0x17, 0x81, 0x70, 0xdd, 0xde, 0xe1, 0x2d, 0xdc, 0x4f, 0xc9, 0x5c, 0x11, 0x73, 0xa2, 0x34, 0xfd, 0xf0, 0xbc, 0x1a, 0x07, 0x29, 0x53, 0x40, 0x56, 0xac, 0x29, 0x10, 0xa6, 0x5c, 0xe3, 0x89, 0xf1, 0xd6, 0xe0, 0x89, 0x2e, 0xab, 0x1f, 0x1f, 0x3f, 0x4d, 0x2c, 0x18, 0xa5, 0xc4, 0xbf, 0x80, 0x8e, 0x82, 0x38, 0x01, 0x9a, 0xd9, 0xc6, 0x58, 0x80, 0x43, 0x19, 0x37, 0x1c, 0x7e, 0xe1, 0xd9, 0xbf, 0x4f, 0x9f, 0x6b, 0x68, 0xbe, 0x42, 0x7b, 0x83, 0xd3, 0x2d, 0x68, 0x85, 0x5a, 0x8f, 0x34, 0x1e, 0x18, 0x8f, 0xed, 0x13, 0x40, 0x53, 0xd0, 0xa1, 0x10, 0xfe, 0x02, 0x3f, 0x41, 0x48, 0x4b, 0x8d, 0x83,
     0x80, 0xe8, 0xba, 0x9d, 0x4f, 0xd9, 0x67, 0x38, 0xca, 0x6a, 0x63, 0x72, 0xe5, 0x5e, 0xf3, 0xd1, 0x17, 0x5f, 0x44, 0x5a, 0x07, 0x87, 0x0c, 0xaa, 0x1a, 0xb6, 0x7b, 0x5f, 0x44, 0xaa, 0xd2, 0x4b, 0x77, 0x5a, 0xcf, 0x87, 0xef, 0x20, 0xae, 0x0d, 0x28, 0xd6, 0x82, 0x43, 0xac, 0x52, 0xee, 0xef, 0xc5, 0x6c, 0xd3, 0xeb, 0xa5, 0x3a, 0xc5, 0x28, 0x08, 0x4c, 0x55, 0xb1, 0x7f, 0x58, 0x16, 0x78, 0x8b, 0x19, 0x26, 0x15, 0x9a, 0xf1, 0xcc, 0xb3, 0x4a, 0x5e, 0x59, 0x27, 0xb6, 0xec, 0x5b, 0x15, 0x99, 0x56, 0x1c, 0x33, 0x23, 0x01, 0x84, 0x8f, 0x8e, 0xe4, 0xbf, 0x5f, 0x2c, 0x86, 0xe6, 0x3a, 0x8e, 0xc4, 0x10, 0x17, 0xf8, 0x04, 0x1d, 0xc8, 0xd6, 0x2b, 0x4d, 0xbe, 0xfc, 0x06, 0xe7, 0x84, 0xcb, 0x5f, 0x51, 0x52, 0xfd, 0x8e, 0xeb, 0x27, 0x6e, 0xe2, 0x2f, 0xeb, 0x97, 0xf5, 0x72, 0x4c, 0xdc, 0xd6, 0x26, 0xeb, 0x22, 0xb7, 0xfb, 0x4f, 0x70, 0x72, 0x30, 0xf1, 0xfb, 0x24, 0xfb, 0xbd, 0x14, 0x98, 0x04, 0x5d, 0x97, 0xbd, 0xa3, 0x93, 0xbf, 0xd1, 0xed, 0xd5, 0x0e, 0xd1, 0xbe, 0x5c, 0x1e, 0x1e, 0x5b, 0x21, 0x3b, 0x39, 0xfd, 0xc7, 0x7f, 0x01, 0x29, 0xff, 0x13, 0x14, 0x83, 0x52, 0x01, 0x00};
 
-/* Style */
-String style =
-    "<style>#file-input,input{width:100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}"
-    "input{background:#f1f1f1;border:0;padding:0 15px}body{background:#3498db;font-family:sans-serif;font-size:14px;color:#777}"
-    "#file-input{padding:0;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer}"
-    "#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#3498db;width:0%;height:10px}"
-    "form{background:#fff;max-width:258px;margin:75px auto;padding:30px;border-radius:5px;text-align:center}"
-    ".btn{background:#3498db;color:#fff;cursor:pointer}</style>";
+void notFound(AsyncWebServerRequest *request) {
+    request->send(404, "text/text", "Nothing Here <br> Try /config or /update");
+}
 
-/* Login page */
-String loginIndex =
-    "<form name=loginForm>"
-    "<h1>ESP32 Login</h1>"
-    "<input name=userid placeholder='User ID'> "
-    "<input name=pwd placeholder=Password type=Password> "
-    "<input type=submit onclick=check(this.form) class=btn value=Login></form>"
-    "<script>"
-    "function check(form) {"
-    "if(form.userid.value=='admin' && form.pwd.value=='admin')"
-    "{window.open('/serverIndex')}"
-    "else"
-    "{alert('Error Password or Username')}"
-    "}"
-    "</script>" +
-    style;
 
-/* Server Index Page */
-String serverIndex =
-    "<script src='/jquery.min.js'></script>"
-    "<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>"
-    "<input type='file' name='update' id='file' onchange='sub(this)' style=display:none>"
-    "<label id='file-input' for='file'>   Choose file...</label>"
-    "<input type='submit' class=btn value='Update'>"
-    "<br><br>"
-    "<div id='prg'></div>"
-    "<br><div id='prgbar'><div id='bar'></div></div><br></form>"
-    "<script>"
-    "function sub(obj){"
-    "var fileName = obj.value.split('\\\\');"
-    "document.getElementById('file-input').innerHTML = '   '+ fileName[fileName.length-1];"
-    "};"
-    "$('form').submit(function(e){"
-    "e.preventDefault();"
-    "var form = $('#upload_form')[0];"
-    "var data = new FormData(form);"
-    "$.ajax({"
-    "url: '/update',"
-    "type: 'POST',"
-    "data: data,"
-    "contentType: false,"
-    "processData:false,"
-    "xhr: function() {"
-    "var xhr = new window.XMLHttpRequest();"
-    "xhr.upload.addEventListener('progress', function(evt) {"
-    "if (evt.lengthComputable) {"
-    "var per = evt.loaded / evt.total;"
-    "$('#prg').html('progress: ' + Math.round(per*100) + '%');"
-    "$('#bar').css('width',Math.round(per*100) + '%');"
-    "}"
-    "}, false);"
-    "return xhr;"
-    "},"
-    "success:function(d, s) {"
-    "console.log('success!') "
-    "},"
-    "error: function (a, b, c) {"
-    "}"
-    "});"
-    "});"
-    "</script>" +
-    style;
+const char upload_html[] PROGMEM = R"rawliteral(
+<!DOCTYPE HTML><html class="HTML">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+<style>
+input{background:#f1f1f1;border:0;padding:0 15px}
+body{background:#00acc1;font-family:sans-serif;font-size:14px;color:#777}
+#file-input,input{width: 100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}
+#file-input{padding:0 10px;box-sizing:border-box;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#00acc1;width:0%;height:10px;}
+form{background:#fff;max-width:258px;margin:75px auto;padding:35px; padding-bottom: 30px;border: 1px solid #00acc1;border-radius:5px;text-align:center}
+.btn {background-color: #00acc1;box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08), 0 0 15px 0 rgba(0, 0, 0, 0.02), 0 0 20px 4px rgba(0, 0, 0, 0.06);color: white;border-radius: 4px;padding: 9px 16px;background-image: none;
+text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-transform:uppercase;font-size:14px;line-height: 18px;display: inline-block;vertical-align: middle;}
+.btn:hover {background-color: #0097a7;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0,0,0,.12);}
+.btn:visited {color: white;}
+.btn:focus {outline: none;}
+.btn:active {color: white;background-color: #007c91;}
 
-/*
- * setup function
- */
+.btn2 {background-color: #e29425;box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08), 0 0 15px 0 rgba(0, 0, 0, 0.02), 0 0 20px 4px rgba(0, 0, 0, 0.06);color: white;border-radius: 4px;padding: 9px 16px;background-image: none;
+text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-transform:uppercase;font-size:14px;line-height: 18px;display: inline-block;vertical-align: middle;}
+.btn2:hover:enabled {background-color: #d68a1d;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0,0,0,.12);}
+.btn2:visited {color: white;}
+.btn2:focus {outline: none;}
+.btn2:active {color: white;background-color: #ca7125;}
+.btn2:disabled {
+  cursor: default;
+    background: #DDD;
+}
+   html {
+     font-family: Roboto, Arial, sans-serif;
+     display: inline-block;
+     margin: 0px auto;
+     text-align: center;
+    }
+    h2 { font-size: 3.0rem; 
+       font-family: Arial;
+      text-align: center;
+      font-weight: normal;
+      color: #fafcfc;
+     }
+    p { font-size: 3.0rem; margin-top: 0;}
+    .units { font-size: 1.2rem; }
+    .dht-labels{
+      font-size: 1.5rem;
+      vertical-align:middle;
+      padding-bottom: 15px;
+      font-weight: normal;
+      color: #333333;
+    }
+</style>
 
-void onJavaScript(void)
-{
-    Serial.println("onJavaScript(void)");
-    server.setContentLength(jquery_min_js_v3_2_1_gz_len);
-    server.sendHeader(F("Content-Encoding"), F("gzip"));
-    server.send_P(200, "text/javascript", jquery_min_js_v3_2_1_gz, jquery_min_js_v3_2_1_gz_len);
+
+</head>
+    <title>FIRMWARE UPDATE</title>
+   <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+</head><body>
+
+<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>
+<input type='file' name='update' id='file' onchange='sub(this)' style=display:none accept=".bin*">
+<label id='file-input' for='file'>   Choose bin file...</label>
+<input type="submit" id="updateBtn" class="btn2" disabled = "disabled" value="Update">
+<input type="button" class="btn" onclick="location.href='/';" value="Back">
+<br>
+<div id='prg'style=display:none>Ready to Update</div>
+<br><div id='prgbar'style=display:none><div id='bar'></div></div></form>
+<script>
+function sub(obj){
+var a = obj.value;
+console.log(a);
+var fileName = a.replace(/^.*[\\\/]/, '')
+console.log(fileName);
+document.getElementById('file-input').innerHTML = fileName;
+document.getElementById('updateBtn').disabled = false;
+document.getElementById('prgbar').style.display = 'block';
+document.getElementById('prg').style.display = 'block';
+};
+$('form').submit(function(e){
+  document.getElementById('updateBtn').disabled = "disabled"; 
+e.preventDefault();
+var form = $('#upload_form')[0];
+var data = new FormData(form);
+
+$.ajax({
+url: '/doUpdate',
+type: 'POST',
+data: data,
+contentType: false,
+processData:false,
+xhr: function() {
+var xhr = new window.XMLHttpRequest();
+xhr.upload.addEventListener('progress', function(evt) {
+if (evt.lengthComputable) {
+var per = evt.loaded / evt.total;
+$('#prg').html('Progress: ' + Math.round(per*100) + "%");
+$('#bar').css('width',Math.round(per*100) + "%");
+}
+}, false);
+return xhr;
+},
+success:function(d, s) {
+console.log('success!'); 
+alert("Successfully updated");
+setTimeout("location.href = '../';", 2000);
+
+},
+error: function (a, b, c) {
+}
+});
+});
+
+
+</script></body></html>)rawliteral";
+
+
+const char updatePage[] PROGMEM = R"rawliteral(
+<!DOCTYPE HTML><html class="HTML">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+<style>
+input{background:#f1f1f1;border:0;padding:0 15px}
+body{background:#00acc1;font-family:sans-serif;font-size:14px;color:#777}
+#file-input,input{width: 100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}
+#file-input{padding:0 10px;box-sizing:border-box;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#00acc1;width:0%;height:10px;}
+form{background:#fff;max-width:258px;margin:75px auto;padding:35px; padding-bottom: 30px;border: 1px solid #00acc1;border-radius:5px;text-align:center}
+.btn {background-color: #00acc1;box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08), 0 0 15px 0 rgba(0, 0, 0, 0.02), 0 0 20px 4px rgba(0, 0, 0, 0.06);color: white;border-radius: 4px;padding: 9px 16px;background-image: none;
+text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-transform:uppercase;font-size:14px;line-height: 18px;display: inline-block;vertical-align: middle;}
+.btn:hover {background-color: #0097a7;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0,0,0,.12);}
+.btn:visited {color: white;}
+.btn:focus {outline: none;}
+.btn:active {color: white;background-color: #007c91;}
+
+.btn2 {background-color: #e29425;box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08), 0 0 15px 0 rgba(0, 0, 0, 0.02), 0 0 20px 4px rgba(0, 0, 0, 0.06);color: white;border-radius: 4px;padding: 9px 16px;background-image: none;
+text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-transform:uppercase;font-size:14px;line-height: 18px;display: inline-block;vertical-align: middle;}
+.btn2:hover:enabled {background-color: #d68a1d;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0,0,0,.12);}
+.btn2:visited {color: white;}
+.btn2:focus {outline: none;}
+.btn2:active {color: white;background-color: #ca7125;}
+.btn2:disabled {
+  cursor: default;
+    background: #DDD;
+}
+   html {
+     font-family: Roboto, Arial, sans-serif;
+     display: inline-block;
+     margin: 0px auto;
+     text-align: center;
+    }
+    h2 { font-size: 3.0rem; 
+       font-family: Arial;
+      text-align: center;
+      font-weight: normal;
+      color: #fafcfc;
+     }
+    p { font-size: 3.0rem; margin-top: 0;}
+    .units { font-size: 1.2rem; }
+    .dht-labels{
+      font-size: 1.5rem;
+      vertical-align:middle;
+      padding-bottom: 15px;
+      font-weight: normal;
+      color: #333333;
+    }
+</style>
+
+
+</head>
+    <title>Gauge Update Page</title>
+   <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+</head><body>
+
+<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>
+<input type='file' name='update' id='file' onchange='sub(this)' style=display:none accept=".bin*">
+<label id='file-input' for='file'>   Choose bin file...</label>
+<input type="submit" id="updateBtn" class="btn2" disabled = "disabled" value="Update">
+<input type="button" class="btn" onclick="location.href='/';" value="Back">
+<br>
+
+<div id='prg'style=display:none>Ready to Update</div>
+<br><div id='prgbar'style=display:none><div id='bar'></div></div></form>
+
+
+
+<script>
+function sub(obj){
+var a = obj.value;
+console.log(a);
+var fileName = a.replace(/^.*[\\\/]/, '')
+console.log(fileName);
+document.getElementById('file-input').innerHTML = fileName;
+document.getElementById('updateBtn').disabled = false;
+document.getElementById('prgbar').style.display = 'block';
+document.getElementById('prg').style.display = 'block';
+};
+$('form').submit(function(e){
+  document.getElementById('updateBtn').disabled = "disabled"; 
+e.preventDefault();
+var form = $('#upload_form')[0];
+var data = new FormData(form);
+
+$.ajax({
+url: '/doUpdate',
+type: 'POST',
+data: data,
+contentType: false,
+processData:false,
+xhr: function() {
+var xhr = new window.XMLHttpRequest();
+xhr.upload.addEventListener('progress', function(evt) {
+if (evt.lengthComputable) {
+var per = evt.loaded / evt.total;
+$('#prg').html('Progress: ' + Math.round(per*100) + "%");
+$('#bar').css('width',Math.round(per*100) + "%");
+}
+}, false);
+return xhr;
+},
+success:function(d, s) {
+console.log('success!'); 
+alert("Successfully updated");
+setTimeout("location.href = '../';", 2000);
+
+},
+error: function (a, b, c) {
+}
+});
+});
+
+
+</script></body></html>)rawliteral";
+
+const char startPage[] PROGMEM = R"rawliteral(
+<!DOCTYPE HTML><html>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+input{background:#f1f1f1;border:0;padding:0 15px}
+body{background:#00acc1;font-family:sans-serif;font-size:14px;color:#777}
+#file-input,input{width: 100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}
+#file-input{padding:0 10px;box-sizing:border-box;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#00acc1;width:0%;height:10px;}
+form{background:#fff;max-width:258px;margin:75px auto;padding:35px; padding-bottom: 30px;border: 1px solid #00acc1;border-radius:5px;text-align:center}
+.btn {background-color: #00acc1;box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08), 0 0 15px 0 rgba(0, 0, 0, 0.02), 0 0 20px 4px rgba(0, 0, 0, 0.06);color: white;border-radius: 4px;padding: 9px 16px;background-image: none;
+text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-transform:uppercase;font-size:14px;line-height: 18px;display: inline-block;vertical-align: middle;}
+.btn:hover {background-color: #0097a7;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0,0,0,.12);}
+.btn:visited {color: white;}
+.btn:focus {outline: none;}
+.btn:active {color: white;background-color: #007c91;}
+
+.btn2 {background-color: #e29425;box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08), 0 0 15px 0 rgba(0, 0, 0, 0.02), 0 0 20px 4px rgba(0, 0, 0, 0.06);color: white;border-radius: 4px;padding: 9px 16px;background-image: none;
+text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-transform:uppercase;font-size:14px;line-height: 18px;display: inline-block;vertical-align: middle;}
+.btn2:hover:enabled {background-color: #d68a1d;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0,0,0,.12);}
+.btn2:visited {color: white;}
+.btn2:focus {outline: none;}
+.btn2:active {color: white;background-color: #ca7125;}
+.btn2:disabled {
+  cursor: default;
+    background: #DDD;
+}
+   html {
+     font-family: Roboto, Arial, sans-serif;
+     display: inline-block;
+     margin: 0px auto;
+     text-align: center;
+    }
+
+     h1 { font-size: 2.0rem; 
+       font-family: Arial;
+      text-align: center;
+      font-weight: normal;
+      color: #fafcfc;
+     }
+    
+    h2 { font-size: 2.0rem; 
+       font-family: Arial;
+      text-align: center;
+      font-weight: normal;
+      color: #fafcfc;
+     }
+    p { font-size: 3.0rem; margin-top: 0;}
+    .units { font-size: 1.2rem; }
+    .dht-labels{
+      font-size: 1.5rem;
+      vertical-align:middle;
+      padding-bottom: 15px;
+      font-weight: normal;
+      color: #333333;
+    }
+</style>
+
+<head>
+  
+  <title> Gauge Start Page </title>
+
+
+</head>
+
+<body>
+  <h1>KaN Gauge</h1>
+  <h2></h2>
+  <h3></h3>
+  
+<form action="/config">
+<input type="submit" value = "Config">
+</form>
+
+<form action="/update">
+<input type="submit" value = "Update">
+</form>
+
+</body>
+</html>  
+)rawliteral";    
+
+
+const char configPage[] = R"rawliteral(
+<!DOCTYPE HTML><html>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+input{background:#f1f1f1;border:0;padding:0 15px}
+body{background:#00acc1;font-family:sans-serif;font-size:14px;color:#777}
+#file-input,input{width: 100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}
+#file-input{padding:0 10px;box-sizing:border-box;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#00acc1;width:0%;height:10px;}
+form{background:#fff;max-width:258px;margin:75px auto;padding:35px; padding-bottom: 30px;border: 1px solid #00acc1;border-radius:5px;text-align:center}
+.btn {background-color: #00acc1;box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08), 0 0 15px 0 rgba(0, 0, 0, 0.02), 0 0 20px 4px rgba(0, 0, 0, 0.06);color: white;border-radius: 4px;padding: 9px 16px;background-image: none;
+text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-transform:uppercase;font-size:14px;line-height: 18px;display: inline-block;vertical-align: middle;}
+.btn:hover {background-color: #0097a7;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0,0,0,.12);}
+.btn:visited {color: white;}
+.btn:focus {outline: none;}
+.btn:active {color: white;background-color: #007c91;}
+
+.btn2 {background-color: #e29425;box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08), 0 0 15px 0 rgba(0, 0, 0, 0.02), 0 0 20px 4px rgba(0, 0, 0, 0.06);color: white;border-radius: 4px;padding: 9px 16px;background-image: none;
+text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-transform:uppercase;font-size:14px;line-height: 18px;display: inline-block;vertical-align: middle;}
+.btn2:hover:enabled {background-color: #d68a1d;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0,0,0,.12);}
+.btn2:visited {color: white;}
+.btn2:focus {outline: none;}
+.btn2:active {color: white;background-color: #ca7125;}
+.btn2:disabled {
+  cursor: default;
+    background: #DDD;
+}
+   html {
+     font-family: Roboto, Arial, sans-serif;
+     display: inline-block;
+     margin: 0px auto;
+     text-align: center;
+    }
+    h2 { font-size: 3.0rem; 
+       font-family: Arial;
+      text-align: center;
+      font-weight: normal;
+      color: #fafcfc;
+     }
+    p { font-size: 1.0rem; margin-top: 0;}
+    .units { font-size: 1.2rem; }
+    .dht-labels{
+      font-size: 1.5rem;
+      vertical-align:middle;
+      padding-bottom: 15px;
+      font-weight: normal;
+      color: #333333;
+    }
+</style>
+<head>
+  
+  <title> Gauge Configuration </title>
+
+
+</head>
+
+<body>
+
+  <h1>Configurations</h1>
+  
+<form action="/getConfig">
+  
+  <label for="A">Config:</label>
+  <select id="A" name="A">
+    <option value="0">AFR</option>
+    <option value="25">Lambda</option>
+    <option value="1">RPM</option>
+    <option value="6">Coolant C</option>
+    <option value="8">Intake C</option>
+    <option value="4">MAP kpa</option>
+    <option value="36">Oil kpa</option>
+    <option value="39">Test</option>
+    </select>
+  <br>
+    
+  <label for="B"> Type: </label>
+  <select id="B" name="B"> 
+    <option value="1">Minimum</option>
+    <option value="2">Maximum</option>
+    <option value="3">Low</option>
+    <option value="4">High</option>
+    </select>
+  <br>
+  
+  <label for="C"></label>
+  <input type="text" id="C" name="C"><br>
+  
+  <br>
+  <input type="submit" value ="Set new value">
+  <br>
+  
+  </form>  
+  <form action="/">
+  <input type="submit" value = "Back">
+  </form>
+
+  <p> Note:
+      Pressure is in kpa,
+      Temperature is in C
+  </p>
+
+
+</body>
+</html>  
+)rawliteral";
+
+
+void handleDoUpdate(AsyncWebServerRequest *request, const String& filename, size_t index, uint8_t *data, size_t len, bool final) {
+  if (!index) {
+    Serial.println("Update");
+    content_len = request->contentLength();
+    // if filename includes spiffs, update the spiffs partition
+    int cmd = (filename.indexOf("spiffs") > -1) ? U_PART : U_FLASH;
+    if (!Update.begin(UPDATE_SIZE_UNKNOWN, cmd)) {
+      Update.printError(Serial);
+    }
+  }
+
+  if (Update.write(data, len) != len) {
+    Update.printError(Serial);
+    Serial.printf("Progress: %d%%\n", (Update.progress() * 100) / Update.size());
+
+  }
+
+  if (final) {
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "Ok");
+    response->addHeader("Refresh", "30");
+    response->addHeader("Location", "/");
+    request->send(response);
+    if (!Update.end(true)) {
+      Update.printError(Serial);
+    } else {
+      Serial.println("Update complete");
+      Serial.flush();
+      ESP.restart();
+    }
+  }
+}
+
+void handleDoUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+  if (!index) {
+    content_len = request->contentLength();
+    Serial.printf("UploadStart: %s\n", filename.c_str());
+  }
+
+  if (opened == false) {
+    opened = true;
+    file = SPIFFS.open(String("/") + filename, FILE_WRITE);
+    if (!file) {
+      Serial.println("- failed to open file for writing");
+      return;
+    }
+  }
+
+  if (file.write(data, len) != len) {
+    Serial.println("- failed to write");
+    return;
+  }
+
+  if (final) {
+
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "Ok");
+    response->addHeader("Refresh", "20");
+    response->addHeader("Location", "/filesystem");
+    request->send(response);
+    file.close();
+    opened = false;
+    Serial.println("---------------");
+    Serial.println("Upload complete");
+
+  }
+}
+
+
+void printProgress(size_t prg, size_t sz) {
+  Serial.printf("Progress: %d%%\n", (prg * 100) / content_len);
 }
 
 void otaSetup(void)
@@ -135,98 +581,58 @@ void otaSetup(void)
 
     IPAddress myIP = WiFi.softAPIP();
     WiFi.softAP(ssid, password);
-    // WiFi.softAPConfig(local_ip,gateway,local_mask);
+       
 
-    //    /*use mdns for host name resolution*/
-    //    if (!MDNS.begin(host))
-    //    { // http://esp32.local
-    //        //Serial.println("Error setting up MDNS responder!");
-    //        while (1)
-    //        {
-    //            delay(100);
-    //        }
-    //    }
+    server.on("/test.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, jquery_min_js_v3_2_1_gz, "text/javascript");
+    });
+    
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+        request->send(200, "text/html", startPage);
+    });
 
-    /*return javascript jquery */
-    server.on("/jquery.min.js", HTTP_GET, onJavaScript);
+    server.on("/update", HTTP_GET, [](AsyncWebServerRequest *request){
+        request->send(200, "text/html", upload_html);
+    });
 
-    /*return index page which is stored in serverIndex */
-    server.on("/", HTTP_GET, []()
-              {
-    server.sendHeader("Connection", "close");
-    server.send(200, "text/html", serverIndex); });
+    server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request){
+        request->send(200, "text/html", configPage);
+    });   
+    
+    server.on("/getConfig", HTTP_GET, [](AsyncWebServerRequest *request){
 
-    //    server.on("/serverIndex", HTTP_GET, []()
-    //              {
-    //    server.sendHeader("Connection", "close");
-    //    server.send(200, "text/html", serverIndex); });
+    String a, b, c, d;
 
-    /*handling uploading firmware file */
-    server.on(
-        "/update", HTTP_POST, []()
+      a = request->getParam(INPUT_1)->value();
+      b = request->getParam(INPUT_2)->value();
+      c = request->getParam(INPUT_3)->value();
+      
+     selectedSensor = (int) (a.toFloat());
+     selectedLimit = (int) (b.toFloat());
+     inputNewValueF = c.toFloat();
+     readyToSetLimits = true;
+     updatedLimits = true;
 
-        {
-    server.sendHeader("Connection", "close");
-    server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
-    ESP.restart(); },
+        
+    request->send(200, "text/html",
+        "<br> <a href=\" /config \">Return</a> <br>");
+    });
 
-        []()
 
-        {
-            HTTPUpload &upload = server.upload();
-
-            // Uploading File
-            if (upload.status == UPLOAD_FILE_START)
-            {
-                digitalWrite(LED_11, HIGH);
-
-                // Serial.printf("Update: %s\n", upload.filename.c_str());
-                if (!Update.begin(UPDATE_SIZE_UNKNOWN))
-                { // start with max available size
-                    Update.printError(Serial);
-                }
-            }
-            // File Uploaded, flash
-            else if (upload.status == UPLOAD_FILE_WRITE)
-            {
-
-                /* flashing firmware to ESP*/
-                if (Update.write(upload.buf, upload.currentSize) != upload.currentSize)
-                {
-                    Update.printError(Serial);
-                }
-            }
-
-            // Update finished
-            else if (upload.status == UPLOAD_FILE_END)
-            {
-                digitalWrite(LED_12, HIGH);
-                // If update is a success
-                if (Update.end(true))
-                {
-                }
-                // If update fails
-                else
-                {
-                    // Update.printError(Serial);
-                }
-            }
-        });
+    server.on("/doUpdate", HTTP_POST,
+      [](AsyncWebServerRequest * request) {},
+      [](AsyncWebServerRequest * request, const String & filename, size_t index, uint8_t *data, size_t len, bool final) {
+        handleDoUpdate(request, filename, index, data, len, final);
+      });
+    
+      server.on("/doUpload", HTTP_POST, [](AsyncWebServerRequest * request) {
+        opened = false;
+      },
+      [](AsyncWebServerRequest * request, const String & filename, size_t index, uint8_t *data, size_t len, bool final) {
+        handleDoUpload(request, filename, index, data, len, final);
+      });
+      
+    //server.onNotFound(notFound);
     server.begin();
-}
-
-void ota(void)
-{
-    server.handleClient();
-}
-
-void disableWifi()
-{
-    WiFi.softAPdisconnect();
-    //    delay(100);
-    //    WiFi.disconnect();
-    delay(100);
-    WiFi.mode(WIFI_OFF);
-    delay(100);
-    wifiToggled = false;
+  
 }
