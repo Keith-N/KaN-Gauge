@@ -10,7 +10,7 @@
 #include <ESPAsyncWebServer.h>
 #include <Update.h>
 #include "SPIFFS.h"
-#include <FS.h>
+//#include <FS.h>
 #define U_PART U_SPIFFS
 
 // WiFi OTA

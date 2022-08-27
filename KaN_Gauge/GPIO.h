@@ -100,7 +100,7 @@ void indLedOff()
 {
   for (int i = 0; i < 10; i++)
   {
-    digitalWrite(allLed[i], LOW);
+    digitalWrite(indicatorLed[i], LOW);
   };
 }
 
