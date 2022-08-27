@@ -96,6 +96,14 @@ void ledOff()
   };
 }
 
+void indLedOff()
+{
+  for (int i = 0; i < 10; i++)
+  {
+    digitalWrite(allLed[i], LOW);
+  };
+}
+
 void blinkLed(int wait)
 {
   ledOn();
@@ -108,7 +116,6 @@ void sequentialLed(int p)
 {
 
   p = p / 10;
-  ledOff();
 
   for (int i = 0; i < p; i++)
   {
@@ -121,7 +128,6 @@ void singleLed(int p)
 {
 
   p = p / 10;
-  ledOff();
 
   digitalWrite(indicatorLed[p], HIGH);
 }
@@ -131,7 +137,6 @@ void sequentialLedAll(int p)
 {
 
   p = p * 12 / 100;
-  ledOff();
 
   for (int i = 0; i < p; i++)
   {
@@ -144,7 +149,6 @@ void singleLedAll(int p)
 {
 
   p = p * 12 / 100;
-  ledOff();
   digitalWrite(allLed[p], HIGH);
 }
 

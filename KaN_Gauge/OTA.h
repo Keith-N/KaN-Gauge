@@ -79,121 +79,6 @@ void notFound(AsyncWebServerRequest *request) {
 }
 
 
-const char upload_html[] PROGMEM = R"rawliteral(
-<!DOCTYPE HTML><html class="HTML">
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-<style>
-input{background:#f1f1f1;border:0;padding:0 15px}
-body{background:#00acc1;font-family:sans-serif;font-size:14px;color:#777}
-#file-input,input{width: 100%;height:44px;border-radius:4px;margin:10px auto;font-size:15px}
-#file-input{padding:0 10px;box-sizing:border-box;border:1px solid #ddd;line-height:44px;text-align:left;display:block;cursor:pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-#bar,#prgbar{background-color:#f1f1f1;border-radius:10px}#bar{background-color:#00acc1;width:0%;height:10px;}
-form{background:#fff;max-width:258px;margin:75px auto;padding:35px; padding-bottom: 30px;border: 1px solid #00acc1;border-radius:5px;text-align:center}
-.btn {background-color: #00acc1;box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08), 0 0 15px 0 rgba(0, 0, 0, 0.02), 0 0 20px 4px rgba(0, 0, 0, 0.06);color: white;border-radius: 4px;padding: 9px 16px;background-image: none;
-text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-transform:uppercase;font-size:14px;line-height: 18px;display: inline-block;vertical-align: middle;}
-.btn:hover {background-color: #0097a7;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0,0,0,.12);}
-.btn:visited {color: white;}
-.btn:focus {outline: none;}
-.btn:active {color: white;background-color: #007c91;}
-
-.btn2 {background-color: #e29425;box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.08), 0 0 15px 0 rgba(0, 0, 0, 0.02), 0 0 20px 4px rgba(0, 0, 0, 0.06);color: white;border-radius: 4px;padding: 9px 16px;background-image: none;
-text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-transform:uppercase;font-size:14px;line-height: 18px;display: inline-block;vertical-align: middle;}
-.btn2:hover:enabled {background-color: #d68a1d;box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0,0,0,.12);}
-.btn2:visited {color: white;}
-.btn2:focus {outline: none;}
-.btn2:active {color: white;background-color: #ca7125;}
-.btn2:disabled {
-  cursor: default;
-    background: #DDD;
-}
-   html {
-     font-family: Roboto, Arial, sans-serif;
-     display: inline-block;
-     margin: 0px auto;
-     text-align: center;
-    }
-    h2 { font-size: 3.0rem; 
-       font-family: Arial;
-      text-align: center;
-      font-weight: normal;
-      color: #fafcfc;
-     }
-    p { font-size: 3.0rem; margin-top: 0;}
-    .units { font-size: 1.2rem; }
-    .dht-labels{
-      font-size: 1.5rem;
-      vertical-align:middle;
-      padding-bottom: 15px;
-      font-weight: normal;
-      color: #333333;
-    }
-</style>
-
-
-</head>
-    <title>FIRMWARE UPDATE</title>
-   <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
-</head><body>
-
-<form method='POST' action='#' enctype='multipart/form-data' id='upload_form'>
-<input type='file' name='update' id='file' onchange='sub(this)' style=display:none accept=".bin*">
-<label id='file-input' for='file'>   Choose bin file...</label>
-<input type="submit" id="updateBtn" class="btn2" disabled = "disabled" value="Update">
-<input type="button" class="btn" onclick="location.href='/';" value="Back">
-<br>
-<div id='prg'style=display:none>Ready to Update</div>
-<br><div id='prgbar'style=display:none><div id='bar'></div></div></form>
-<script>
-function sub(obj){
-var a = obj.value;
-console.log(a);
-var fileName = a.replace(/^.*[\\\/]/, '')
-console.log(fileName);
-document.getElementById('file-input').innerHTML = fileName;
-document.getElementById('updateBtn').disabled = false;
-document.getElementById('prgbar').style.display = 'block';
-document.getElementById('prg').style.display = 'block';
-};
-$('form').submit(function(e){
-  document.getElementById('updateBtn').disabled = "disabled"; 
-e.preventDefault();
-var form = $('#upload_form')[0];
-var data = new FormData(form);
-
-$.ajax({
-url: '/doUpdate',
-type: 'POST',
-data: data,
-contentType: false,
-processData:false,
-xhr: function() {
-var xhr = new window.XMLHttpRequest();
-xhr.upload.addEventListener('progress', function(evt) {
-if (evt.lengthComputable) {
-var per = evt.loaded / evt.total;
-$('#prg').html('Progress: ' + Math.round(per*100) + "%");
-$('#bar').css('width',Math.round(per*100) + "%");
-}
-}, false);
-return xhr;
-},
-success:function(d, s) {
-console.log('success!'); 
-alert("Successfully updated");
-setTimeout("location.href = '../';", 2000);
-
-},
-error: function (a, b, c) {
-}
-});
-});
-
-
-</script></body></html>)rawliteral";
-
-
 const char updatePage[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html class="HTML">
 <head>
@@ -246,9 +131,8 @@ text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-tr
     }
 </style>
 
-
 </head>
-    <title>Gauge Update Page</title>
+    <title>Gauge Update</title>
    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
 </head><body>
 
@@ -258,12 +142,8 @@ text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-tr
 <input type="submit" id="updateBtn" class="btn2" disabled = "disabled" value="Update">
 <input type="button" class="btn" onclick="location.href='/';" value="Back">
 <br>
-
 <div id='prg'style=display:none>Ready to Update</div>
 <br><div id='prgbar'style=display:none><div id='bar'></div></div></form>
-
-
-
 <script>
 function sub(obj){
 var a = obj.value;
@@ -311,6 +191,7 @@ error: function (a, b, c) {
 
 
 </script></body></html>)rawliteral";
+
 
 const char startPage[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
@@ -592,7 +473,7 @@ void otaSetup(void)
     });
 
     server.on("/update", HTTP_GET, [](AsyncWebServerRequest *request){
-        request->send(200, "text/html", upload_html);
+        request->send(200, "text/html", updatePage);
     });
 
     server.on("/config", HTTP_GET, [](AsyncWebServerRequest *request){

@@ -647,53 +647,72 @@ static void renderLeds(int ledType, sensorData *data)
   switch (ledType)
   {
   case 0:
+    ledOff();
     sequentialLedAll(percent);
     break;
 
   case 1:
+    ledOff();
     sequentialLed(percent);
     break;
 
   case 2:
+    ledOff();
     singleLedAll(percent);
     break;
 
   case 3:
+    ledOff();
     singleLed(percent);
     break;
 
   case 4:
+  ledOff();
     break;
 
   case 5:
+    indLedOff();
     sequentialLed(percent);
-
+    
     if (newWarning == true)
     {
-      toggleLeftLed();
+      digitalWrite(LED_11,HIGH);
     }
-
+    else{
+      digitalWrite(LED_11,LOW);
+    }
+    
     if (data->scaledValue > data->alertHigh || data->scaledValue < data->alertLow)
     {
-      toggleRightLed();
+      digitalWrite(LED_12,HIGH);
+    }
+    else{
+      digitalWrite(LED_12,LOW);
     }
     break;
 
   case 6:
+    indLedOff();
     singleLed(percent);
 
     if (newWarning == true)
     {
-      toggleLeftLed();
+      digitalWrite(LED_11,HIGH);
     }
-
+      else{
+      digitalWrite(LED_11,LOW);
+    }
     if (data->scaledValue > data->alertHigh || data->scaledValue < data->alertLow)
     {
-      toggleRightLed();
+      digitalWrite(LED_12,HIGH);
+    }
+     else{
+      digitalWrite(LED_12,LOW);
     }
     break;
 
   default:
+    ledOff();
     sequentialLedAll(percent);
     break;
   }
@@ -705,7 +724,7 @@ static void renderLeds(int ledType, sensorData *data)
 
 
 void printLeds(int g){
-  ledOff();
+  
   switch (g)
   {
     case 0:
@@ -725,6 +744,7 @@ void printLeds(int g){
       break;
 
     default:
+    ledOff();
       break;
 
   }
@@ -1173,11 +1193,9 @@ sensorData *selectData(int g)
     return &noData;
     break;
 
-#ifdef DEBUG_BUILD
   case 39:
     return &testData;
     break;
-#endif
 
   default:
     maxSet = 1;
@@ -1343,8 +1361,9 @@ void setup()
   saveStartup();
 #endif
 
-
+#ifdef CUSTOM_MINMAX
  restoreSensorMinMax();
+#endif
 
   // Get the previous gauge values to start from last gauge
   preferences.begin("config", true);
