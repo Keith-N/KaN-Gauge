@@ -913,6 +913,7 @@ void printData(int g)
       u8g2.setCursor(0, 53);
       u8g2.print("<-     disable    ->");
       setSensorMinMax(selectedSensor,selectedLimit,inputNewValueF);
+      ota();
     }
     else
     {
