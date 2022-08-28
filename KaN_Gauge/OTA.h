@@ -325,7 +325,7 @@ text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-tr
       vertical-align:middle;
       padding-bottom: 15px;
       font-weight: normal;
-      color: #333333;
+      color: #FFFFFFFF;
     }
 </style>
 <head>
@@ -337,7 +337,7 @@ text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-tr
 
 <body>
 
-  <h1>Configurations</h1>
+  <h1 style="color:white;">Gauge Configurations</h1>
   
 <form action="/getConfig">
   
@@ -375,14 +375,17 @@ text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-tr
   <input type="submit" value = "Back">
   </form>
 
-  <p> Note:
-      Pressure is in kpa,
-      Temperature is in C
+  <p style="color:white;"> Note: <br>
+      Pressure is in kpa<br>
+      Temperature is in C<br>
+      <br>
+      Minimum and Maximum are for gauge LED ring limits <br>
+      Low and High are used to trigger the alert LED <br>
   </p>
 
 
 </body>
-</html>  
+</html>
 )rawliteral";
 
 
@@ -493,10 +496,10 @@ void otaSetup(void)
      inputNewValueF = c.toFloat();
      readyToSetLimits = true;
      updatedLimits = true;
-
+     
+     request->send(200, "text/html", configPage);
         
-    request->send(200, "text/html",
-        "<br> <a href=\" /config \">Return</a> <br>");
+ 
     });
 
 

@@ -895,7 +895,7 @@ void printData(int g)
     u8g2.setFont(u8g2_font_6x10_tf);
     u8g2.clearBuffer();
     u8g2.setCursor(0, 0);
-    u8g2.print("WiFi OTA");
+    u8g2.print("WiFi");
 
 #ifdef OTA_ENABLE
     if (wifiToggled == true)
@@ -911,14 +911,18 @@ void printData(int g)
       u8g2.print("IP: ");
       u8g2.print(WiFi.softAPIP());
       u8g2.setCursor(0, 53);
-      u8g2.print("Press -> to disable");
+      u8g2.print("<-     disable    ->");
       setSensorMinMax(selectedSensor,selectedLimit,inputNewValueF);
     }
     else
     {
 
       u8g2.print(" Disabled");
-      u8g2.setCursor(0, 25);
+      u8g2.setCursor(0, 16);
+      u8g2.print("Use to update and to");
+      u8g2.setCursor(0, 28);
+      u8g2.print("configure settings");
+      u8g2.setCursor(0, 53);
       u8g2.print("Press -> to enable");
     }
 #else
