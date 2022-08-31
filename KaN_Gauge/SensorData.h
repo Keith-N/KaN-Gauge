@@ -4,7 +4,7 @@ const int BASE_CAN_ID = 512; // base ID in ECU broadcast
 // Data structure
 struct sensorData
 {
-  String dataName;
+  char dataName[16];
   String units;
   float scaleMultiplier;
   int offset;

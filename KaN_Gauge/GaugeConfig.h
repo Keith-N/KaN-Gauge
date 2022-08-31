@@ -4,7 +4,9 @@
  * Use to enable/disable features
  */
 
-String build = "1.1.6"; 
+String build = "1.1.7"; 
+int nvsVersion = 2;
+
 // Enable first and second startup logos
 #define USE_BMP
 #define USE_BMP_2
@@ -25,14 +27,16 @@ String build = "1.1.6";
 // Allow OTA updates
 #define OTA_ENABLE
 
+//#define WIFI_ALWAYS_ACTIVE
+
 // Override default min/max with saved values
- #define CUSTOM_MINMAX
+#define CUSTOM_MINMAX
 
 // Alert if too long between CAN messages
 //#define RX_TIMEOUT
 
-// Reset the stored NVS data on boot
-// #define RESET_STORED
+// Check and reset the stored NVS data on boot
+#define RESET_STORED_NVS
 
 // Force the startup logo to newStartup values, writes on boot
 //#define SETUP_STARTUP

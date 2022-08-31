@@ -71,6 +71,10 @@ void printGitQR()
   u8g2.setCursor(0, 50);
   u8g2.print("DEBUG");
 #endif
+
+  u8g2.setCursor(35, 50);
+  u8g2.print(nvsVersion);
+  
   u8g2.sendBuffer();
 }
 
@@ -89,12 +93,6 @@ void printInitialStart()
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setCursor(0, 0);
   u8g2.print("Initializing ...");
-
-#ifdef RESET_STORED
-  u8g2.setCursor(0, 25);
-  u8g2.print("Resetting data!");
-#endif
-
   u8g2.sendBuffer();
 }
 

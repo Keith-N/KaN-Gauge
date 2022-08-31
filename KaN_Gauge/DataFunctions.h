@@ -23,6 +23,7 @@ sensorData *ptrDataLed4;
 sensorData *ptrDataLed5;
 sensorData *newSensorConfig;
 
+
 // ========================================================== Functions =========================================================================
 void incrementTestData()
 {

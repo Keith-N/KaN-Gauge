@@ -1,4 +1,3 @@
- 
 // ======================================  Includes ============================================
 
 /*
@@ -24,6 +23,7 @@
 #include <ACAN_ESP32.h> //https://github.com/pierremolinaro/acan-esp32
 #include <Wire.h>
 #include <Preferences.h>
+#include <nvs_flash.h>
 
 // Other files
 #include "DataFunctions.h"
@@ -31,7 +31,6 @@
 #include "GaugeConfig.h"
 #include "OTA.h"
 #include "Display.h"
-
 
 CANMessage CANmsg;
 Preferences preferences;
@@ -46,15 +45,15 @@ static void printDataNameAndUnits(sensorData *data)
 
 void disableWifi()
 {
-    WiFi.softAPdisconnect();
-    delay(100);
-    WiFi.mode(WIFI_OFF);
-    delay(100);
-    wifiToggled = false;
-    if (updatedLimits == true){
-      saveSensorMinMax();
-      updatedLimits = false;
-    }
+#ifdef WIFI_ALWAYS_ACTIVE
+
+#else
+  WiFi.softAPdisconnect();
+  delay(100);
+  WiFi.mode(WIFI_OFF);
+  delay(100);
+  wifiToggled = false;
+#endif
 }
 // ======================================  Input Functions  ============================================
 
@@ -62,6 +61,42 @@ void disableWifi()
  * Select the data displayed for all 4 possible values and LEDs
  *
  */
+
+void eraseNVS()
+{
+
+  nvs_flash_deinit();
+  nvs_flash_erase(); // erase the NVS partition and...
+  nvs_flash_init();  // initialize the NVS partition.
+}
+
+void checkNVS()
+{
+
+//   Check NVS config version and wipe if it is not as expected
+//   Save startup config
+//   This will allow cleaning up stored configs if changes are made to the format
+
+      preferences.begin("startup", true);
+      int nvsBuf = preferences.getUInt("nvs", 0);
+      preferences.end();
+  
+      if ( nvsBuf != nvsVersion){
+          preferences.begin("startup", true);
+          startup = preferences.getUInt("logo1", 0);
+          startup2 = preferences.getUInt("logo2", 0);
+          displayController = preferences.getUInt("display", 0);
+          preferences.end();
+  
+          eraseNVS();
+  
+          preferences.begin("startup", false);
+          preferences.putUInt("logo1", startup);
+          preferences.putUInt("logo2", startup2);
+          preferences.putUInt("nvs",nvsVersion);
+          preferences.end();
+      }
+}
 
 void configMode()
 {
@@ -167,7 +202,7 @@ void configMode()
       u8g2.print("<-Next         Type->");
       break;
 
-      case 10:
+    case 10:
       u8g2.print("Display Update Rate");
       u8g2.setCursor(0, 20);
       u8g2.print(displayUpdateTime[displayUpdateRate]);
@@ -206,7 +241,8 @@ void configMode()
 
       case 10:
         displayUpdateRate++;
-        if (displayUpdateRate > 6){
+        if (displayUpdateRate > 6)
+        {
           displayUpdateRate = 0;
         }
         break;
@@ -237,8 +273,8 @@ void configMode()
  * Setup pointers from the selected data settings for all 4 displayed values and LEDs
  */
 
-
-void clearDisplay(){
+void clearDisplay()
+{
   u8g2.clearBuffer();
   u8g2.sendBuffer();
 }
@@ -253,7 +289,6 @@ void setupData()
   ptrDataLed4 = selectData(dataSet[6]);
   ptrData5 = selectData(dataSet[7]);
   ptrDataLed5 = selectData(dataSet[8]);
-  
 }
 
 /*
@@ -319,159 +354,506 @@ void checkDisplayController()
   }
 }
 
-float c2f( float c){
+float c2f(float c)
+{
   float f = (c * 1.8) + 32;
   return f;
 }
 
-float kpa2psi( float k){
+float kpa2psi(float k)
+{
   float p = k * 0.1450377377;
   return p;
 }
 
-void saveSensorMinMax(){
+void saveSensorMinMax()
+{
+
+
+    int mult = 1000;
+    testData.minimum = testData.minimum * mult;
+    testData.maximum = testData.minimum * mult;
+    testData.alertLow = testData.alertLow * mult;
+    testData.alertHigh = testData.alertHigh * mult;
+    afr.minimum = afr.minimum   * mult; 
+    afr.maximum =  afr.maximum     * mult; 
+    afr.alertLow = afr.alertLow     * mult;
+    afr.alertHigh = afr.alertHigh     * mult;
+    lambda1.minimum =  lambda1.minimum * mult;
+    lambda1.maximum =   lambda1.maximum * mult;
+    lambda1.alertLow =  lambda1.alertLow * mult;
+    lambda1.alertHigh = lambda1.alertHigh * mult;
+    lambda2.minimum =  lambda2.minimum * mult;
+    lambda2.maximum =   lambda2.maximum * mult;
+    lambda2.alertLow =  lambda2.alertLow * mult;
+    lambda2.alertHigh = lambda2.alertHigh * mult;
 
   preferences.begin("limits", false);
 
-  // RPM
-  preferences.putFloat("rpmMax", rpm.maximum);
-  preferences.putFloat("rpmMaxAlert", rpm.alertHigh);
-
-  preferences.putFloat("afrMax", afr.maximum);
-  preferences.putFloat("afrMaxAlert", afr.alertHigh);
-  lambda1.maximum = preferences.putFloat("lamMax", lambda1.maximum);
-  lambda1.alertHigh = preferences.putFloat("lamAlertHi", lambda1.alertHigh);
-  lambda2.maximum = preferences.putFloat("lam2Max", lambda2.maximum);
-  lambda2.alertHigh = preferences.putFloat("lam2AlertHi", lambda2.alertHigh);
-
-  // AFR/Lambda
-  preferences.putFloat("cltMax", coolantTemperature.maximum);
-  preferences.putFloat("cltMin", coolantTemperature.minimum);
-  preferences.putFloat("cltAlertHi", coolantTemperature.alertHigh);
-  preferences.putFloat("cltAlertLo", coolantTemperature.alertLow);
-  preferences.putFloat("iatMax", intakeTemperature.maximum);
-  preferences.putFloat("iatMin", intakeTemperature.minimum);
-  preferences.putFloat("iatAlertHi", intakeTemperature.alertHigh);
-  preferences.putFloat("iatAlertLo", intakeTemperature.alertLow);
-  preferences.putFloat("iatMax", intakeTemperature.maximum);
-  preferences.putFloat("iatMin", intakeTemperature.minimum);
-  preferences.putFloat("iatAlertHi", intakeTemperature.alertHigh);
-  preferences.putFloat("iatAlertLo", intakeTemperature.alertLow);
-
-  // Pressure
-  preferences.putFloat("oilPresMax", oilPressure.maximum);
-  preferences.putFloat("oilPresMin", oilPressure.minimum);
-  preferences.putFloat("oilPresAlertHi", oilPressure.alertHigh);
-  preferences.putFloat("oilPresAlertLo", oilPressure.alertLow);
-  preferences.putFloat("mapMax", manifoldPressure.maximum);
-  preferences.putFloat("mapMin", manifoldPressure.minimum);
-  preferences.putFloat("mapAlertHi", manifoldPressure.alertHigh);
-  preferences.putFloat("mapMax", manifoldPressure.maximum);
-  preferences.putFloat("mapMin", manifoldPressure.minimum);
-  preferences.putFloat("mapAlertHi", manifoldPressure.alertHigh);
-
-  // Test
-  preferences.putFloat("testMax", testData.maximum);
-  preferences.putFloat("testMin", testData.minimum);
-  preferences.putFloat("testAlertHi", testData.alertHigh);
-  preferences.putFloat("testAlertLo", testData.alertLow);
+  preferences.putInt("testMIN", testData.minimum);
+  preferences.putInt("testMAX", testData.maximum);
+  preferences.putInt("testLOW", testData.alertLow);
+  preferences.putInt("testHI", testData.alertHigh);
+  preferences.putInt("rpmMIN", rpm.minimum);
+  preferences.putInt("rpmMAX", rpm.maximum);
+  preferences.putInt("rpmLOW", rpm.alertLow);
+  preferences.putInt("rpmHI", rpm.alertHigh);
+  preferences.putInt("vssMIN", vss.minimum);
+  preferences.putInt("vssMAX", vss.maximum);
+  preferences.putInt("vssLOW", vss.alertLow);
+  preferences.putInt("vssHI", vss.alertHigh);
+  preferences.putInt("vssMPHMIN", vss_mph.minimum);
+  preferences.putInt("vssMPHMAX", vss_mph.maximum);
+  preferences.putInt("vssMPHLOW", vss_mph.alertLow);
+  preferences.putInt("vssMPHHI", vss_mph.alertHigh);
+  preferences.putInt("acceleratorMIN", accelerator.minimum);
+  preferences.putInt("acceleratorMAX", accelerator.maximum);
+  preferences.putInt("acceleratorLOW", accelerator.alertLow);
+  preferences.putInt("acceleratorHI", accelerator.alertHigh);
+  preferences.putInt("throttle1MIN", throttle1.minimum);
+  preferences.putInt("throttle1MAX", throttle1.maximum);
+  preferences.putInt("throttle1LOW", throttle1.alertLow);
+  preferences.putInt("throttle1HI", throttle1.alertHigh);
+  preferences.putInt("throttle1MIN", throttle2.minimum);
+  preferences.putInt("throttle1MAX", throttle2.maximum);
+  preferences.putInt("throttle1LOW", throttle2.alertLow);
+  preferences.putInt("throttle1HI", throttle2.alertHigh);
+  preferences.putInt("injDutyMIN", injectorDuty.minimum);
+  preferences.putInt("injDutyMAX", injectorDuty.maximum);
+  preferences.putInt("injDutyLOW", injectorDuty.alertLow);
+  preferences.putInt("injDutyHI", injectorDuty.alertHigh);
+  preferences.putInt("injPulseMIN", injectorPulse.minimum);
+  preferences.putInt("injPulseMAX", injectorPulse.maximum);
+  preferences.putInt("injPulseLOW", injectorPulse.alertLow);
+  preferences.putInt("injPulseHI", injectorPulse.alertHigh);
+  preferences.putInt("fuelPresHighMIN", fuelPressureHigh.minimum);
+  preferences.putInt("fuelPresHighMAX", fuelPressureHigh.maximum);
+  preferences.putInt("fuelPresHighLOW", fuelPressureHigh.alertLow);
+  preferences.putInt("fuelPresHighHI", fuelPressureHigh.alertHigh);
+  preferences.putInt("fuelPresLowMIN", fuelPressureLow.minimum);
+  preferences.putInt("fuelPresLowMAX", fuelPressureLow.maximum);
+  preferences.putInt("fuelPresLowLOW", fuelPressureLow.alertLow);
+  preferences.putInt("fuelPresLowHI", fuelPressureLow.alertHigh);
+  preferences.putInt("ethanolMIN", ethanol.minimum);
+  preferences.putInt("ethanolMAX", ethanol.maximum);
+  preferences.putInt("ethanolLOW", ethanol.alertLow);
+  preferences.putInt("ethanolHI", ethanol.alertHigh);
+  preferences.putInt("fuelTrimMIN", fuelTrim.minimum);
+  preferences.putInt("fuelTrimMAX", fuelTrim.maximum);
+  preferences.putInt("fuelTrimLOW", fuelTrim.alertLow);
+  preferences.putInt("fuelTrimHI", fuelTrim.alertHigh);
+  preferences.putInt("fuelMIN", fuel.minimum);
+  preferences.putInt("fuelMAX", fuel.maximum);
+  preferences.putInt("fuelLOW", fuel.alertLow);
+  preferences.putInt("fuelHI", fuel.alertHigh);
+  preferences.putInt("fuelUsedMIN", fuelConsumed.minimum);
+  preferences.putInt("fuelUsedMAX", fuelConsumed.maximum);
+  preferences.putInt("fuelUsedLOW", fuelConsumed.alertLow);
+  preferences.putInt("fuelUsedHI", fuelConsumed.alertHigh);
+  preferences.putInt("fuelFlowMIN", fuelConsumption.minimum);
+  preferences.putInt("fuelFlowMAX", fuelConsumption.maximum);
+  preferences.putInt("fuelFlowLOW", fuelConsumption.alertLow);
+  preferences.putInt("fuelFlowHI", fuelConsumption.alertHigh);
+  preferences.putInt("afrMIN", afr.minimum);
+  preferences.putInt("afrMAX", afr.maximum);
+  preferences.putInt("afrLOW", afr.alertLow);
+  preferences.putInt("afrHI", afr.alertHigh);
+  preferences.putInt("lambda1MIN", lambda1.minimum);
+  preferences.putInt("lambda1MAX", lambda1.maximum);
+  preferences.putInt("lambda1LOW", lambda1.alertLow);
+  preferences.putInt("lambda1HI", lambda1.alertHigh);
+  preferences.putInt("lambda2MIN", lambda1.minimum);
+  preferences.putInt("lambda2MAX", lambda1.maximum);
+  preferences.putInt("lambda2LOW", lambda1.alertLow);
+  preferences.putInt("lambda2HI", lambda1.alertHigh);
+  preferences.putInt("cltCMIN", coolantTemperature.minimum);
+  preferences.putInt("cltCMAX", coolantTemperature.maximum);
+  preferences.putInt("cltCLOW", coolantTemperature.alertLow);
+  preferences.putInt("cltCHI", coolantTemperature.alertHigh);
+  preferences.putInt("iatCMIN", intakeTemperature.minimum);
+  preferences.putInt("iatCMAX", intakeTemperature.maximum);
+  preferences.putInt("iatCLOW", intakeTemperature.alertLow);
+  preferences.putInt("iatCHI", intakeTemperature.alertHigh);
+  preferences.putInt("aux1CMIN", auxTemp1.minimum);
+  preferences.putInt("aux1CMAX", auxTemp1.maximum);
+  preferences.putInt("aux1CLOW", auxTemp1.alertLow);
+  preferences.putInt("aux1CHI", auxTemp1.alertHigh);
+  preferences.putInt("aux2CMIN", auxTemp2.minimum);
+  preferences.putInt("aux2CMAX", auxTemp2.maximum);
+  preferences.putInt("aux2CLOW", auxTemp2.alertLow);
+  preferences.putInt("aux2CHI", auxTemp2.alertHigh);
+  preferences.putInt("mcuCMIN", mcuTemp.minimum);
+  preferences.putInt("mcuCMAX", mcuTemp.maximum);
+  preferences.putInt("mcuCLOW", mcuTemp.alertLow);
+  preferences.putInt("mcuCHI", mcuTemp.alertHigh);
+  preferences.putInt("cltFMIN", coolantTemperature_f.minimum);
+  preferences.putInt("cltFMAX", coolantTemperature_f.maximum);
+  preferences.putInt("cltFLOW", coolantTemperature_f.alertLow);
+  preferences.putInt("cltFHI", coolantTemperature_f.alertHigh);
+  preferences.putInt("iatFMIN", intakeTemperature_f.minimum);
+  preferences.putInt("iatFMAX", intakeTemperature_f.maximum);
+  preferences.putInt("iatFLOW", intakeTemperature_f.alertLow);
+  preferences.putInt("iatFHI", intakeTemperature_f.alertHigh);
+  preferences.putInt("aux1FMIN", auxTemp1_f.minimum);
+  preferences.putInt("aux1FMAX", auxTemp1_f.maximum);
+  preferences.putInt("aux1FLOW", auxTemp1_f.alertLow);
+  preferences.putInt("aux1FHI", auxTemp1_f.alertHigh);
+  preferences.putInt("aux2FMIN", auxTemp2_f.minimum);
+  preferences.putInt("aux2FMAX", auxTemp2_f.maximum);
+  preferences.putInt("aux2FLOW", auxTemp2_f.alertLow);
+  preferences.putInt("aux2FHI", auxTemp2_f.alertHigh);
+  preferences.putInt("mapKPAMIN", manifoldPressure.minimum);
+  preferences.putInt("mapKPAMAX", manifoldPressure.maximum);
+  preferences.putInt("mapKPALOW", manifoldPressure.alertLow);
+  preferences.putInt("mapKPAHI", manifoldPressure.alertHigh);
+  preferences.putInt("oilKPAMIN", oilPressure.minimum);
+  preferences.putInt("oilKPAMAX", oilPressure.maximum);
+  preferences.putInt("oilKPALOW", oilPressure.alertLow);
+  preferences.putInt("oilKPAHI", oilPressure.alertHigh);
+  preferences.putInt("mapKPAMIN", manifoldPressure_psi.minimum);
+  preferences.putInt("mapKPAMAX", manifoldPressure_psi.maximum);
+  preferences.putInt("mapKPALOW", manifoldPressure_psi.alertLow);
+  preferences.putInt("mapKPAHI", manifoldPressure_psi.alertHigh);
+  preferences.putInt("oilKPAMIN", oilPressure_psi.minimum);
+  preferences.putInt("oilKPAMAX", oilPressure_psi.maximum);
+  preferences.putInt("oilKPALOW", oilPressure_psi.alertLow);
+  preferences.putInt("oilKPAHI", oilPressure_psi.alertHigh);
+  preferences.putInt("vvtMIN", vvtPosition.minimum);
+  preferences.putInt("vvtMAX", vvtPosition.maximum);
+  preferences.putInt("vvtLOW", vvtPosition.alertLow);
+  preferences.putInt("vvtHI", vvtPosition.alertHigh);
+  preferences.putInt("vvtEx1MIN", vvtExhaust1.minimum);
+  preferences.putInt("vvtEx1MAX", vvtExhaust1.maximum);
+  preferences.putInt("vvtEx1LOW", vvtExhaust1.alertLow);
+  preferences.putInt("vvtEx1HI", vvtExhaust1.alertHigh);
+  preferences.putInt("vvtEx2MIN", vvtExhaust2.minimum);
+  preferences.putInt("vvtEx2MAX", vvtExhaust2.maximum);
+  preferences.putInt("vvtEx2LOW", vvtExhaust2.alertLow);
+  preferences.putInt("vvtEx2HI", vvtExhaust2.alertHigh);
+  preferences.putInt("vvtIn1MIN", vvtIntake1.minimum);
+  preferences.putInt("vvtIn1MAX", vvtIntake1.maximum);
+  preferences.putInt("vvtIn1LOW", vvtIntake1.alertLow);
+  preferences.putInt("vvtIn1HI", vvtIntake1.alertHigh);
+  preferences.putInt("vvtIn2MIN", vvtIntake2.minimum);
+  preferences.putInt("vvtIn2MAX", vvtIntake2.maximum);
+  preferences.putInt("vvtIn2LOW", vvtIntake2.alertLow);
+  preferences.putInt("vvtIn2HI", vvtIntake2.alertHigh);
+  preferences.putInt("airMassMIN", airMass.minimum);
+  preferences.putInt("airMassMAX", airMass.maximum);
+  preferences.putInt("airMassLOW", airMass.alertLow);
+  preferences.putInt("airMassHI", airMass.alertHigh);
+  preferences.putInt("estAirMIN", estimatedAirflow.minimum);
+  preferences.putInt("estAirMAX", estimatedAirflow.maximum);
+  preferences.putInt("estAirLOW", estimatedAirflow.alertLow);
+  preferences.putInt("estAirHI", estimatedAirflow.alertHigh);
+  preferences.putInt("batVMIN", batteryVoltage.minimum);
+  preferences.putInt("batVMAX", batteryVoltage.maximum);
+  preferences.putInt("batVLOW", batteryVoltage.alertLow);
+  preferences.putInt("batVHI", batteryVoltage.alertHigh);
 
   preferences.end();
 
+    testData.minimum = testData.minimum / mult;
+    testData.maximum = testData.minimum / mult;
+    testData.alertLow = testData.alertLow / mult;
+    testData.alertHigh = testData.alertHigh / mult;
+    afr.minimum = afr.minimum   / mult; 
+    afr.maximum =  afr.maximum     / mult; 
+    afr.alertLow = afr.alertLow     / mult;
+    afr.alertHigh = afr.alertHigh     / mult;
+    lambda1.minimum =  lambda1.minimum / mult;
+    lambda1.maximum =   lambda1.maximum / mult;
+    lambda1.alertLow =  lambda1.alertLow / mult;
+    lambda1.alertHigh = lambda1.alertHigh / mult;
+    lambda2.minimum =  lambda2.minimum / mult;
+    lambda2.maximum =   lambda2.maximum / mult;
+    lambda2.alertLow =  lambda2.alertLow / mult;
+    lambda2.alertHigh = lambda2.alertHigh / mult;
+  
 }
 
-void setSensorMinMax(int sensor, int limit, float newValue){
+void restoreSensorMinMax()
+{
+  preferences.begin("limits", true);
 
-  if (readyToSetLimits == true){
+    
+  testData.minimum =    preferences.getInt("testMIN", testData.minimum);
+  testData.maximum =    preferences.getInt("testMAX", testData.maximum);
+  testData.alertLow =   preferences.getInt("testLOW", testData.alertLow);
+  testData.alertHigh =  preferences.getInt("testHI", testData.alertHigh);
+  rpm.minimum = preferences.getInt("rpmMIN", rpm.minimum);
+  rpm.maximum = preferences.getInt("rpmMAX", rpm.maximum);
+  rpm.alertLow = preferences.getInt("rpmLOW", rpm.alertLow);
+  rpm.alertHigh = preferences.getInt("rpmHI", rpm.alertHigh);
+  vss.minimum = preferences.getInt("vssMIN", vss.minimum);
+  vss.maximum = preferences.getInt("vssMAX", vss.maximum);
+  vss.alertLow = preferences.getInt("vssLOW", vss.alertLow);
+  vss.alertHigh = preferences.getInt("vssHI", vss.alertHigh);
+  vss_mph.minimum = preferences.getInt("vssMPHMIN", vss_mph.minimum);
+  vss_mph.maximum = preferences.getInt("vssMPHMAX", vss_mph.maximum);
+  vss_mph.alertLow = preferences.getInt("vssMPHLOW", vss_mph.alertLow);
+  vss_mph.alertHigh = preferences.getInt("vssMPHHI", vss_mph.alertHigh);
+  accelerator.minimum = preferences.getInt("acceleratorMIN", accelerator.minimum);
+  accelerator.maximum = preferences.getInt("acceleratorMAX", accelerator.maximum);
+  accelerator.alertLow = preferences.getInt("acceleratorLOW", accelerator.alertLow);
+  accelerator.alertHigh = preferences.getInt("acceleratorHI", accelerator.alertHigh);
+  throttle1.minimum = preferences.getInt("throttle1MIN", throttle1.minimum);
+  throttle1.maximum = preferences.getInt("throttle1MAX", throttle1.maximum);
+  throttle1.alertLow = preferences.getInt("throttle1LOW", throttle1.alertLow);
+  throttle1.alertHigh = preferences.getInt("throttle1HI", throttle1.alertHigh);
+  throttle2.minimum = preferences.getInt("throttle1MIN", throttle2.minimum);
+  throttle2.maximum = preferences.getInt("throttle1MAX", throttle2.maximum);
+  throttle2.alertLow = preferences.getInt("throttle1LOW", throttle2.alertLow);
+  throttle2.alertHigh = preferences.getInt("throttle1HI", throttle2.alertHigh);
+  injectorDuty.minimum = preferences.getInt("injDutyMIN", injectorDuty.minimum);
+  injectorDuty.maximum = preferences.getInt("injDutyMAX", injectorDuty.maximum);
+  injectorDuty.alertLow = preferences.getInt("injDutyLOW", injectorDuty.alertLow);
+  injectorDuty.alertHigh = preferences.getInt("injDutyHI", injectorDuty.alertHigh);
+  injectorPulse.minimum = preferences.getInt("injPulseMIN", injectorPulse.minimum);
+  injectorPulse.maximum = preferences.getInt("injPulseMAX", injectorPulse.maximum);
+  injectorPulse.alertLow = preferences.getInt("injPulseLOW", injectorPulse.alertLow);
+  injectorPulse.alertHigh = preferences.getInt("injPulseHI", injectorPulse.alertHigh);
+  fuelPressureHigh.minimum = preferences.getInt("fuelPresHighMIN", fuelPressureHigh.minimum);
+  fuelPressureHigh.maximum = preferences.getInt("fuelPresHighMAX", fuelPressureHigh.maximum);
+  fuelPressureHigh.alertLow = preferences.getInt("fuelPresHighLOW", fuelPressureHigh.alertLow);
+  fuelPressureHigh.alertHigh = preferences.getInt("fuelPresHighHI", fuelPressureHigh.alertHigh);
+  fuelPressureLow.minimum = preferences.getInt("fuelPresLowMIN", fuelPressureLow.minimum);
+  fuelPressureLow.maximum = preferences.getInt("fuelPresLowMAX", fuelPressureLow.maximum);
+  fuelPressureLow.alertLow = preferences.getInt("fuelPresLowLOW", fuelPressureLow.alertLow);
+  fuelPressureLow.alertHigh = preferences.getInt("fuelPresLowHI", fuelPressureLow.alertHigh);
+  ethanol.minimum = preferences.getInt("ethanolMIN", ethanol.minimum);
+  ethanol.maximum = preferences.getInt("ethanolMAX", ethanol.maximum);
+  ethanol.alertLow = preferences.getInt("ethanolLOW", ethanol.alertLow);
+  ethanol.alertHigh = preferences.getInt("ethanolHI", ethanol.alertHigh);
+  fuelTrim.minimum = preferences.getInt("fuelTrimMIN", fuelTrim.minimum);
+  fuelTrim.maximum = preferences.getInt("fuelTrimMAX", fuelTrim.maximum);
+  fuelTrim.alertLow = preferences.getInt("fuelTrimLOW", fuelTrim.alertLow);
+  fuelTrim.alertHigh = preferences.getInt("fuelTrimHI", fuelTrim.alertHigh);
+  fuel.minimum = preferences.getInt("fuelMIN", fuel.minimum);
+  fuel.maximum = preferences.getInt("fuelMAX", fuel.maximum);
+  fuel.alertLow = preferences.getInt("fuelLOW", fuel.alertLow);
+  fuel.alertHigh = preferences.getInt("fuelHI", fuel.alertHigh);
+  fuelConsumed.minimum = preferences.getInt("fuelUsedMIN", fuelConsumed.minimum);
+  fuelConsumed.maximum = preferences.getInt("fuelUsedMAX", fuelConsumed.maximum);
+  fuelConsumed.alertLow = preferences.getInt("fuelUsedLOW", fuelConsumed.alertLow);
+  fuelConsumed.alertHigh = preferences.getInt("fuelUsedHI", fuelConsumed.alertHigh);
+  fuelConsumption.minimum = preferences.getInt("fuelFlowMIN", fuelConsumption.minimum);
+  fuelConsumption.maximum = preferences.getInt("fuelFlowMAX", fuelConsumption.maximum);
+  fuelConsumption.alertLow = preferences.getInt("fuelFlowLOW", fuelConsumption.alertLow);
+  fuelConsumption.alertHigh = preferences.getInt("fuelFlowHI", fuelConsumption.alertHigh);
+  afr.minimum =       preferences.getInt("afrMIN", afr.minimum);
+  afr.maximum =       preferences.getInt("afrMAX", afr.maximum);
+  afr.alertLow =      preferences.getInt("afrLOW", afr.alertLow);
+  afr.alertHigh =     preferences.getInt("afrHI", afr.alertHigh);
+  lambda1.minimum =   preferences.getInt("lambda1MIN", lambda1.minimum);
+  lambda1.maximum =   preferences.getInt("lambda1MAX", lambda1.maximum);
+  lambda1.alertLow =  preferences.getInt("lambda1LOW", lambda1.alertLow);
+  lambda1.alertHigh = preferences.getInt("lambda1HI", lambda1.alertHigh);
+  lambda2.minimum =   preferences.getInt("lambda2MIN", lambda1.minimum);
+  lambda2.maximum =   preferences.getInt("lambda2MAX", lambda1.maximum);
+  lambda2.alertLow =  preferences.getInt("lambda2LOW", lambda1.alertLow);
+  lambda2.alertHigh = preferences.getInt("lambda2HI", lambda1.alertHigh);
+  coolantTemperature.minimum = preferences.getInt("cltCMIN", coolantTemperature.minimum);
+  coolantTemperature.maximum = preferences.getInt("cltCMAX", coolantTemperature.maximum);
+  coolantTemperature.alertLow = preferences.getInt("cltCLOW", coolantTemperature.alertLow);
+  coolantTemperature.alertHigh = preferences.getInt("cltCHI", coolantTemperature.alertHigh);
+  intakeTemperature.minimum = preferences.getInt("iatCMIN", intakeTemperature.minimum);
+  intakeTemperature.maximum = preferences.getInt("iatCMAX", intakeTemperature.maximum);
+  intakeTemperature.alertLow = preferences.getInt("iatCLOW", intakeTemperature.alertLow);
+  intakeTemperature.alertHigh = preferences.getInt("iatCHI", intakeTemperature.alertHigh);
+  auxTemp1.minimum = preferences.getInt("aux1CMIN", auxTemp1.minimum);
+  auxTemp1.maximum = preferences.getInt("aux1CMAX", auxTemp1.maximum);
+  auxTemp1.alertLow = preferences.getInt("aux1CLOW", auxTemp1.alertLow);
+  auxTemp1.alertHigh = preferences.getInt("aux1CHI", auxTemp1.alertHigh);
+  auxTemp2.minimum = preferences.getInt("aux2CMIN", auxTemp2.minimum);
+  auxTemp2.maximum = preferences.getInt("aux2CMAX", auxTemp2.maximum);
+  auxTemp2.alertLow = preferences.getInt("aux2CLOW", auxTemp2.alertLow);
+  auxTemp2.alertHigh = preferences.getInt("aux2CHI", auxTemp2.alertHigh);
+  mcuTemp.minimum = preferences.getInt("mcuCMIN", mcuTemp.minimum);
+  mcuTemp.maximum = preferences.getInt("mcuCMAX", mcuTemp.maximum);
+  mcuTemp.alertLow = preferences.getInt("mcuCLOW", mcuTemp.alertLow);
+  mcuTemp.alertHigh = preferences.getInt("mcuCHI", mcuTemp.alertHigh);
+  coolantTemperature_f.minimum = preferences.getInt("cltFMIN", coolantTemperature_f.minimum);
+  coolantTemperature_f.maximum = preferences.getInt("cltFMAX", coolantTemperature_f.maximum);
+  coolantTemperature_f.alertLow = preferences.getInt("cltFLOW", coolantTemperature_f.alertLow);
+  coolantTemperature_f.alertHigh = preferences.getInt("cltFHI", coolantTemperature_f.alertHigh);
+  coolantTemperature_f.minimum = preferences.getInt("iatFMIN", intakeTemperature_f.minimum);
+  coolantTemperature_f.maximum = preferences.getInt("iatFMAX", intakeTemperature_f.maximum);
+  coolantTemperature_f.alertLow = preferences.getInt("iatFLOW", intakeTemperature_f.alertLow);
+  coolantTemperature_f.alertHigh = preferences.getInt("iatFHI", intakeTemperature_f.alertHigh);
+  auxTemp1_f.minimum = preferences.getInt("aux1FMIN", auxTemp1_f.minimum);
+  auxTemp1_f.maximum = preferences.getInt("aux1FMAX", auxTemp1_f.maximum);
+  auxTemp1_f.alertLow = preferences.getInt("aux1FLOW", auxTemp1_f.alertLow);
+  auxTemp1_f.alertHigh = preferences.getInt("aux1FHI", auxTemp1_f.alertHigh);
+  auxTemp2_f.minimum = preferences.getInt("aux2FMIN", auxTemp2_f.minimum);
+  auxTemp2_f.maximum = preferences.getInt("aux2FMAX", auxTemp2_f.maximum);
+  auxTemp2_f.alertLow = preferences.getInt("aux2FLOW", auxTemp2_f.alertLow);
+  auxTemp2_f.alertHigh = preferences.getInt("aux2FHI", auxTemp2_f.alertHigh);
+  manifoldPressure.minimum = preferences.getInt("mapKPAMIN", manifoldPressure.minimum);
+  manifoldPressure.maximum = preferences.getInt("mapKPAMAX", manifoldPressure.maximum);
+  manifoldPressure.alertLow = preferences.getInt("mapKPALOW", manifoldPressure.alertLow);
+  manifoldPressure.alertHigh = preferences.getInt("mapKPAHI", manifoldPressure.alertHigh);
+  oilPressure.minimum = preferences.getInt("oilKPAMIN", oilPressure.minimum);
+  oilPressure.maximum = preferences.getInt("oilKPAMAX", oilPressure.maximum);
+  oilPressure.alertLow = preferences.getInt("oilKPALOW", oilPressure.alertLow);
+  oilPressure.alertHigh = preferences.getInt("oilKPAHI", oilPressure.alertHigh);
+  manifoldPressure_psi.minimum = preferences.getInt("mapKPAMIN", manifoldPressure_psi.minimum);
+  manifoldPressure_psi.maximum = preferences.getInt("mapKPAMAX", manifoldPressure_psi.maximum);
+  manifoldPressure_psi.alertLow = preferences.getInt("mapKPALOW", manifoldPressure_psi.alertLow);
+  manifoldPressure_psi.alertHigh = preferences.getInt("mapKPAHI", manifoldPressure_psi.alertHigh);
+  oilPressure_psi.minimum = preferences.getInt("oilKPAMIN", oilPressure_psi.minimum);
+  oilPressure_psi.maximum = preferences.getInt("oilKPAMAX", oilPressure_psi.maximum);
+  oilPressure_psi.alertLow = preferences.getInt("oilKPALOW", oilPressure_psi.alertLow);
+  oilPressure_psi.alertHigh = preferences.getInt("oilKPAHI", oilPressure_psi.alertHigh);
+  vvtPosition.minimum = preferences.getInt("vvtMIN", vvtPosition.minimum);
+  vvtPosition.maximum = preferences.getInt("vvtMAX", vvtPosition.maximum);
+  vvtPosition.alertLow = preferences.getInt("vvtLOW", vvtPosition.alertLow);
+  vvtPosition.alertHigh = preferences.getInt("vvtHI", vvtPosition.alertHigh);
+  vvtExhaust1.minimum = preferences.getInt("vvtEx1MIN", vvtExhaust1.minimum);
+  vvtExhaust1.maximum = preferences.getInt("vvtEx1MAX", vvtExhaust1.maximum);
+  vvtExhaust1.alertLow = preferences.getInt("vvtEx1LOW", vvtExhaust1.alertLow);
+  vvtExhaust1.alertHigh = preferences.getInt("vvtEx1HI", vvtExhaust1.alertHigh);
+  vvtExhaust2.minimum = preferences.getInt("vvtEx2MIN", vvtExhaust2.minimum);
+  vvtExhaust2.maximum = preferences.getInt("vvtEx2MAX", vvtExhaust2.maximum);
+  vvtExhaust2.alertLow = preferences.getInt("vvtEx2LOW", vvtExhaust2.alertLow);
+  vvtExhaust2.alertHigh = preferences.getInt("vvtEx2HI", vvtExhaust2.alertHigh);
+  vvtIntake1.minimum = preferences.getInt("vvtIn1MIN", vvtIntake1.minimum);
+  vvtIntake1.maximum = preferences.getInt("vvtIn1MAX", vvtIntake1.maximum);
+  vvtIntake1.alertLow = preferences.getInt("vvtIn1LOW", vvtIntake1.alertLow);
+  vvtIntake1.alertHigh = preferences.getInt("vvtIn1HI", vvtIntake1.alertHigh);
+  vvtIntake2.minimum = preferences.getInt("vvtIn2MIN", vvtIntake2.minimum);
+  vvtIntake2.maximum = preferences.getInt("vvtIn2MAX", vvtIntake2.maximum);
+  vvtIntake2.alertLow = preferences.getInt("vvtIn2LOW", vvtIntake2.alertLow);
+  vvtIntake2.alertHigh = preferences.getInt("vvtIn2HI", vvtIntake2.alertHigh);
+  airMass.minimum = preferences.getInt("airMassMIN", airMass.minimum);
+  airMass.maximum = preferences.getInt("airMassMAX", airMass.maximum);
+  airMass.alertLow = preferences.getInt("airMassLOW", airMass.alertLow);
+  airMass.alertHigh = preferences.getInt("airMassHI", airMass.alertHigh);
+  estimatedAirflow.minimum = preferences.getInt("estAirMIN", estimatedAirflow.minimum);
+  estimatedAirflow.maximum = preferences.getInt("estAirMAX", estimatedAirflow.maximum);
+  estimatedAirflow.alertLow = preferences.getInt("estAirLOW", estimatedAirflow.alertLow);
+  estimatedAirflow.alertHigh = preferences.getInt("estAirHI", estimatedAirflow.alertHigh);
+  batteryVoltage.minimum =    preferences.getInt("batVMIN", batteryVoltage.minimum);
+  batteryVoltage.maximum =    preferences.getInt("batVMAX", batteryVoltage.maximum);
+  batteryVoltage.alertLow =   preferences.getInt("batVLOW", batteryVoltage.alertLow);
+  batteryVoltage.alertHigh =  preferences.getInt("batVHI", batteryVoltage.alertHigh);
 
-    newSensorConfig = selectData(sensor);
+  preferences.end();
+  
+// Restore properly from int
+    int mult = 1000;
+    testData.minimum = testData.minimum / mult;
+    testData.maximum = testData.minimum / mult;
+    testData.alertLow = testData.alertLow / mult;
+    testData.alertHigh = testData.alertHigh / mult;
+    afr.minimum = afr.minimum   / mult; 
+    afr.maximum =  afr.maximum     / mult; 
+    afr.alertLow = afr.alertLow     / mult;
+    afr.alertHigh = afr.alertHigh     / mult;
+    lambda1.minimum =  lambda1.minimum / mult;
+    lambda1.maximum =   lambda1.maximum / mult;
+    lambda1.alertLow =  lambda1.alertLow / mult;
+    lambda1.alertHigh = lambda1.alertHigh / mult;
+    lambda2.minimum =  lambda2.minimum / mult;
+    lambda2.maximum =   lambda2.maximum / mult;
+    lambda2.alertLow =  lambda2.alertLow / mult;
+    lambda2.alertHigh = lambda2.alertHigh / mult;
+  
+}
 
-    switch(limit){
-      case 1:
-      newSensorConfig->minimum = newValue;
+void setGaugeConfig(int setType, int setGauge, int setSensor, int setLed, int dispRate)
+{
+  switch (setType)
+  {
+    // Data shown
+
+  case 0:
+    switch (setGauge)
+    {
+    // 1x gauge
+    case 0:
+      dataSet[0] = setSensor;
       break;
-
-      case 2:
-      newSensorConfig->maximum = newValue;
+      // 2x Gauge
+    case 1:
+      dataSet[1] = setSensor;
       break;
-
-      case 3:
-      newSensorConfig->alertLow = newValue;
+      // 4x data 3
+    case 2:
+      dataSet[2] = setSensor;
       break;
-
-      case 4:
-      newSensorConfig->alertHigh = newValue;
+      // 4x data 4
+    case 3:
+      dataSet[3] = setSensor;
       break;
-
-      default:
+      // Alt 1x data
+    case 4:
+      dataSet[7] = setSensor;
       break;
     }
+    break;
 
-    readyToSetLimits = false;
+  case 1:
+    switch (setGauge)
+    {
+    // 1x gauge
+    case 0:
+      dataSet[4] = setSensor;
+      break;
+      // 2x Gauge
+    case 1:
+      dataSet[5] = setSensor;
+      break;
+      // 4x data 3
+    case 2:
+      dataSet[6] = setSensor;
+      break;
+      // 4x data 4
+    case 3:
+      dataSet[6] = setSensor;
+      break;
+      // Alt 1x data
+    case 4:
+      dataSet[9] = setSensor;
+      break;
+    }
+    break;
+
+  default:
+    break;
   }
 
-  
+  ledType = setLed;
+  displayUpdateRate = dispRate;
+  setupData();
 }
 
-void restoreSensorMinMax(){
-  preferences.begin("limits", false);
-  
-  // RPM
-  rpm.maximum = preferences.getFloat("rpmMax", rpm.maximum);
-  rpm.alertHigh = preferences.getFloat("rpmMaxAlert", rpm.alertHigh);
+void setSensorMinMax(int sensor, int limit, float newValue)
+{
 
-  // AFR/Lambda
-  afr.maximum = preferences.getFloat("afrMax", afr.maximum);
-  afr.alertHigh = preferences.getFloat("afrMaxAlert", afr.alertHigh);
-  lambda1.maximum = preferences.getFloat("lamMax", lambda1.maximum);
-  lambda1.alertHigh = preferences.getFloat("lamAlertHi", lambda1.alertHigh);
-  lambda2.maximum = preferences.getFloat("lamMax", lambda2.maximum);
-  lambda2.alertHigh = preferences.getFloat("lamAlertHi", lambda2.alertHigh);
+  newSensorConfig = selectData(sensor);
 
-  // Temperatures
-  coolantTemperature.maximum = preferences.getFloat("cltMax", coolantTemperature.maximum);
-  coolantTemperature.minimum = preferences.getFloat("cltMin", coolantTemperature.minimum);
-  coolantTemperature.alertHigh = preferences.getFloat("cltAlertHi", coolantTemperature.alertHigh);
-  coolantTemperature.alertLow = preferences.getFloat("cltAlertLo", coolantTemperature.alertLow);
-  coolantTemperature_f.maximum = c2f(coolantTemperature.maximum);
-  coolantTemperature_f.minimum = c2f(coolantTemperature.minimum);
-  coolantTemperature_f.alertHigh = c2f(coolantTemperature.alertHigh);
-  coolantTemperature_f.alertLow = c2f(coolantTemperature.alertLow);
+  switch (limit)
+  {
+  case 1:
+    newSensorConfig->minimum = newValue;
+    break;
 
-  intakeTemperature.maximum = preferences.getFloat("iatMax", intakeTemperature.maximum);
-  intakeTemperature.minimum = preferences.getFloat("iatMin", intakeTemperature.minimum);
-  intakeTemperature.alertHigh = preferences.getFloat("iatAlertHi", intakeTemperature.alertHigh);
-  intakeTemperature.alertLow = preferences.getFloat("iatAlertLo", intakeTemperature.alertLow);
-  intakeTemperature_f.maximum = c2f(intakeTemperature.maximum);
-  intakeTemperature_f.minimum = c2f(intakeTemperature.minimum);
-  intakeTemperature_f.alertHigh = c2f(intakeTemperature.alertHigh);
-  intakeTemperature_f.alertLow = c2f(intakeTemperature.alertLow);
+  case 2:
+    newSensorConfig->maximum = newValue;
+    break;
 
-  // Pressure
-  oilPressure.maximum = preferences.getFloat("oilPresMax", oilPressure.maximum);
-  oilPressure.minimum = preferences.getFloat("oilPresMin", oilPressure.minimum);
-  oilPressure.alertHigh = preferences.getFloat("oilPresAlertHi", oilPressure.alertHigh);
-  oilPressure.alertLow = preferences.getFloat("oilPresAlertLo", oilPressure.alertLow);
-  oilPressure_psi.maximum = kpa2psi(oilPressure.maximum);
-  oilPressure_psi.minimum = kpa2psi(oilPressure.minimum);
-  oilPressure_psi.alertHigh = kpa2psi(oilPressure.alertHigh);
-  oilPressure_psi.alertLow = kpa2psi(oilPressure.alertLow);
-  
-  manifoldPressure.maximum = preferences.getFloat("mapMax", manifoldPressure.maximum);
-  oilPressure.minimum = preferences.getFloat("mapMin", manifoldPressure.minimum);
-  oilPressure.alertHigh = preferences.getFloat("mapAlertHi", manifoldPressure.alertHigh);
-  oilPressure_psi.maximum = kpa2psi(manifoldPressure.maximum);
-  oilPressure_psi.minimum = kpa2psi(manifoldPressure.minimum);
-  oilPressure_psi.alertHigh = kpa2psi(manifoldPressure.alertHigh);
+  case 3:
+    newSensorConfig->alertLow = newValue;
+    break;
 
+  case 4:
+    newSensorConfig->alertHigh = newValue;
+    break;
 
-  // Test
-  testData.maximum = preferences.getFloat("testMax", testData.maximum);
-  testData.minimum = preferences.getFloat("testMin", testData.minimum);
-  testData.alertHigh = preferences.getFloat("testAlertHi", testData.alertHigh);
-  testData.alertLow = preferences.getFloat("testAlertLo", testData.alertLow);
-
-  preferences.end();
+  default:
+    break;
+  }
 }
 
 void checkForError()
@@ -526,7 +908,6 @@ void nextGauge()
   if (wifiToggled == true)
   {
     disableWifi();
-
   }
 
   selectGauge(gauge);
@@ -667,27 +1048,29 @@ static void renderLeds(int ledType, sensorData *data)
     break;
 
   case 4:
-  ledOff();
+    ledOff();
     break;
 
   case 5:
     indLedOff();
     sequentialLed(percent);
-    
+
     if (newWarning == true)
     {
-      digitalWrite(LED_11,HIGH);
+      digitalWrite(LED_11, HIGH);
     }
-    else{
-      digitalWrite(LED_11,LOW);
+    else
+    {
+      digitalWrite(LED_11, LOW);
     }
-    
+
     if (data->scaledValue > data->alertHigh || data->scaledValue < data->alertLow)
     {
-      digitalWrite(LED_12,HIGH);
+      digitalWrite(LED_12, HIGH);
     }
-    else{
-      digitalWrite(LED_12,LOW);
+    else
+    {
+      digitalWrite(LED_12, LOW);
     }
     break;
 
@@ -697,17 +1080,19 @@ static void renderLeds(int ledType, sensorData *data)
 
     if (newWarning == true)
     {
-      digitalWrite(LED_11,HIGH);
+      digitalWrite(LED_11, HIGH);
     }
-      else{
-      digitalWrite(LED_11,LOW);
+    else
+    {
+      digitalWrite(LED_11, LOW);
     }
     if (data->scaledValue > data->alertHigh || data->scaledValue < data->alertLow)
     {
-      digitalWrite(LED_12,HIGH);
+      digitalWrite(LED_12, HIGH);
     }
-     else{
-      digitalWrite(LED_12,LOW);
+    else
+    {
+      digitalWrite(LED_12, LOW);
     }
     break;
 
@@ -722,33 +1107,31 @@ static void renderLeds(int ledType, sensorData *data)
  * Print the selected gauge and data on the display
  */
 
+void printLeds(int g)
+{
 
-void printLeds(int g){
-  
   switch (g)
   {
-    case 0:
-      renderLeds(ledType, ptrDataLed1);
-      break;
+  case 0:
+    renderLeds(ledType, ptrDataLed1);
+    break;
 
-    case 1:
-      renderLeds(ledType, ptrDataLed2);
-      break;
+  case 1:
+    renderLeds(ledType, ptrDataLed2);
+    break;
 
-    case 2:
-      renderLeds(ledType, ptrDataLed4);
-      break;
+  case 2:
+    renderLeds(ledType, ptrDataLed4);
+    break;
 
-    case 3:
-      renderLeds(ledType, ptrDataLed5);
-      break;
+  case 3:
+    renderLeds(ledType, ptrDataLed5);
+    break;
 
-    default:
+  default:
     ledOff();
-      break;
-
+    break;
   }
-
 }
 
 void printData(int g)
@@ -834,7 +1217,7 @@ void printData(int g)
 
     break;
 
-    case 3:
+  case 3:
     // 1x Sensor Gauge Alternate
     u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_6x12_tf);
@@ -846,7 +1229,7 @@ void printData(int g)
 
     printDataFormatted(ptrData5);
 
-     if (ptrData5->scaleMultiplier == 0)
+    if (ptrData5->scaleMultiplier == 0)
     {
       u8g2.clearBuffer();
     }
@@ -885,7 +1268,8 @@ void printData(int g)
     printOnOff("Check Engine ", checkEngine > 0);
 
     u8g2.setCursor(0, 45);
-    printOnOff("EGO Heater ", egoHeater > 0);;
+    printOnOff("EGO Heater ", egoHeater > 0);
+    ;
     u8g2.sendBuffer();
     break;
 
@@ -912,12 +1296,10 @@ void printData(int g)
       u8g2.print(WiFi.softAPIP());
       u8g2.setCursor(0, 53);
       u8g2.print("<-     disable    ->");
-      setSensorMinMax(selectedSensor,selectedLimit,inputNewValueF);
       ota();
     }
     else
     {
-
       u8g2.print(" Disabled");
       u8g2.setCursor(0, 16);
       u8g2.print("Use to update and to");
@@ -1331,18 +1713,7 @@ void canTask(void *pvParameters)
 void setup()
 {
 
-#ifdef RESET_STORED
-  preferences.begin("config", false);
-  preferences.clear();
-  preferences.end();
-
-  preferences.begin("startup", false);
-  preferences.clear();
-  preferences.end();
-
- 
-
-#endif
+  checkNVS();
 
   // Configure GPIO and interrupt
   PIN_SETUP();
@@ -1366,13 +1737,9 @@ void setup()
   saveStartup();
 #endif
 
-#ifdef CUSTOM_MINMAX
- restoreSensorMinMax();
-#endif
-
   // Get the previous gauge values to start from last gauge
   preferences.begin("config", true);
-  
+
   gauge = preferences.getUInt("gauge", 0);
   dataSet[0] = preferences.getUInt("data0", 0);
   dataSet[1] = preferences.getUInt("data1", 0);
@@ -1384,8 +1751,8 @@ void setup()
   dataSet[7] = preferences.getUInt("data5", 0);
   dataSet[8] = preferences.getUInt("dataLED5", 0);
   ledType = preferences.getUInt("ledType", 0);
-  displayUpdateRate = preferences.getUInt("displayRate",0);
-  
+  displayUpdateRate = preferences.getUInt("displayRate", 0);
+
   preferences.end();
 
   preferences.begin("startup", true);
@@ -1478,6 +1845,7 @@ void setup()
     ledSweep(0, 12, 40, 20);
   }
 
+  restoreSensorMinMax();
   setupData();
 
 #ifdef USE_BMP_2
@@ -1522,24 +1890,32 @@ void setup()
     break;
   }
 #endif
+
+#ifdef WIFI_ALWAYS_ACTIVE
+  otaSetup();
+#else
+#endif
 }
 
 void loop()
 {
 
   // Slow down display updates to improve legibility
-  if (gaugeType < 5){
+  if (gaugeType < 5)
+  {
     if ((millis() - lastDisplayUpdate) > displayUpdateTime[displayUpdateRate])
     {
       // Update the display with the currently selected data
       lastDisplayUpdate = millis();
       printData(gaugeType);
     }
-    else{
+    else
+    {
       u8g2.sendBuffer();
     }
-   }
-  else{
+  }
+  else
+  {
     // If data is not being displayed do not slow down
     printData(gaugeType);
   }
@@ -1558,6 +1934,35 @@ void loop()
   }
 
   checkForError();
+
+#ifdef WIFI_ALWAYS_ACTIVE
+  ota();
+#else
+#endif
+
+  if (readyToSetLimits == true)
+  {
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.setCursor(0, 0);
+    u8g2.print("Updating Limits");
+    u8g2.sendBuffer();
+    setSensorMinMax(selectedSensor, selectedLimit, inputNewValueF);
+    saveSensorMinMax();
+    readyToSetLimits = false;
+  }
+
+  if (readyToUpdateGauge == true)
+  {
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.setCursor(0, 0);
+    u8g2.print("Updating Config");
+    u8g2.sendBuffer();
+    setGaugeConfig(selectedType, selectedGauge, selectedSensor, selectedLedType, selectedDisplayRate);
+    saveDataSettings();
+    readyToUpdateGauge = false;
+  }
 
   // Alert if communication with ECU is lost
   // Compare current time to last recieved message
