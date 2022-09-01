@@ -1,10 +1,10 @@
-   
-/*
- * Defines
- * Use to enable/disable features
- */
 
-String build = "1.1.7"; 
+/*
+   Defines
+   Use to enable/disable features
+*/
+
+String build = "1.1.7";
 int nvsVersion = 2;
 
 // Enable first and second startup logos
@@ -15,14 +15,14 @@ int nvsVersion = 2;
 
 //#define USE_SAVED_DISP_CONTROLLER
 #define FORCED_DISP_CONTROLLER
-#define SSD1306
-//#define SH1106
+//#define SSD1306
+#define SH1106
 
 // Select boot logos
 #define DEFAULT_START
 //#define BMM_START
 //#define GG_START
-//#define DEBUG_BUILD
+#define DEBUG_BUILD
 
 // Allow OTA updates
 #define OTA_ENABLE
@@ -42,16 +42,16 @@ int nvsVersion = 2;
 //#define SETUP_STARTUP
 
 /*
- * 0 - Not Set, save new values, shows build version
- * 1 - KaN
- * 2 - rusEFI
- * 3 - BMM
- * 4 - GG
- *
- * # - Any non defined value shows Build Version
- *
- * 9 - Update using new startup settings
- */
+   0 - Not Set, save new values, shows build version
+   1 - KaN
+   2 - rusEFI
+   3 - BMM
+   4 - GG
+
+   # - Any non defined value shows Build Version
+
+   9 - Update using new startup settings
+*/
 
 #ifdef DEFAULT_START
 int newStartup = 1;
@@ -68,9 +68,9 @@ int newStartup2 = 0;
 #endif
 
 /*
- * Variables
- * Adjust timers and CAN settings
- */
+   Variables
+   Adjust timers and CAN settings
+*/
 
 #ifdef DEBUG_BUILD
 String buildType = "Debug";
@@ -85,9 +85,9 @@ String buildType = "";
 #endif
 
 #ifdef SSD1306
-String displayType = "SSD1306";
+int displayType = 0;
 #elif defined(SH1106)
-String displayType = "SH1106";
+int displayType = 1;
 #endif
 
 // Times in ms
@@ -150,7 +150,7 @@ int startup2 = 0;
 int inConfigMode = 1;
 int maxSet = 0;
 
-int dataSet[] = {0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0};
+int dataSet[] = {0, 0, 0, 0, 0, 0, 0, 0 , 0 , 0};
 int ledType = 0;
 String ledTypeText[] = {"All LEDs", "Red LEDs", "Single LED ALL", "Single LED Red", "None", "LEDs with Alert", "Single LED with Alert"};
 

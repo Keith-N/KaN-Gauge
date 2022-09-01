@@ -6,14 +6,13 @@
 
 // Setup U8G2 for 128x64 SH1105 OLED, Name u8g2
 #ifdef FORCED_DISP_CONTROLLER
-  #ifdef SH1106
-  U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
-  #elif defined(SSD1306)
-  U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
-  #endif
+#ifdef SH1106
+U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
+#elif defined(SSD1306)
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
+#endif
 #endif
 
-// U8G2_SH1106_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, I2C_SCL, I2C_SDA, U8X8_PIN_NONE);
 
 // BMP data for displaying on OLED
 #define dispWidth 128
@@ -23,6 +22,9 @@
 
 void oledSetup(void)
 {
+
+
+  u8g2.begin();
   // Setup default configuration for font
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setFontRefHeightExtendedText();
@@ -74,7 +76,7 @@ void printGitQR()
 
   u8g2.setCursor(35, 50);
   u8g2.print(nvsVersion);
-  
+
   u8g2.sendBuffer();
 }
 

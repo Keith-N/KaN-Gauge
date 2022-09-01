@@ -1,21 +1,21 @@
 // ======================================  Includes ============================================
 
 /*
- * KaN Gauge
- * https://github.com/Keith-N/KaN-Gauge
- * K. Nason
- * 7/20/2022
- */
+   KaN Gauge
+   https://github.com/Keith-N/KaN-Gauge
+   K. Nason
+   7/20/2022
+*/
 
 /*
- * Arduino Setup:
- * ESP32 - Add to 'Preferences > Additional Boards Manager URL' then install ESP32 from Boards Manager.
- * https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
- *
- * Install Libraries
- * u8g2
- * ACAN ESP32
- */
+   Arduino Setup:
+   ESP32 - Add to 'Preferences > Additional Boards Manager URL' then install ESP32 from Boards Manager.
+   https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+
+   Install Libraries
+   u8g2
+   ACAN ESP32
+*/
 
 // Libraries
 #include <Arduino.h>
@@ -58,9 +58,9 @@ void disableWifi()
 // ======================================  Input Functions  ============================================
 
 /*
- * Select the data displayed for all 4 possible values and LEDs
- *
- */
+   Select the data displayed for all 4 possible values and LEDs
+
+*/
 
 void eraseNVS()
 {
@@ -73,29 +73,29 @@ void eraseNVS()
 void checkNVS()
 {
 
-//   Check NVS config version and wipe if it is not as expected
-//   Save startup config
-//   This will allow cleaning up stored configs if changes are made to the format
+  //   Check NVS config version and wipe if it is not as expected
+  //   Save startup config
+  //   This will allow cleaning up stored configs if changes are made to the format
 
-      preferences.begin("startup", true);
-      int nvsBuf = preferences.getUInt("nvs", 0);
-      preferences.end();
-  
-      if ( nvsBuf != nvsVersion){
-          preferences.begin("startup", true);
-          startup = preferences.getUInt("logo1", 0);
-          startup2 = preferences.getUInt("logo2", 0);
-          displayController = preferences.getUInt("display", 0);
-          preferences.end();
-  
-          eraseNVS();
-  
-          preferences.begin("startup", false);
-          preferences.putUInt("logo1", startup);
-          preferences.putUInt("logo2", startup2);
-          preferences.putUInt("nvs",nvsVersion);
-          preferences.end();
-      }
+  preferences.begin("startup", true);
+  int nvsBuf = preferences.getUInt("nvs", 0);
+  preferences.end();
+
+  if ( nvsBuf != nvsVersion) {
+    preferences.begin("startup", true);
+    startup = preferences.getUInt("logo1", 0);
+    startup2 = preferences.getUInt("logo2", 0);
+    displayController = preferences.getUInt("display", 0);
+    preferences.end();
+
+    eraseNVS();
+
+    preferences.begin("startup", false);
+    preferences.putUInt("logo1", startup);
+    preferences.putUInt("logo2", startup2);
+    preferences.putUInt("nvs", nvsVersion);
+    preferences.end();
+  }
 }
 
 void configMode()
@@ -112,113 +112,113 @@ void configMode()
     u8g2.setCursor(0, 0);
     switch (i)
     {
-    case 0:
-      u8g2.print("1x Gauge Data");
-      u8g2.setCursor(0, 20);
-      printDataNameAndUnits(ptrData);
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         Type->");
-      break;
+      case 0:
+        u8g2.print("1x Gauge Data");
+        u8g2.setCursor(0, 20);
+        printDataNameAndUnits(ptrData);
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");
+        break;
 
-    case 1:
-      u8g2.print("2x Gauge Data");
-      u8g2.setCursor(0, 20);
-      printDataNameAndUnits(ptrData2);
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         Type->");
-      break;
+      case 1:
+        u8g2.print("2x Gauge Data");
+        u8g2.setCursor(0, 20);
+        printDataNameAndUnits(ptrData2);
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");
+        break;
 
-    case 2:
-      u8g2.print("4x Gauge Data 3");
-      u8g2.setCursor(0, 20);
-      printDataNameAndUnits(ptrData3);
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         Type->");
-      break;
+      case 2:
+        u8g2.print("4x Gauge Data 3");
+        u8g2.setCursor(0, 20);
+        printDataNameAndUnits(ptrData3);
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");
+        break;
 
-    case 3:
-      u8g2.print("4x Gauge Data 4");
-      u8g2.setCursor(0, 20);
-      printDataNameAndUnits(ptrData4);
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         Type->");
-      break;
+      case 3:
+        u8g2.print("4x Gauge Data 4");
+        u8g2.setCursor(0, 20);
+        printDataNameAndUnits(ptrData4);
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");
+        break;
 
-    case 7:
-      u8g2.print("Alt 1x Gauge Data");
-      u8g2.setCursor(0, 20);
-      printDataNameAndUnits(ptrData5);
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         Type->");
-      break;
+      case 7:
+        u8g2.print("Alt 1x Gauge Data");
+        u8g2.setCursor(0, 20);
+        printDataNameAndUnits(ptrData5);
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");
+        break;
 
-    case 4:
-      u8g2.print("LEDs for 1x data");
-      u8g2.setCursor(0, 20);
-      printDataNameAndUnits(ptrDataLed1);
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         Type->");
-      break;
+      case 4:
+        u8g2.print("LEDs for 1x data");
+        u8g2.setCursor(0, 20);
+        printDataNameAndUnits(ptrDataLed1);
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");
+        break;
 
-    case 5:
-      u8g2.print("LEDs for 2x data");
-      u8g2.setCursor(0, 20);
-      printDataNameAndUnits(ptrDataLed2);
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         Type->");
-      break;
+      case 5:
+        u8g2.print("LEDs for 2x data");
+        u8g2.setCursor(0, 20);
+        printDataNameAndUnits(ptrDataLed2);
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");
+        break;
 
-    case 6:
-      u8g2.print("LEDs for 4x data");
-      u8g2.setCursor(0, 20);
-      printDataNameAndUnits(ptrDataLed4);
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         Type->");
-      break;
+      case 6:
+        u8g2.print("LEDs for 4x data");
+        u8g2.setCursor(0, 20);
+        printDataNameAndUnits(ptrDataLed4);
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");
+        break;
 
-    case 8:
-      u8g2.print("LEDs for Alt 1x");
-      u8g2.setCursor(0, 20);
-      printDataNameAndUnits(ptrDataLed5);
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         Type->");
-      break;
+      case 8:
+        u8g2.print("LEDs for Alt 1x");
+        u8g2.setCursor(0, 20);
+        printDataNameAndUnits(ptrDataLed5);
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");
+        break;
 
-    case 9:
-      u8g2.print("LED type");
-      u8g2.setCursor(0, 20);
-      u8g2.print(ledTypeText[ledType]);
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         Type->");
-      break;
+      case 9:
+        u8g2.print("LED type");
+        u8g2.setCursor(0, 20);
+        u8g2.print(ledTypeText[ledType]);
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         Type->");
+        break;
 
-    case 10:
-      u8g2.print("Display Update Rate");
-      u8g2.setCursor(0, 20);
-      u8g2.print(displayUpdateTime[displayUpdateRate]);
-      u8g2.print(" ");
-      u8g2.print("ms");
-      u8g2.setCursor(0, 45);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.print("<-Next         + ->");
-      break;
+      case 10:
+        u8g2.print("Display Update Rate");
+        u8g2.setCursor(0, 20);
+        u8g2.print(displayUpdateTime[displayUpdateRate]);
+        u8g2.print(" ");
+        u8g2.print("ms");
+        u8g2.setCursor(0, 45);
+        u8g2.setFont(u8g2_font_6x10_tf);
+        u8g2.print("<-Next         + ->");
+        break;
 
-    default:
-      inConfigMode = 1;
-      buttonPress = 1;
-      setupData();
-      saveDataSettings();
-      break;
+      default:
+        inConfigMode = 1;
+        buttonPress = 1;
+        setupData();
+        saveDataSettings();
+        break;
     }
 
     u8g2.sendBuffer();
@@ -231,30 +231,30 @@ void configMode()
       switch (i)
       {
 
-      case 9:
-        ledType++;
-        if (ledType > 6)
-        {
-          ledType = 0;
-        }
-        break;
+        case 9:
+          ledType++;
+          if (ledType > 6)
+          {
+            ledType = 0;
+          }
+          break;
 
-      case 10:
-        displayUpdateRate++;
-        if (displayUpdateRate > 6)
-        {
-          displayUpdateRate = 0;
-        }
-        break;
+        case 10:
+          displayUpdateRate++;
+          if (displayUpdateRate > 6)
+          {
+            displayUpdateRate = 0;
+          }
+          break;
 
-      default:
-        dataSet[i]++;
-        setupData();
-        if (maxSet == 1)
-        {
-          maxSet = 0;
-          dataSet[i] = 0;
-        }
+        default:
+          dataSet[i]++;
+          setupData();
+          if (maxSet == 1)
+          {
+            maxSet = 0;
+            dataSet[i] = 0;
+          }
       }
     }
 
@@ -270,8 +270,8 @@ void configMode()
 }
 
 /*
- * Setup pointers from the selected data settings for all 4 displayed values and LEDs
- */
+   Setup pointers from the selected data settings for all 4 displayed values and LEDs
+*/
 
 void clearDisplay()
 {
@@ -292,8 +292,8 @@ void setupData()
 }
 
 /*
- * Save the selected data settings and enable them to be restored later
- */
+   Save the selected data settings and enable them to be restored later
+*/
 void saveDataSettings()
 {
   // open in R/W
@@ -332,8 +332,8 @@ void saveDisplayController(int d)
 }
 
 /*
- * Verify that startup logos have been set. If not set them to the default value
- */
+   Verify that startup logos have been set. If not set them to the default value
+*/
 
 void checkStartupLogo()
 {
@@ -369,24 +369,24 @@ float kpa2psi(float k)
 void saveSensorMinMax()
 {
 
-
-    int mult = 1000;
-    testData.minimum = testData.minimum * mult;
-    testData.maximum = testData.minimum * mult;
-    testData.alertLow = testData.alertLow * mult;
-    testData.alertHigh = testData.alertHigh * mult;
-    afr.minimum = afr.minimum   * mult; 
-    afr.maximum =  afr.maximum     * mult; 
-    afr.alertLow = afr.alertLow     * mult;
-    afr.alertHigh = afr.alertHigh     * mult;
-    lambda1.minimum =  lambda1.minimum * mult;
-    lambda1.maximum =   lambda1.maximum * mult;
-    lambda1.alertLow =  lambda1.alertLow * mult;
-    lambda1.alertHigh = lambda1.alertHigh * mult;
-    lambda2.minimum =  lambda2.minimum * mult;
-    lambda2.maximum =   lambda2.maximum * mult;
-    lambda2.alertLow =  lambda2.alertLow * mult;
-    lambda2.alertHigh = lambda2.alertHigh * mult;
+  // Multiply by 1000 so limits can keep .001 precision on restore
+  int mult = 1000;
+  testData.minimum = testData.minimum * mult;
+  testData.maximum = testData.minimum * mult;
+  testData.alertLow = testData.alertLow * mult;
+  testData.alertHigh = testData.alertHigh * mult;
+  afr.minimum = afr.minimum   * mult;
+  afr.maximum =  afr.maximum     * mult;
+  afr.alertLow = afr.alertLow     * mult;
+  afr.alertHigh = afr.alertHigh     * mult;
+  lambda1.minimum =  lambda1.minimum * mult;
+  lambda1.maximum =   lambda1.maximum * mult;
+  lambda1.alertLow =  lambda1.alertLow * mult;
+  lambda1.alertHigh = lambda1.alertHigh * mult;
+  lambda2.minimum =  lambda2.minimum * mult;
+  lambda2.maximum =   lambda2.maximum * mult;
+  lambda2.alertLow =  lambda2.alertLow * mult;
+  lambda2.alertHigh = lambda2.alertHigh * mult;
 
   preferences.begin("limits", false);
 
@@ -553,30 +553,30 @@ void saveSensorMinMax()
 
   preferences.end();
 
-    testData.minimum = testData.minimum / mult;
-    testData.maximum = testData.minimum / mult;
-    testData.alertLow = testData.alertLow / mult;
-    testData.alertHigh = testData.alertHigh / mult;
-    afr.minimum = afr.minimum   / mult; 
-    afr.maximum =  afr.maximum     / mult; 
-    afr.alertLow = afr.alertLow     / mult;
-    afr.alertHigh = afr.alertHigh     / mult;
-    lambda1.minimum =  lambda1.minimum / mult;
-    lambda1.maximum =   lambda1.maximum / mult;
-    lambda1.alertLow =  lambda1.alertLow / mult;
-    lambda1.alertHigh = lambda1.alertHigh / mult;
-    lambda2.minimum =  lambda2.minimum / mult;
-    lambda2.maximum =   lambda2.maximum / mult;
-    lambda2.alertLow =  lambda2.alertLow / mult;
-    lambda2.alertHigh = lambda2.alertHigh / mult;
-  
+  testData.minimum = testData.minimum / mult;
+  testData.maximum = testData.minimum / mult;
+  testData.alertLow = testData.alertLow / mult;
+  testData.alertHigh = testData.alertHigh / mult;
+  afr.minimum = afr.minimum   / mult;
+  afr.maximum =  afr.maximum     / mult;
+  afr.alertLow = afr.alertLow     / mult;
+  afr.alertHigh = afr.alertHigh     / mult;
+  lambda1.minimum =  lambda1.minimum / mult;
+  lambda1.maximum =   lambda1.maximum / mult;
+  lambda1.alertLow =  lambda1.alertLow / mult;
+  lambda1.alertHigh = lambda1.alertHigh / mult;
+  lambda2.minimum =  lambda2.minimum / mult;
+  lambda2.maximum =   lambda2.maximum / mult;
+  lambda2.alertLow =  lambda2.alertLow / mult;
+  lambda2.alertHigh = lambda2.alertHigh / mult;
+
 }
 
 void restoreSensorMinMax()
 {
   preferences.begin("limits", true);
 
-    
+
   testData.minimum =    preferences.getInt("testMIN", testData.minimum);
   testData.maximum =    preferences.getInt("testMAX", testData.maximum);
   testData.alertLow =   preferences.getInt("testLOW", testData.alertLow);
@@ -739,91 +739,99 @@ void restoreSensorMinMax()
   batteryVoltage.alertHigh =  preferences.getInt("batVHI", batteryVoltage.alertHigh);
 
   preferences.end();
-  
-// Restore properly from int
-    int mult = 1000;
-    testData.minimum = testData.minimum / mult;
-    testData.maximum = testData.minimum / mult;
-    testData.alertLow = testData.alertLow / mult;
-    testData.alertHigh = testData.alertHigh / mult;
-    afr.minimum = afr.minimum   / mult; 
-    afr.maximum =  afr.maximum     / mult; 
-    afr.alertLow = afr.alertLow     / mult;
-    afr.alertHigh = afr.alertHigh     / mult;
-    lambda1.minimum =  lambda1.minimum / mult;
-    lambda1.maximum =   lambda1.maximum / mult;
-    lambda1.alertLow =  lambda1.alertLow / mult;
-    lambda1.alertHigh = lambda1.alertHigh / mult;
-    lambda2.minimum =  lambda2.minimum / mult;
-    lambda2.maximum =   lambda2.maximum / mult;
-    lambda2.alertLow =  lambda2.alertLow / mult;
-    lambda2.alertHigh = lambda2.alertHigh / mult;
-  
+
+  // Restore properly from int
+  int mult = 1000;
+  testData.minimum = testData.minimum / mult;
+  testData.maximum = testData.minimum / mult;
+  testData.alertLow = testData.alertLow / mult;
+  testData.alertHigh = testData.alertHigh / mult;
+  afr.minimum = afr.minimum   / mult;
+  afr.maximum =  afr.maximum     / mult;
+  afr.alertLow = afr.alertLow     / mult;
+  afr.alertHigh = afr.alertHigh     / mult;
+  lambda1.minimum =  lambda1.minimum / mult;
+  lambda1.maximum =   lambda1.maximum / mult;
+  lambda1.alertLow =  lambda1.alertLow / mult;
+  lambda1.alertHigh = lambda1.alertHigh / mult;
+  lambda2.minimum =  lambda2.minimum / mult;
+  lambda2.maximum =   lambda2.maximum / mult;
+  lambda2.alertLow =  lambda2.alertLow / mult;
+  lambda2.alertHigh = lambda2.alertHigh / mult;
+
 }
 
-void setGaugeConfig(int setType, int setGauge, int setSensor, int setLed, int dispRate)
+void setGaugeConfig(int setType, int setGauge, int setSensor)
 {
   switch (setType)
   {
     // Data shown
 
-  case 0:
-    switch (setGauge)
-    {
-    // 1x gauge
     case 0:
-      dataSet[0] = setSensor;
+      switch (setGauge)
+      {
+        // 1x gauge
+        case 0:
+          dataSet[0] = setSensor;
+          break;
+        // 2x Gauge
+        case 1:
+          dataSet[1] = setSensor;
+          break;
+        // 4x data 3
+        case 2:
+          dataSet[2] = setSensor;
+          break;
+        // 4x data 4
+        case 3:
+          dataSet[3] = setSensor;
+          break;
+        // Alt 1x data
+        case 4:
+          dataSet[7] = setSensor;
+          break;
+      }
       break;
-      // 2x Gauge
-    case 1:
-      dataSet[1] = setSensor;
-      break;
-      // 4x data 3
-    case 2:
-      dataSet[2] = setSensor;
-      break;
-      // 4x data 4
-    case 3:
-      dataSet[3] = setSensor;
-      break;
-      // Alt 1x data
-    case 4:
-      dataSet[7] = setSensor;
-      break;
-    }
-    break;
 
-  case 1:
-    switch (setGauge)
-    {
-    // 1x gauge
-    case 0:
-      dataSet[4] = setSensor;
-      break;
-      // 2x Gauge
     case 1:
-      dataSet[5] = setSensor;
+      switch (setGauge)
+      {
+        // 1x gauge
+        case 0:
+          dataSet[4] = setSensor;
+          break;
+        // 2x Gauge
+        case 1:
+          dataSet[5] = setSensor;
+          break;
+        // 4x data 3
+        case 2:
+          dataSet[6] = setSensor;
+          break;
+        // 4x data 4
+        case 3:
+          dataSet[6] = setSensor;
+          break;
+        // Alt 1x data
+        case 4:
+          dataSet[9] = setSensor;
+          break;
+      }
       break;
-      // 4x data 3
-    case 2:
-      dataSet[6] = setSensor;
-      break;
-      // 4x data 4
-    case 3:
-      dataSet[6] = setSensor;
-      break;
-      // Alt 1x data
-    case 4:
-      dataSet[9] = setSensor;
-      break;
-    }
-    break;
 
-  default:
-    break;
+    default:
+      break;
   }
 
+  setupData();
+}
+
+void setLedMode(int setLed) {
   ledType = setLed;
+  setupData();
+}
+
+void setDisplayRate(int dispRate) {
   displayUpdateRate = dispRate;
   setupData();
 }
@@ -835,24 +843,24 @@ void setSensorMinMax(int sensor, int limit, float newValue)
 
   switch (limit)
   {
-  case 1:
-    newSensorConfig->minimum = newValue;
-    break;
+    case 1:
+      newSensorConfig->minimum = newValue;
+      break;
 
-  case 2:
-    newSensorConfig->maximum = newValue;
-    break;
+    case 2:
+      newSensorConfig->maximum = newValue;
+      break;
 
-  case 3:
-    newSensorConfig->alertLow = newValue;
-    break;
+    case 3:
+      newSensorConfig->alertLow = newValue;
+      break;
 
-  case 4:
-    newSensorConfig->alertHigh = newValue;
-    break;
+    case 4:
+      newSensorConfig->alertHigh = newValue;
+      break;
 
-  default:
-    break;
+    default:
+      break;
   }
 }
 
@@ -874,9 +882,9 @@ void checkForError()
 }
 
 /*
- * Indicate that button #1 has been pressed
- * It is debounced to reduce false presses
- */
+   Indicate that button #1 has been pressed
+   It is debounced to reduce false presses
+*/
 void buttonISR()
 {
   if ((millis() - lastInput) > debounceTimer)
@@ -886,9 +894,9 @@ void buttonISR()
 }
 
 /*
- * Indicate that button #2 has been pressed
- * It is debounced to reduce false presses
- */
+   Indicate that button #2 has been pressed
+   It is debounced to reduce false presses
+*/
 void buttonISR2()
 {
   if ((millis() - lastInput2) > debounceTimer)
@@ -898,8 +906,8 @@ void buttonISR2()
 }
 
 /*
- * Cycle to the next gauge to display when button 1 is pressed
- */
+   Cycle to the next gauge to display when button 1 is pressed
+*/
 void nextGauge()
 {
 
@@ -921,8 +929,8 @@ void nextGauge()
 }
 
 /*
- * Select the next style of gauge and is dependent on the current gauge
- */
+   Select the next style of gauge and is dependent on the current gauge
+*/
 void nextConfig()
 {
 
@@ -930,64 +938,64 @@ void nextConfig()
 
   switch (gaugeType)
   {
-  case 10:
-    wifiToggled = !wifiToggled;
-    if (wifiToggled)
-    {
-      otaSetup();
-    }
-    else
-    {
+    case 10:
+      wifiToggled = !wifiToggled;
+      if (wifiToggled)
+      {
+        otaSetup();
+      }
+      else
+      {
 
-      disableWifi();
-    }
-    break;
+        disableWifi();
+      }
+      break;
 
-  case 14:
-    inConfigMode = 0;
-    break;
+    case 14:
+      inConfigMode = 0;
+      break;
 
-  case 15:
-    startup++;
-    if (startup > 5)
-    {
-      startup = 0;
-    }
-    saveStartup(startup, startup2);
-    break;
+    case 15:
+      startup++;
+      if (startup > 5)
+      {
+        startup = 0;
+      }
+      saveStartup(startup, startup2);
+      break;
 
-  case 16:
-    startup2++;
-    if (startup2 > 5)
-    {
-      startup2 = 0;
-    }
-    saveStartup(startup, startup2);
-    break;
+    case 16:
+      startup2++;
+      if (startup2 > 5)
+      {
+        startup2 = 0;
+      }
+      saveStartup(startup, startup2);
+      break;
 
-  case 17:
-    warningCounter++;
-    lastError++;
-    break;
+    case 17:
+      warningCounter++;
+      lastError++;
+      break;
 
-  default:
-    gaugeType++;
-    if (gaugeType > numGaugeType)
-    {
-      gaugeType = 0;
-    }
-    preferences.begin("config", false);
-    preferences.putUInt("gaugeType", gaugeType);
-    preferences.end();
-    break;
+    default:
+      gaugeType++;
+      if (gaugeType > numGaugeType)
+      {
+        gaugeType = 0;
+      }
+      preferences.begin("config", false);
+      preferences.putUInt("gaugeType", gaugeType);
+      preferences.end();
+      break;
   }
 
   lastInput2 = millis();
 }
 
 /*
- * Return the percentage of the current value of its total range defined by the input min/max values
- */
+   Return the percentage of the current value of its total range defined by the input min/max values
+*/
 int getPercent(float current, float minimum, float maximum)
 {
   return ((int)100 * (current - minimum) / (maximum - minimum));
@@ -1027,110 +1035,110 @@ static void renderLeds(int ledType, sensorData *data)
 
   switch (ledType)
   {
-  case 0:
-    ledOff();
-    sequentialLedAll(percent);
-    break;
+    case 0:
+      ledOff();
+      sequentialLedAll(percent);
+      break;
 
-  case 1:
-    ledOff();
-    sequentialLed(percent);
-    break;
+    case 1:
+      ledOff();
+      sequentialLed(percent);
+      break;
 
-  case 2:
-    ledOff();
-    singleLedAll(percent);
-    break;
+    case 2:
+      ledOff();
+      singleLedAll(percent);
+      break;
 
-  case 3:
-    ledOff();
-    singleLed(percent);
-    break;
+    case 3:
+      ledOff();
+      singleLed(percent);
+      break;
 
-  case 4:
-    ledOff();
-    break;
+    case 4:
+      ledOff();
+      break;
 
-  case 5:
-    indLedOff();
-    sequentialLed(percent);
+    case 5:
+      indLedOff();
+      sequentialLed(percent);
 
-    if (newWarning == true)
-    {
-      digitalWrite(LED_11, HIGH);
-    }
-    else
-    {
-      digitalWrite(LED_11, LOW);
-    }
+      if (newWarning == true)
+      {
+        digitalWrite(LED_11, HIGH);
+      }
+      else
+      {
+        digitalWrite(LED_11, LOW);
+      }
 
-    if (data->scaledValue > data->alertHigh || data->scaledValue < data->alertLow)
-    {
-      digitalWrite(LED_12, HIGH);
-    }
-    else
-    {
-      digitalWrite(LED_12, LOW);
-    }
-    break;
+      if (data->scaledValue > data->alertHigh || data->scaledValue < data->alertLow)
+      {
+        digitalWrite(LED_12, HIGH);
+      }
+      else
+      {
+        digitalWrite(LED_12, LOW);
+      }
+      break;
 
-  case 6:
-    indLedOff();
-    singleLed(percent);
+    case 6:
+      indLedOff();
+      singleLed(percent);
 
-    if (newWarning == true)
-    {
-      digitalWrite(LED_11, HIGH);
-    }
-    else
-    {
-      digitalWrite(LED_11, LOW);
-    }
-    if (data->scaledValue > data->alertHigh || data->scaledValue < data->alertLow)
-    {
-      digitalWrite(LED_12, HIGH);
-    }
-    else
-    {
-      digitalWrite(LED_12, LOW);
-    }
-    break;
+      if (newWarning == true)
+      {
+        digitalWrite(LED_11, HIGH);
+      }
+      else
+      {
+        digitalWrite(LED_11, LOW);
+      }
+      if (data->scaledValue > data->alertHigh || data->scaledValue < data->alertLow)
+      {
+        digitalWrite(LED_12, HIGH);
+      }
+      else
+      {
+        digitalWrite(LED_12, LOW);
+      }
+      break;
 
-  default:
-    ledOff();
-    sequentialLedAll(percent);
-    break;
+    default:
+      ledOff();
+      sequentialLedAll(percent);
+      break;
   }
 }
 
 /*
- * Print the selected gauge and data on the display
- */
+   Print the selected gauge and data on the display
+*/
 
 void printLeds(int g)
 {
 
   switch (g)
   {
-  case 0:
-    renderLeds(ledType, ptrDataLed1);
-    break;
+    case 0:
+      renderLeds(ledType, ptrDataLed1);
+      break;
 
-  case 1:
-    renderLeds(ledType, ptrDataLed2);
-    break;
+    case 1:
+      renderLeds(ledType, ptrDataLed2);
+      break;
 
-  case 2:
-    renderLeds(ledType, ptrDataLed4);
-    break;
+    case 2:
+      renderLeds(ledType, ptrDataLed4);
+      break;
 
-  case 3:
-    renderLeds(ledType, ptrDataLed5);
-    break;
+    case 3:
+      renderLeds(ledType, ptrDataLed5);
+      break;
 
-  default:
-    ledOff();
-    break;
+    default:
+      ledOff();
+      break;
   }
 }
 
@@ -1143,280 +1151,280 @@ void printData(int g)
   switch (g)
   {
 
-  case 0:
-    // 1x Sensor Gauge
-    u8g2.clearBuffer();
-    u8g2.setFont(u8g2_font_6x12_tf);
-    u8g2.setCursor(0, 0);
-    printDataNameAndUnits(ptrData);
-
-    u8g2.setFont(u8g2_font_fub35_tf);
-    u8g2.setCursor(0, 26);
-
-    printDataFormatted(ptrData);
-
-    u8g2.sendBuffer();
-    break;
-
-  case 1:
-    // 2x Sensor Gauge
-    u8g2.clearBuffer();
-    u8g2.setCursor(0, 0);
-    u8g2.setFont(u8g2_font_helvB24_tf);
-
-    printDataFormatted(ptrData);
-
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.setCursor(105, 0);
-    u8g2.print(ptrData->dataName);
-    u8g2.setCursor(105, 15);
-    u8g2.print(ptrData->units);
-
-    u8g2.setCursor(0, 30);
-    u8g2.setFont(u8g2_font_helvB24_tf);
-
-    printDataFormatted(ptrData2);
-
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.setCursor(105, 30);
-    u8g2.print(ptrData2->dataName);
-    u8g2.setCursor(105, 45);
-    u8g2.print(ptrData2->units);
-
-    u8g2.sendBuffer();
-    break;
-
-  case 2:
-    // 4x Sensor Gauge
-    u8g2.clearBuffer();
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.setCursor(0, 0);
-    printDataNameAndUnits(ptrData);
-    u8g2.setCursor((displayWidth / 2), 0);
-    printDataNameAndUnits(ptrData2);
-    u8g2.setCursor(0, displayHeight / 2);
-    printDataNameAndUnits(ptrData3);
-    u8g2.setCursor((displayWidth / 2), displayHeight / 2);
-    printDataNameAndUnits(ptrData4);
-
-    // Setup sensor values
-    u8g2.setFont(u8g2_font_t0_22b_tn);
-
-    u8g2.setCursor(0, (displayHeight / 4) + h);
-    printDataFormatted(ptrData);
-
-    u8g2.setCursor((displayWidth / 2), (displayHeight / 4) + h);
-    printDataFormatted(ptrData2);
-    u8g2.setCursor(0, (displayHeight * 3 / 4) + h);
-    printDataFormatted(ptrData3);
-
-    u8g2.setCursor((displayWidth / 2), (displayHeight * 3 / 4) + h);
-    printDataFormatted(ptrData4);
-
-    u8g2.sendBuffer();
-
-    break;
-
-  case 3:
-    // 1x Sensor Gauge Alternate
-    u8g2.clearBuffer();
-    u8g2.setFont(u8g2_font_6x12_tf);
-    u8g2.setCursor(0, 0);
-    printDataNameAndUnits(ptrData5);
-
-    u8g2.setFont(u8g2_font_fub35_tf);
-    u8g2.setCursor(0, 26);
-
-    printDataFormatted(ptrData5);
-
-    if (ptrData5->scaleMultiplier == 0)
-    {
+    case 0:
+      // 1x Sensor Gauge
       u8g2.clearBuffer();
-    }
+      u8g2.setFont(u8g2_font_6x12_tf);
+      u8g2.setCursor(0, 0);
+      printDataNameAndUnits(ptrData);
 
-    u8g2.sendBuffer();
-    break;
+      u8g2.setFont(u8g2_font_fub35_tf);
+      u8g2.setCursor(0, 26);
+
+      printDataFormatted(ptrData);
+
+      u8g2.sendBuffer();
+      break;
+
+    case 1:
+      // 2x Sensor Gauge
+      u8g2.clearBuffer();
+      u8g2.setCursor(0, 0);
+      u8g2.setFont(u8g2_font_helvB24_tf);
+
+      printDataFormatted(ptrData);
+
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.setCursor(105, 0);
+      u8g2.print(ptrData->dataName);
+      u8g2.setCursor(105, 15);
+      u8g2.print(ptrData->units);
+
+      u8g2.setCursor(0, 30);
+      u8g2.setFont(u8g2_font_helvB24_tf);
+
+      printDataFormatted(ptrData2);
+
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.setCursor(105, 30);
+      u8g2.print(ptrData2->dataName);
+      u8g2.setCursor(105, 45);
+      u8g2.print(ptrData2->units);
+
+      u8g2.sendBuffer();
+      break;
+
+    case 2:
+      // 4x Sensor Gauge
+      u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.setCursor(0, 0);
+      printDataNameAndUnits(ptrData);
+      u8g2.setCursor((displayWidth / 2), 0);
+      printDataNameAndUnits(ptrData2);
+      u8g2.setCursor(0, displayHeight / 2);
+      printDataNameAndUnits(ptrData3);
+      u8g2.setCursor((displayWidth / 2), displayHeight / 2);
+      printDataNameAndUnits(ptrData4);
+
+      // Setup sensor values
+      u8g2.setFont(u8g2_font_t0_22b_tn);
+
+      u8g2.setCursor(0, (displayHeight / 4) + h);
+      printDataFormatted(ptrData);
+
+      u8g2.setCursor((displayWidth / 2), (displayHeight / 4) + h);
+      printDataFormatted(ptrData2);
+      u8g2.setCursor(0, (displayHeight * 3 / 4) + h);
+      printDataFormatted(ptrData3);
+
+      u8g2.setCursor((displayWidth / 2), (displayHeight * 3 / 4) + h);
+      printDataFormatted(ptrData4);
+
+      u8g2.sendBuffer();
+
+      break;
+
+    case 3:
+      // 1x Sensor Gauge Alternate
+      u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_6x12_tf);
+      u8g2.setCursor(0, 0);
+      printDataNameAndUnits(ptrData5);
+
+      u8g2.setFont(u8g2_font_fub35_tf);
+      u8g2.setCursor(0, 26);
+
+      printDataFormatted(ptrData5);
+
+      if (ptrData5->scaleMultiplier == 0)
+      {
+        u8g2.clearBuffer();
+      }
+
+      u8g2.sendBuffer();
+      break;
 
     // ----------------- Info / Settings ------------------------------
 
-  case 8:
-    // Print ECU error status
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.clearBuffer();
-    u8g2.setCursor(0, 0);
-    u8g2.print("Warnings: ");
-    u8g2.print(warningCounter);
-    u8g2.setCursor(0, 15);
-    u8g2.print("Last Error:  ");
-    u8g2.print(lastError);
-    u8g2.setCursor(0, 30);
-    u8g2.sendBuffer();
-    break;
+    case 8:
+      // Print ECU error status
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.clearBuffer();
+      u8g2.setCursor(0, 0);
+      u8g2.print("Warnings: ");
+      u8g2.print(warningCounter);
+      u8g2.setCursor(0, 15);
+      u8g2.print("Last Error:  ");
+      u8g2.print(lastError);
+      u8g2.setCursor(0, 30);
+      u8g2.sendBuffer();
+      break;
 
-  case 9:
-    // Print ECU status of rev limit, fuel pump, CEL, o2 heater,
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.clearBuffer();
+    case 9:
+      // Print ECU status of rev limit, fuel pump, CEL, o2 heater,
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.clearBuffer();
 
-    u8g2.setCursor(0, 0);
-    printOnOff("Rev Limit ", revLimit > 0);
+      u8g2.setCursor(0, 0);
+      printOnOff("Rev Limit ", revLimit > 0);
 
-    u8g2.setCursor(0, 15);
-    printOnOff("Fuel Pump ", fuelPump > 0);
+      u8g2.setCursor(0, 15);
+      printOnOff("Fuel Pump ", fuelPump > 0);
 
-    u8g2.setCursor(0, 30);
-    printOnOff("Check Engine ", checkEngine > 0);
+      u8g2.setCursor(0, 30);
+      printOnOff("Check Engine ", checkEngine > 0);
 
-    u8g2.setCursor(0, 45);
-    printOnOff("EGO Heater ", egoHeater > 0);
-    ;
-    u8g2.sendBuffer();
-    break;
+      u8g2.setCursor(0, 45);
+      printOnOff("EGO Heater ", egoHeater > 0);
+      ;
+      u8g2.sendBuffer();
+      break;
 
     // WIFI
-  case 10:
-    // OTA / WiFi Setup
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.clearBuffer();
-    u8g2.setCursor(0, 0);
-    u8g2.print("WiFi");
+    case 10:
+      // OTA / WiFi Setup
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.clearBuffer();
+      u8g2.setCursor(0, 0);
+      u8g2.print("WiFi");
 
 #ifdef OTA_ENABLE
-    if (wifiToggled == true)
-    {
-      u8g2.print(" Enabled");
-      u8g2.setCursor(0, 16);
-      u8g2.print("SSID: ");
-      u8g2.print(ssid);
-      u8g2.setCursor(0, 28);
-      u8g2.print("Pass: ");
-      u8g2.print(password);
-      u8g2.setCursor(0, 40);
-      u8g2.print("IP: ");
-      u8g2.print(WiFi.softAPIP());
-      u8g2.setCursor(0, 53);
-      u8g2.print("<-     disable    ->");
-      ota();
-    }
-    else
-    {
-      u8g2.print(" Disabled");
-      u8g2.setCursor(0, 16);
-      u8g2.print("Use to update and to");
-      u8g2.setCursor(0, 28);
-      u8g2.print("configure settings");
-      u8g2.setCursor(0, 53);
-      u8g2.print("Press -> to enable");
-    }
+      if (wifiToggled == true)
+      {
+        u8g2.print(" Enabled");
+        u8g2.setCursor(0, 16);
+        u8g2.print("SSID: ");
+        u8g2.print(ssid);
+        u8g2.setCursor(0, 28);
+        u8g2.print("Pass: ");
+        u8g2.print(password);
+        u8g2.setCursor(0, 40);
+        u8g2.print("IP: ");
+        u8g2.print(WiFi.softAPIP());
+        u8g2.setCursor(0, 53);
+        u8g2.print("<-     disable    ->");
+        ota();
+      }
+      else
+      {
+        u8g2.print(" Disabled");
+        u8g2.setCursor(0, 16);
+        u8g2.print("Use to update and to");
+        u8g2.setCursor(0, 28);
+        u8g2.print("configure settings");
+        u8g2.setCursor(0, 53);
+        u8g2.print("Press -> to enable");
+      }
 #else
-    u8g2.setCursor(0, 15);
-    u8g2.print("Feature disabled");
-    u8g2.setCursor(0, 30);
-    u8g2.print("Update required!");
+      u8g2.setCursor(0, 15);
+      u8g2.print("Feature disabled");
+      u8g2.setCursor(0, 30);
+      u8g2.print("Update required!");
 #endif
 
-    u8g2.sendBuffer();
-    break;
+      u8g2.sendBuffer();
+      break;
 
-  case 11:
-    printGitQR();
-    break;
+    case 11:
+      printGitQR();
+      break;
 
     // INFO
-  case 12:
-    // Print build, and CAN info
-    // Useful for checking CAN connection
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.clearBuffer();
-    u8g2.setCursor(0, 0);
-    if (rxTimeout == 1)
-    {
-      u8g2.print("No data recieved");
-    }
-    else
-    {
-      u8g2.print("Recieving data");
-    }
-    u8g2.setCursor(0, 15);
-    u8g2.print("Curent Time: ");
-    u8g2.print(millis());
-    u8g2.setCursor(0, 30);
-    u8g2.print("Last recieved: ");
-    u8g2.print(lastMessage);
-    u8g2.setCursor(0, 45);
-    u8g2.print("Buffer: ");
-    u8g2.print((int)ACAN_ESP32::can.driverReceiveBufferCount());
-    u8g2.setCursor(100, 45);
-    u8g2.print(build);
-    u8g2.sendBuffer();
-    break;
+    case 12:
+      // Print build, and CAN info
+      // Useful for checking CAN connection
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.clearBuffer();
+      u8g2.setCursor(0, 0);
+      if (rxTimeout == 1)
+      {
+        u8g2.print("No data recieved");
+      }
+      else
+      {
+        u8g2.print("Recieving data");
+      }
+      u8g2.setCursor(0, 15);
+      u8g2.print("Curent Time: ");
+      u8g2.print(millis());
+      u8g2.setCursor(0, 30);
+      u8g2.print("Last recieved: ");
+      u8g2.print(lastMessage);
+      u8g2.setCursor(0, 45);
+      u8g2.print("Buffer: ");
+      u8g2.print((int)ACAN_ESP32::can.driverReceiveBufferCount());
+      u8g2.setCursor(100, 45);
+      u8g2.print(build);
+      u8g2.sendBuffer();
+      break;
 
     // CONFIG MODE
-  case 14:
-    u8g2.clearBuffer();
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.setCursor(0, 0);
-    if (inConfigMode == 0)
-    {
-      configMode();
-    }
-    else
-    {
+    case 14:
+      u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_6x10_tf);
       u8g2.setCursor(0, 0);
-      u8g2.print("Gauge Configuration");
-      u8g2.setCursor(0, 25);
-      u8g2.print("Press -> to enter");
-    }
-    u8g2.sendBuffer();
-    break;
+      if (inConfigMode == 0)
+      {
+        configMode();
+      }
+      else
+      {
+        u8g2.setCursor(0, 0);
+        u8g2.print("Gauge Configuration");
+        u8g2.setCursor(0, 25);
+        u8g2.print("Press -> to enter");
+      }
+      u8g2.sendBuffer();
+      break;
 
     // STARTUP CHANGE
-  case 15:
-    u8g2.clearBuffer();
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.setCursor(0, 0);
-    u8g2.print("startup logo");
-    u8g2.setCursor(0, 25);
-    u8g2.print("Current : ");
-    u8g2.print(startup);
-    u8g2.sendBuffer();
-    break;
+    case 15:
+      u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.setCursor(0, 0);
+      u8g2.print("startup logo");
+      u8g2.setCursor(0, 25);
+      u8g2.print("Current : ");
+      u8g2.print(startup);
+      u8g2.sendBuffer();
+      break;
 
-  case 16:
-    u8g2.clearBuffer();
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.setCursor(0, 0);
-    u8g2.print("startup logo 2");
-    u8g2.setCursor(0, 25);
-    u8g2.print("Current : ");
-    u8g2.print(startup2);
-    u8g2.sendBuffer();
-    break;
+    case 16:
+      u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.setCursor(0, 0);
+      u8g2.print("startup logo 2");
+      u8g2.setCursor(0, 25);
+      u8g2.print("Current : ");
+      u8g2.print(startup2);
+      u8g2.sendBuffer();
+      break;
 
-  case 17:
-    u8g2.clearBuffer();
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.setCursor(0, 0);
-    u8g2.print("Warning Count");
-    u8g2.setCursor(0, 25);
-    u8g2.print("Current : ");
-    u8g2.print(warningCounter);
-    u8g2.setCursor(0, 45);
-    u8g2.print("Press -> to +1");
-    u8g2.sendBuffer();
-    break;
+    case 17:
+      u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.setCursor(0, 0);
+      u8g2.print("Warning Count");
+      u8g2.setCursor(0, 25);
+      u8g2.print("Current : ");
+      u8g2.print(warningCounter);
+      u8g2.setCursor(0, 45);
+      u8g2.print("Press -> to +1");
+      u8g2.sendBuffer();
+      break;
 
-  // Use gauge type 0 as default
-  default:
-    gaugeType = 0;
-    gauge = 0;
-    reset = 0;
+    // Use gauge type 0 as default
+    default:
+      gaugeType = 0;
+      gauge = 0;
+      reset = 0;
   }
 }
 
 /*
- * Returns a pointer to the selected data type to be used
- */
+   Returns a pointer to the selected data type to be used
+*/
 
 sensorData *selectData(int g)
 {
@@ -1424,169 +1432,169 @@ sensorData *selectData(int g)
   switch (g)
   {
 
-  case 0:
-    return &afr;
-    break;
+    case 0:
+      return &afr;
+      break;
 
-  case 1:
-    return &rpm;
-    break;
+    case 1:
+      return &rpm;
+      break;
 
-  case 2:
-    return &vss;
-    break;
+    case 2:
+      return &vss;
+      break;
 
-  case 3:
-    return &vss_mph;
-    break;
+    case 3:
+      return &vss_mph;
+      break;
 
-  case 4:
-    return &manifoldPressure;
-    break;
+    case 4:
+      return &manifoldPressure;
+      break;
 
-  case 5:
-    return &manifoldPressure_psi;
-    break;
+    case 5:
+      return &manifoldPressure_psi;
+      break;
 
-  case 6:
-    return &coolantTemperature;
-    break;
+    case 6:
+      return &coolantTemperature;
+      break;
 
-  case 7:
-    return &coolantTemperature_f;
-    break;
+    case 7:
+      return &coolantTemperature_f;
+      break;
 
-  case 8:
-    return &intakeTemperature;
-    break;
+    case 8:
+      return &intakeTemperature;
+      break;
 
-  case 9:
-    return &intakeTemperature_f;
-    break;
+    case 9:
+      return &intakeTemperature_f;
+      break;
 
-  case 10:
-    return &accelerator;
-    break;
+    case 10:
+      return &accelerator;
+      break;
 
-  case 11:
-    return &ignitionTiming;
-    break;
+    case 11:
+      return &ignitionTiming;
+      break;
 
-  case 12:
-    return &injectorDuty;
-    break;
+    case 12:
+      return &injectorDuty;
+      break;
 
-  case 13:
-    return &injectorPulse;
-    break;
+    case 13:
+      return &injectorPulse;
+      break;
 
-  case 14:
-    return &throttle1;
-    break;
+    case 14:
+      return &throttle1;
+      break;
 
-  case 15:
-    return &throttle2;
-    break;
+    case 15:
+      return &throttle2;
+      break;
 
-  case 16:
-    return &vvtPosition;
-    break;
+    case 16:
+      return &vvtPosition;
+      break;
 
-  case 17:
-    return &airMass;
-    break;
+    case 17:
+      return &airMass;
+      break;
 
-  case 18:
-    return &estimatedAirflow;
-    break;
+    case 18:
+      return &estimatedAirflow;
+      break;
 
-  case 19:
-    return &fuel;
-    break;
+    case 19:
+      return &fuel;
+      break;
 
-  case 20:
-    return &mcuTemp;
-    break;
+    case 20:
+      return &mcuTemp;
+      break;
 
-  case 21:
-    return &auxTemp1;
-    break;
+    case 21:
+      return &auxTemp1;
+      break;
 
-  case 22:
-    return &auxTemp2;
-    break;
+    case 22:
+      return &auxTemp2;
+      break;
 
-  case 23:
-    return &batteryVoltage;
-    break;
+    case 23:
+      return &batteryVoltage;
+      break;
 
-  case 24:
-    return &ethanol;
-    break;
+    case 24:
+      return &ethanol;
+      break;
 
-  case 25:
-    return &lambda1;
-    break;
+    case 25:
+      return &lambda1;
+      break;
 
-  case 26:
-    return &lambda2;
-    break;
+    case 26:
+      return &lambda2;
+      break;
 
-  case 27:
-    return &fuelPressureLow;
-    break;
+    case 27:
+      return &fuelPressureLow;
+      break;
 
-  case 28:
-    return &fuelPressureHigh;
-    break;
+    case 28:
+      return &fuelPressureHigh;
+      break;
 
-  case 29:
-    return &fuelConsumed;
-    break;
+    case 29:
+      return &fuelConsumed;
+      break;
 
-  case 30:
-    return &fuelConsumption;
-    break;
+    case 30:
+      return &fuelConsumption;
+      break;
 
-  case 31:
-    return &fuelTrim;
-    break;
+    case 31:
+      return &fuelTrim;
+      break;
 
-  case 32:
-    return &vvtIntake1;
-    break;
+    case 32:
+      return &vvtIntake1;
+      break;
 
-  case 33:
-    return &vvtIntake2;
-    break;
+    case 33:
+      return &vvtIntake2;
+      break;
 
-  case 34:
-    return &vvtExhaust1;
-    break;
+    case 34:
+      return &vvtExhaust1;
+      break;
 
-  case 35:
-    return &vvtExhaust2;
-    break;
+    case 35:
+      return &vvtExhaust2;
+      break;
 
-  case 36:
-    return &oilPressure;
-    break;
+    case 36:
+      return &oilPressure;
+      break;
 
-  case 37:
-    return &oilPressure_psi;
-    break;
+    case 37:
+      return &oilPressure_psi;
+      break;
 
-  case 38:
-    return &noData;
-    break;
+    case 38:
+      return &noData;
+      break;
 
-  case 39:
-    return &testData;
-    break;
+    case 39:
+      return &testData;
+      break;
 
-  default:
-    maxSet = 1;
-    return &afr;
+    default:
+      maxSet = 1;
+      return &afr;
   }
 }
 
@@ -1596,57 +1604,57 @@ void selectGauge(int g)
   switch (g)
   {
 
-  case 0:
-    preferences.begin("config", true);
-    gaugeType = preferences.getUInt("gaugeType", 0);
-    preferences.end();
-    break;
+    case 0:
+      preferences.begin("config", true);
+      gaugeType = preferences.getUInt("gaugeType", 0);
+      preferences.end();
+      break;
 
-  case 1:
-    gaugeType = 9;
-    break;
+    case 1:
+      gaugeType = 9;
+      break;
 
-  case 2:
-    gaugeType = 8;
-    break;
+    case 2:
+      gaugeType = 8;
+      break;
 
-  case 3:
-    gaugeType = 10;
-    break;
+    case 3:
+      gaugeType = 10;
+      break;
 
-  case 4:
-    gaugeType = 14;
-    break;
+    case 4:
+      gaugeType = 14;
+      break;
 
-  case 5:
-    gaugeType = 11;
-    break;
+    case 5:
+      gaugeType = 11;
+      break;
 
 #ifdef DEBUG_BUILD
-  case 6:
-    gaugeType = 15;
-    break;
+    case 6:
+      gaugeType = 15;
+      break;
 
-  case 7:
-    gaugeType = 16;
-    break;
+    case 7:
+      gaugeType = 16;
+      break;
 
-  case 8:
-    gaugeType = 17;
-    break;
+    case 8:
+      gaugeType = 17;
+      break;
 #endif
 
-  default:
-    gauge = 0;
-    gaugeType = 0;
+    default:
+      gauge = 0;
+      gaugeType = 0;
   }
 }
 
 // -----------------------------------      CAN      ---------------------------------------------
 
 /*
- * This function is used to setup filtering on incoming CAN messages, restricting to only standard frames (11bit)
- */
+   This function is used to setup filtering on incoming CAN messages, restricting to only standard frames (11bit)
+*/
 //
 void canSetupFiltered(int filterID, int maskID)
 {
@@ -1667,8 +1675,8 @@ void canSetupFiltered(int filterID, int maskID)
 }
 
 /*
- * This function is used to initialize CAN, restricting to only standard frames (11bit)
- */
+   This function is used to initialize CAN, restricting to only standard frames (11bit)
+*/
 void canSetup()
 {
 
@@ -1686,8 +1694,8 @@ void canSetup()
 }
 
 /*
- * This function is used to create a task to assign to core 0, to utilize the second core for processing CAN messages
- */
+   This function is used to create a task to assign to core 0, to utilize the second core for processing CAN messages
+*/
 void canTask(void *pvParameters)
 {
 
@@ -1701,7 +1709,7 @@ void canTask(void *pvParameters)
       rxTimeout = 0;
     }
 
-// Increment Testing Data if in DEBUG
+    // Increment Testing Data if in DEBUG
 #ifdef DEBUG_BUILD
     incrementTestData();
 #endif
@@ -1764,14 +1772,14 @@ void setup()
 #ifdef USE_SAVED_DISP_CONTROLLER
   switch (displayController)
   {
-  case 1:
-    break;
+    case 1:
+      break;
 
-  case 2:
-    break;
+    case 2:
+      break;
 
-  default:
-    break;
+    default:
+      break;
   }
 
 #endif
@@ -1786,33 +1794,32 @@ void setup()
   selectGauge(gauge);
 
   // Start the OLED display
-  u8g2.begin();
   oledSetup();
 
-// Print the splash screen
+  // Print the splash screen
 #ifdef USE_BMP
   switch (startup)
   {
-  case 0:
-  default:
-    printBuild();
-    break;
+    case 0:
+    default:
+      printBuild();
+      break;
 
-  case 1:
-    printBMP_KaN();
-    break;
+    case 1:
+      printBMP_KaN();
+      break;
 
-  case 2:
-    printBMP_rusEFI();
-    break;
+    case 2:
+      printBMP_rusEFI();
+      break;
 
-  case 3:
-    printBMP_BMM();
-    break;
+    case 3:
+      printBMP_BMM();
+      break;
 
-  case 4:
-    printBMP_GG();
-    break;
+    case 4:
+      printBMP_GG();
+      break;
   }
 
   // Wait some time for the splash screen to show
@@ -1828,13 +1835,13 @@ void setup()
 
   // Use core 0 for processing CAN messages
   xTaskCreatePinnedToCore(
-      canTask,    /* Function to implement the task */
-      "TASK_CAN", /* Name of the task */
-      10000,      /* Stack size in words */
-      NULL,       /* Task input parameter */
-      0,          /* Priority of the task */
-      &TASK_CAN,  /* Task handle. */
-      0);         /* Core where the task should run */
+    canTask,    /* Function to implement the task */
+    "TASK_CAN", /* Name of the task */
+    10000,      /* Stack size in words */
+    NULL,       /* Task input parameter */
+    0,          /* Priority of the task */
+    &TASK_CAN,  /* Task handle. */
+    0);         /* Core where the task should run */
 
   // Sweep the LEDs and wait so that the the startup is seen
   if (ledType == 4)
@@ -1851,43 +1858,43 @@ void setup()
 #ifdef USE_BMP_2
   switch (startup2)
   {
-  case 0:
-    break;
+    case 0:
+      break;
 
-  case 1:
-    printBMP_KaN();
-    while (millis() < (startTime + startTime))
-    {
-    }
-    break;
+    case 1:
+      printBMP_KaN();
+      while (millis() < (startTime + startTime))
+      {
+      }
+      break;
 
-  case 2:
-    printBMP_rusEFI();
-    while (millis() < (startTime + startTime))
-    {
-    }
-    break;
+    case 2:
+      printBMP_rusEFI();
+      while (millis() < (startTime + startTime))
+      {
+      }
+      break;
 
-  case 3:
-    printBMP_BMM();
-    while (millis() < (startTime + startTime))
-    {
-    }
-    break;
+    case 3:
+      printBMP_BMM();
+      while (millis() < (startTime + startTime))
+      {
+      }
+      break;
 
-  case 4:
-    printBMP_GG();
-    while (millis() < (startTime + startTime))
-    {
-    }
-    break;
+    case 4:
+      printBMP_GG();
+      while (millis() < (startTime + startTime))
+      {
+      }
+      break;
 
-  default:
-    printBuild();
-    while (millis() < (startTime + startTime))
-    {
-    }
-    break;
+    default:
+      printBuild();
+      while (millis() < (startTime + startTime))
+      {
+      }
+      break;
   }
 #endif
 
@@ -1940,28 +1947,53 @@ void loop()
 #else
 #endif
 
-  if (readyToSetLimits == true)
+
+  if (readyToUpdateLimits == true)
   {
     u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_6x10_tf);
     u8g2.setCursor(0, 0);
-    u8g2.print("Updating Limits");
+    u8g2.print("Updating Limit Configuration");
     u8g2.sendBuffer();
-    setSensorMinMax(selectedSensor, selectedLimit, inputNewValueF);
+    setSensorMinMax(selectedSensor, selectedLimit, inputNewValue);
     saveSensorMinMax();
-    readyToSetLimits = false;
+    readyToUpdateLimits = false;
   }
 
-  if (readyToUpdateGauge == true)
+  if (readyToUpdateGaugeConfig == true)
   {
     u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_6x10_tf);
     u8g2.setCursor(0, 0);
-    u8g2.print("Updating Config");
+    u8g2.print("Updating Gauge Configuration");
     u8g2.sendBuffer();
-    setGaugeConfig(selectedType, selectedGauge, selectedSensor, selectedLedType, selectedDisplayRate);
+    setGaugeConfig(selectedType, selectedGauge, selectedSensor);
     saveDataSettings();
-    readyToUpdateGauge = false;
+    readyToUpdateGaugeConfig = false;
+  }
+
+  if (readyToUpdateLedMode == true)
+  {
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.setCursor(0, 0);
+    u8g2.print("Updating LED Mode");
+    u8g2.sendBuffer();
+    setLedMode(selectedLedMode);
+    saveDataSettings();
+    readyToUpdateLedMode = false;
+  }
+
+  if (readyToUpdateDisplayRate == true)
+  {
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.setCursor(0, 0);
+    u8g2.print("Updating Display Rate");
+    u8g2.sendBuffer();
+    setDisplayRate(selectedDisplayRate);
+    saveDataSettings();
+    readyToUpdateDisplayRate = false;
   }
 
   // Alert if communication with ECU is lost
