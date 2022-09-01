@@ -18,7 +18,5 @@ jobs:
           libraries: |
             - name: U8g2
             - name: ACAN_ESP32
-            - name: AsyncTCP
-            - name: ESPAsyncWebServer
           enable-deltas-report: true
       # - uses: arduino/report-size-deltas@v1
