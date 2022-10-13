@@ -82,7 +82,7 @@ int allLed[] = {LED_11, LED_1, LED_2, LED_3, LED_4, LED_5, LED_6, LED_7, LED_8, 
 
 void ledOn()
 {
-  for (int i = 0; i <= 12; i++)
+  for (int i = 0; i < 12; i++)
   {
     digitalWrite(allLed[i], HIGH);
   }
@@ -90,7 +90,7 @@ void ledOn()
 
 void ledOff()
 {
-  for (int i = 0; i <= 12; i++)
+  for (int i = 0; i < 12; i++)
   {
     digitalWrite(allLed[i], LOW);
   };
@@ -98,7 +98,7 @@ void ledOff()
 
 void indLedOff()
 {
-  for (int i = 0; i <= 10; i++)
+  for (int i = 0; i < 10; i++)
   {
     digitalWrite(indicatorLed[i], LOW);
   };
@@ -111,45 +111,47 @@ void blinkLed(int wait)
   ledOff();
 }
 
-// Illuminate LEDs sequentially 0-10
+// Illuminate LEDs sequentially 1-10
 void sequentialLed(int p)
 {
 
-  p = p / 10;
+  p = p * 10 / 100;
+ 
+  }
 
-  for (int i = 0; i <= p; i++)
+  for (int i = 0; i < p; i++)
   {
     digitalWrite(indicatorLed[i], HIGH);
   }
 }
 
-// Illuminate single LED 0-10
+// Illuminate single LED 1-10
 void singleLed(int p)
 {
 
-  p = p / 10;
-
-  digitalWrite(indicatorLed[p], HIGH);
+   p = p * 10 / 100;
+  
+  digitalWrite(indicatorLed[(p-1)], HIGH);
 }
 
-// Illuminate all LED 0-12
+// Illuminate all LED 1-12
 void sequentialLedAll(int p)
 {
 
   p = p * 12 / 100;
 
-  for (int i = 0; i <= p; i++)
+  for (int i = 0; i < p; i++)
   {
     digitalWrite(allLed[i], HIGH);
   }
 }
 
-// Illuminate single LED 0-12
+// Illuminate single LED 1-12
 void singleLedAll(int p)
 {
 
   p = p * 12 / 100;
-  digitalWrite(allLed[p], HIGH);
+  digitalWrite(allLed[(p-1)], HIGH);
 }
 
 
