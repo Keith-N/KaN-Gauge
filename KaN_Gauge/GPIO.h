@@ -116,8 +116,6 @@ void sequentialLed(int p)
 {
 
   p = p * 10 / 100;
- 
-  }
 
   for (int i = 0; i < p; i++)
   {
