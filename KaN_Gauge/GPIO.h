@@ -82,7 +82,7 @@ int allLed[] = {LED_11, LED_1, LED_2, LED_3, LED_4, LED_5, LED_6, LED_7, LED_8, 
 
 void ledOn()
 {
-  for (int i = 0; i < 12; i++)
+  for (int i = 0; i <= 12; i++)
   {
     digitalWrite(allLed[i], HIGH);
   }
@@ -90,7 +90,7 @@ void ledOn()
 
 void ledOff()
 {
-  for (int i = 0; i < 12; i++)
+  for (int i = 0; i <= 12; i++)
   {
     digitalWrite(allLed[i], LOW);
   };
@@ -98,7 +98,7 @@ void ledOff()
 
 void indLedOff()
 {
-  for (int i = 0; i < 10; i++)
+  for (int i = 0; i <= 10; i++)
   {
     digitalWrite(indicatorLed[i], LOW);
   };
@@ -117,7 +117,7 @@ void sequentialLed(int p)
 
   p = p / 10;
 
-  for (int i = 0; i < p; i++)
+  for (int i = 0; i <= p; i++)
   {
     digitalWrite(indicatorLed[i], HIGH);
   }
@@ -138,7 +138,7 @@ void sequentialLedAll(int p)
 
   p = p * 12 / 100;
 
-  for (int i = 0; i < p; i++)
+  for (int i = 0; i <= p; i++)
   {
     digitalWrite(allLed[i], HIGH);
   }
