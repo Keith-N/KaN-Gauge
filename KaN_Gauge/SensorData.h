@@ -290,9 +290,9 @@ sensorData auxTemp1 = {
 
 sensorData auxTemp1_f = {
   "Aux 1",           // Name
-  "C",               // Units
+  "F",               // Units
   1.8,               // Multiplier for scaling
-  (-40),             // Data Offset
+  32,             // Data Offset
   0,                 // Scaled value
   0,                 // Minimum Value
   200,               // Maximum Value
@@ -318,9 +318,9 @@ sensorData auxTemp2 = {
 
 sensorData auxTemp2_f = {
   "Aux 2",           // Name
-  "C",               // Units
+  "F",               // Units
   1.8,               // Multiplier for scaling
-  -40,               // Data Offset
+  32,               // Data Offset
   0,                 // Scaled value
   0,                 // Minimum Value
   200,               // Maximum Value

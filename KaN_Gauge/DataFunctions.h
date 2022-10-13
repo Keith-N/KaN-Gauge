@@ -88,6 +88,9 @@ void SAVE_DATA(CANMessage CANmsg)
 
       auxTemp1.scaledValue = ((((float)(CANmsg.data[4])) * (auxTemp1.scaleMultiplier)) + auxTemp1.offset);
       auxTemp2.scaledValue = ((((float)(CANmsg.data[5])) * (auxTemp2.scaleMultiplier)) + auxTemp2.offset);
+      auxTemp1_f.scaledValue = ((auxTemp1.scaledValue * auxTemp1_f.scaleMultiplier) + auxTemp1_f.offset);
+      auxTemp2_f.scaledValue = ((auxTemp2.scaledValue * auxTemp2_f.scaleMultiplier) + auxTemp2_f.offset);
+      
       mcuTemp.scaledValue = ((((float)(CANmsg.data[6])) * (mcuTemp.scaleMultiplier)) + mcuTemp.offset);
       fuel.scaledValue = ((((float)(CANmsg.data[7])) * (fuel.scaleMultiplier)) + fuel.offset);
       break;

@@ -1532,75 +1532,83 @@ sensorData *selectData(int g)
       return &auxTemp1;
       break;
 
-    case 22:
-      return &auxTemp2;
+     case 22:
+      return &auxTemp1_f;
       break;
 
     case 23:
-      return &batteryVoltage;
+      return &auxTemp2;
       break;
 
-    case 24:
-      return &ethanol;
+     case 24:
+      return &auxTemp2_f;
       break;
 
     case 25:
-      return &lambda1;
+      return &batteryVoltage;
       break;
 
     case 26:
-      return &lambda2;
+      return &ethanol;
       break;
 
     case 27:
-      return &fuelPressureLow;
+      return &lambda1;
       break;
 
     case 28:
-      return &fuelPressureHigh;
+      return &lambda2;
       break;
 
     case 29:
-      return &fuelConsumed;
+      return &fuelPressureLow;
       break;
 
     case 30:
-      return &fuelConsumption;
+      return &fuelPressureHigh;
       break;
 
     case 31:
-      return &fuelTrim;
+      return &fuelConsumed;
       break;
 
     case 32:
-      return &vvtIntake1;
+      return &fuelConsumption;
       break;
 
     case 33:
-      return &vvtIntake2;
+      return &fuelTrim;
       break;
 
     case 34:
-      return &vvtExhaust1;
+      return &vvtIntake1;
       break;
 
     case 35:
-      return &vvtExhaust2;
+      return &vvtIntake2;
       break;
 
     case 36:
-      return &oilPressure;
+      return &vvtExhaust1;
       break;
 
     case 37:
-      return &oilPressure_psi;
+      return &vvtExhaust2;
       break;
 
     case 38:
-      return &noData;
+      return &oilPressure;
       break;
 
     case 39:
+      return &oilPressure_psi;
+      break;
+
+    case 40:
+      return &noData;
+      break;
+
+    case 41:
       return &testData;
       break;
 
