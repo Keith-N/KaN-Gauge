@@ -18,7 +18,6 @@ struct sensorData
 };
 
 
-
 sensorData testData = {
   "Test", // Name
   "%@#",       // Units
@@ -620,7 +619,7 @@ sensorData fuelConsumption = {
 sensorData fuelTrim = {
   "FuelTrim",        // Name
   "%",               // Units
-  1,                 // Multiplier for scaling
+  0.001,              // Multiplier for scaling
   0,                 // Data Offset
   0,                 // Scaled value
   0,                 // Minimum Value
