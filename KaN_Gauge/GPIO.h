@@ -105,7 +105,7 @@ void indLedOff()
 }
 
 void blinkLed(int wait)
-{
+{ 
   ledOn();
   delay(wait);
   ledOff();

@@ -4,7 +4,7 @@
    Use to enable/disable features
 */
 
-String build = "1.1.7";
+String build = "1.1.8";
 int nvsVersion = 2;
 
 // Enable first and second startup logos
@@ -15,14 +15,14 @@ int nvsVersion = 2;
 
 //#define USE_SAVED_DISP_CONTROLLER
 #define FORCED_DISP_CONTROLLER
-//#define SSD1306
-#define SH1106
+#define SSD1306
+//#define SH1106
 
 // Select boot logos
 #define DEFAULT_START
 //#define BMM_START
 //#define GG_START
-#define DEBUG_BUILD
+//#define DEBUG_BUILD
 
 // Allow OTA updates
 #define OTA_ENABLE

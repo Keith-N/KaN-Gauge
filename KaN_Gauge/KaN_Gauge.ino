@@ -998,7 +998,19 @@ void nextConfig()
 */
 int getPercent(float current, float minimum, float maximum)
 {
-  return ((int)100 * (current - minimum) / (maximum - minimum));
+
+  float percent = (100 * (current - minimum) / (maximum - minimum));
+  int p = (int) percent;
+
+  if (p > 100){
+    p = 100;
+  }
+
+  if (p < 0){
+    p = 0;
+  }
+  
+  return (p);
 }
 
 // ================================= Gauges ===========================================
