@@ -95,6 +95,9 @@ void checkNVS()
     preferences.putUInt("logo2", startup2);
     preferences.putUInt("nvs", nvsVersion);
     preferences.end();
+
+    // Save default config
+    saveSensorMinMax();
   }
 }
 
@@ -372,7 +375,7 @@ void saveSensorMinMax()
   // Multiply by 1000 so limits can keep .001 precision on restore
   int mult = 1000;
   testData.minimum = testData.minimum * mult;
-  testData.maximum = testData.minimum * mult;
+  testData.maximum = testData.maximum * mult;
   testData.alertLow = testData.alertLow * mult;
   testData.alertHigh = testData.alertHigh * mult;
   afr.minimum = afr.minimum   * mult;
@@ -554,7 +557,7 @@ void saveSensorMinMax()
   preferences.end();
 
   testData.minimum = testData.minimum / mult;
-  testData.maximum = testData.minimum / mult;
+  testData.maximum = testData.maximum / mult;
   testData.alertLow = testData.alertLow / mult;
   testData.alertHigh = testData.alertHigh / mult;
   afr.minimum = afr.minimum   / mult;
@@ -743,7 +746,7 @@ void restoreSensorMinMax()
   // Restore properly from int
   int mult = 1000;
   testData.minimum = testData.minimum / mult;
-  testData.maximum = testData.minimum / mult;
+  testData.maximum = testData.maximum / mult;
   testData.alertLow = testData.alertLow / mult;
   testData.alertHigh = testData.alertHigh / mult;
   afr.minimum = afr.minimum   / mult;
@@ -999,18 +1002,41 @@ void nextConfig()
 int getPercent(float current, float minimum, float maximum)
 {
 
-  float percent = (100 * (current - minimum) / (maximum - minimum));
-  int p = (int) percent;
-
-  if (p > 100){
-    p = 100;
-  }
-
-  if (p < 0){
-    p = 0;
+    #ifdef SERIAL_DEBUG
+    Serial.print("Calculating Percent - ");
+    Serial.println(current);
+    Serial.print(minimum);
+    Serial.print(" to ");
+    Serial.println(maximum);
+    #endif
+  
+  // Return zero percent in the case that the selected range divides by zero
+  if ((maximum - minimum) == 0){
+    return 0;
   }
   
-  return (p);
+  float percent = ((100 * (current - minimum)) / (maximum - minimum));
+
+    #ifdef SERIAL_DEBUG
+    Serial.print("Calculated Percent = ");
+    Serial.println(percent);
+    #endif
+
+ // Make sure percentage is bounded between 0-100
+  if (percent > 100){ 
+    percent = 100;
+  }
+
+  if (percent < 0){
+    percent = 0;
+  }
+
+  #ifdef SERIAL_DEBUG
+  Serial.print("Bounded Percent = ");
+  Serial.println(percent);
+  #endif
+
+  return ((int)percent);
 }
 
 // ================================= Gauges ===========================================
@@ -1043,7 +1069,7 @@ static void printOnOff(const char *label, bool on)
 
 static void renderLeds(int ledType, sensorData *data)
 {
-  int percent = getPercent(data->scaledValue, data->minimum, data->maximum);
+  float percent = getPercent(data->scaledValue, data->minimum, data->maximum);
 
   switch (ledType)
   {
@@ -1741,6 +1767,11 @@ void canTask(void *pvParameters)
 void setup()
 {
 
+  #ifdef SERIAL_DEBUG
+  Serial.begin(115200);
+  Serial.println("Starting ... ");
+  #endif
+
   checkNVS();
 
   // Configure GPIO and interrupt
@@ -1788,21 +1819,6 @@ void setup()
   startup2 = preferences.getUInt("logo2", 0);
   displayController = preferences.getUInt("display", 0);
   preferences.end();
-
-#ifdef USE_SAVED_DISP_CONTROLLER
-  switch (displayController)
-  {
-    case 1:
-      break;
-
-    case 2:
-      break;
-
-    default:
-      break;
-  }
-
-#endif
 
   checkStartupLogo();
 
@@ -1872,7 +1888,10 @@ void setup()
     ledSweep(0, 12, 40, 20);
   }
 
+#ifdef CUSTOM_MINMAX
   restoreSensorMinMax();
+#endif
+  
   setupData();
 
 #ifdef USE_BMP_2

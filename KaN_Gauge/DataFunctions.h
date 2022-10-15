@@ -25,6 +25,27 @@ sensorData *newSensorConfig;
 
 
 // ========================================================== Functions =========================================================================
+
+float rollOverAdjust(float t, float scale, int b){
+
+
+switch (b){
+  
+  case 16:
+    if (t > (60000 * scale)){
+      t = t-(65535 * scale);
+    }
+    break;
+
+ default:
+    break;
+}
+
+
+return t;
+}
+
+
 void incrementTestData()
 {
   // Increment test data
@@ -75,6 +96,12 @@ void SAVE_DATA(CANMessage CANmsg)
       accelerator.scaledValue = ((((int)word(CANmsg.data[1], CANmsg.data[0])) * (accelerator.scaleMultiplier)) + accelerator.offset);
       throttle1.scaledValue = ((((int)word(CANmsg.data[3], CANmsg.data[2])) * (throttle1.scaleMultiplier)) + throttle1.offset);
       throttle2.scaledValue = ((((int)word(CANmsg.data[5], CANmsg.data[4])) * (throttle2.scaleMultiplier)) + throttle2.offset);
+
+      // If a negative/bad value is calculated, use 0%
+      accelerator.scaledValue = rollOverAdjust(accelerator.scaledValue, accelerator.scaleMultiplier, 16);
+      throttle1.scaledValue = rollOverAdjust(throttle1.scaledValue, throttle1.scaleMultiplier, 16);
+      throttle2.scaledValue = rollOverAdjust(throttle2.scaledValue, throttle2.scaleMultiplier, 16);
+      
       break;
 
     case (515):
@@ -113,6 +140,9 @@ void SAVE_DATA(CANMessage CANmsg)
       fuelConsumed.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (fuelConsumed.scaleMultiplier)) + fuelConsumed.offset);
       fuelConsumption.scaledValue = ((((float)word(CANmsg.data[3], CANmsg.data[2])) * (fuelConsumption.scaleMultiplier)) + fuelConsumption.offset);
       fuelTrim.scaledValue = ((((float)word(CANmsg.data[5], CANmsg.data[4])) * (fuelTrim.scaleMultiplier)) + fuelTrim.offset);
+
+      fuelTrim.scaledValue = rollOverAdjust(fuelTrim.scaledValue, fuelTrim.scaleMultiplier, 16);
+      
       break;
 
     case (519):

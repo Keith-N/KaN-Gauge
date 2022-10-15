@@ -5,7 +5,7 @@
 */
 
 String build = "1.1.8";
-int nvsVersion = 2;
+int nvsVersion = 4;
 
 // Enable first and second startup logos
 #define USE_BMP
@@ -23,6 +23,7 @@ int nvsVersion = 2;
 //#define BMM_START
 //#define GG_START
 //#define DEBUG_BUILD
+//#define SERIAL_DEBUG
 
 // Allow OTA updates
 #define OTA_ENABLE
@@ -86,8 +87,10 @@ String buildType = "";
 
 #ifdef SSD1306
 int displayType = 0;
+String dispDriver = "SSD1306";
 #elif defined(SH1106)
 int displayType = 1;
+String dispDriver = "SH1106";
 #endif
 
 // Times in ms

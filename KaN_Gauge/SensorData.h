@@ -56,7 +56,7 @@ sensorData warningStatus = {
   0,                 // Minimum Value
   100,               // Maximum Value
   (BASE_CAN_ID + 0), // Address
-  0,
+  100,
   0,
   false
 };

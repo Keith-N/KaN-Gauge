@@ -65,7 +65,7 @@ void printGitQR()
   u8g2.setCursor(0, 30);
   u8g2.print(build);
   u8g2.setCursor(0, 40);
-  u8g2.print(displayType);
+  u8g2.print(dispDriver);
   u8g2.setCursor(0, 50);
   u8g2.print(buildType);
 

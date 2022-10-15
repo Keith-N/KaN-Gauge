@@ -133,7 +133,7 @@ void otaSetup(void)
     selectedDisplayRate = (int) (a.toFloat());
 
     readyToUpdateDisplayRate = true;
-    server.send(200);
+    server.send(200, "text/html", gaugeConfigPage);
   });
 
   server.on("/update", HTTP_POST, []()
