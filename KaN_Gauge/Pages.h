@@ -480,6 +480,7 @@ text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-tr
     <option value="2">LED Maximum</option>
     <option value="3">Alert Low</option>
     <option value="4">Alert High</option>
+    <option value="5">Decimal</option>
     </select>
   <br>
   

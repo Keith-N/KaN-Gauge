@@ -1018,6 +1018,10 @@ void setSensorMinMax(int sensor, int limit, float newValue)
       newSensorConfig->alertHigh = newValue;
       break;
 
+    case 5:
+      newSensorConfig->precision = newValue;
+      break;
+
     default:
       break;
   }

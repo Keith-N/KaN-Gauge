@@ -4,8 +4,8 @@
    Use to enable/disable features
 */
 
-String build = "1.1.8";
-int nvsVersion = 4;
+String build = "1.2.0";
+int nvsVersion = 5;
 
 // Enable first and second startup logos
 #define USE_BMP
