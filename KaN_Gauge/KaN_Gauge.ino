@@ -397,162 +397,241 @@ void saveSensorMinMax()
   preferences.putInt("testMAX", testData.maximum);
   preferences.putInt("testLOW", testData.alertLow);
   preferences.putInt("testHI", testData.alertHigh);
+  preferences.putInt("testPrec", testData.precision);
+
   preferences.putInt("rpmMIN", rpm.minimum);
   preferences.putInt("rpmMAX", rpm.maximum);
   preferences.putInt("rpmLOW", rpm.alertLow);
   preferences.putInt("rpmHI", rpm.alertHigh);
+  preferences.putInt("rpmPrec", rpm.precision);
+
   preferences.putInt("vssMIN", vss.minimum);
   preferences.putInt("vssMAX", vss.maximum);
   preferences.putInt("vssLOW", vss.alertLow);
   preferences.putInt("vssHI", vss.alertHigh);
+  preferences.putInt("vssPrec", vss.precision);
+
   preferences.putInt("vssMPHMIN", vss_mph.minimum);
   preferences.putInt("vssMPHMAX", vss_mph.maximum);
   preferences.putInt("vssMPHLOW", vss_mph.alertLow);
   preferences.putInt("vssMPHHI", vss_mph.alertHigh);
+  preferences.putInt("vssPrec", vss.precision);
+
   preferences.putInt("acceleratorMIN", accelerator.minimum);
   preferences.putInt("acceleratorMAX", accelerator.maximum);
   preferences.putInt("acceleratorLOW", accelerator.alertLow);
   preferences.putInt("acceleratorHI", accelerator.alertHigh);
+  preferences.putInt("acceleratorPrec", accelerator.precision);
+  
   preferences.putInt("throttle1MIN", throttle1.minimum);
   preferences.putInt("throttle1MAX", throttle1.maximum);
   preferences.putInt("throttle1LOW", throttle1.alertLow);
   preferences.putInt("throttle1HI", throttle1.alertHigh);
-  preferences.putInt("throttle1MIN", throttle2.minimum);
-  preferences.putInt("throttle1MAX", throttle2.maximum);
-  preferences.putInt("throttle1LOW", throttle2.alertLow);
-  preferences.putInt("throttle1HI", throttle2.alertHigh);
+  preferences.putInt("throttle1Prec", throttle1.precision);
+
+  preferences.putInt("throttle2MIN", throttle2.minimum);
+  preferences.putInt("throttle2MAX", throttle2.maximum);
+  preferences.putInt("throttle2LOW", throttle2.alertLow);
+  preferences.putInt("throttle2HI", throttle2.alertHigh);
+  preferences.putInt("throttle2Prec", throttle2.precision);
+
   preferences.putInt("injDutyMIN", injectorDuty.minimum);
   preferences.putInt("injDutyMAX", injectorDuty.maximum);
   preferences.putInt("injDutyLOW", injectorDuty.alertLow);
   preferences.putInt("injDutyHI", injectorDuty.alertHigh);
+  preferences.putInt("injDutyPrec", injDuty.precision);
+
   preferences.putInt("injPulseMIN", injectorPulse.minimum);
   preferences.putInt("injPulseMAX", injectorPulse.maximum);
   preferences.putInt("injPulseLOW", injectorPulse.alertLow);
   preferences.putInt("injPulseHI", injectorPulse.alertHigh);
+  preferences.putInt("injPulsePrec", injPulse.precision);
+
   preferences.putInt("fuelPresHighMIN", fuelPressureHigh.minimum);
   preferences.putInt("fuelPresHighMAX", fuelPressureHigh.maximum);
   preferences.putInt("fuelPresHighLOW", fuelPressureHigh.alertLow);
   preferences.putInt("fuelPresHighHI", fuelPressureHigh.alertHigh);
+  preferences.putInt("fuelPresHighPrec", fuelPressureHigh.precision);
+
   preferences.putInt("fuelPresLowMIN", fuelPressureLow.minimum);
   preferences.putInt("fuelPresLowMAX", fuelPressureLow.maximum);
   preferences.putInt("fuelPresLowLOW", fuelPressureLow.alertLow);
   preferences.putInt("fuelPresLowHI", fuelPressureLow.alertHigh);
+  preferences.putInt("fuelPresLowPrec", fuelPressureLow.precision);
+
   preferences.putInt("ethanolMIN", ethanol.minimum);
   preferences.putInt("ethanolMAX", ethanol.maximum);
   preferences.putInt("ethanolLOW", ethanol.alertLow);
   preferences.putInt("ethanolHI", ethanol.alertHigh);
+  preferences.putInt("ethanolPrec", ethanol.precision);
+
   preferences.putInt("fuelTrimMIN", fuelTrim.minimum);
   preferences.putInt("fuelTrimMAX", fuelTrim.maximum);
   preferences.putInt("fuelTrimLOW", fuelTrim.alertLow);
   preferences.putInt("fuelTrimHI", fuelTrim.alertHigh);
+  preferences.putInt("fuelTrimPrec", fuelTrim.precision);
+
   preferences.putInt("fuelMIN", fuel.minimum);
   preferences.putInt("fuelMAX", fuel.maximum);
   preferences.putInt("fuelLOW", fuel.alertLow);
   preferences.putInt("fuelHI", fuel.alertHigh);
+  preferences.putInt("fuelPrec", fuel.precision);
+
   preferences.putInt("fuelUsedMIN", fuelConsumed.minimum);
   preferences.putInt("fuelUsedMAX", fuelConsumed.maximum);
   preferences.putInt("fuelUsedLOW", fuelConsumed.alertLow);
   preferences.putInt("fuelUsedHI", fuelConsumed.alertHigh);
+  preferences.putInt("fuelConsumedPrec", fuelConsumed.precision);
+
   preferences.putInt("fuelFlowMIN", fuelConsumption.minimum);
   preferences.putInt("fuelFlowMAX", fuelConsumption.maximum);
   preferences.putInt("fuelFlowLOW", fuelConsumption.alertLow);
   preferences.putInt("fuelFlowHI", fuelConsumption.alertHigh);
+  preferences.putInt("fuelConsumptionPrec", fuelConsumption.precision);
+
   preferences.putInt("afrMIN", afr.minimum);
   preferences.putInt("afrMAX", afr.maximum);
   preferences.putInt("afrLOW", afr.alertLow);
   preferences.putInt("afrHI", afr.alertHigh);
+  preferences.putInt("afrPrec", afr.precision);
+
   preferences.putInt("lambda1MIN", lambda1.minimum);
   preferences.putInt("lambda1MAX", lambda1.maximum);
   preferences.putInt("lambda1LOW", lambda1.alertLow);
   preferences.putInt("lambda1HI", lambda1.alertHigh);
-  preferences.putInt("lambda2MIN", lambda1.minimum);
-  preferences.putInt("lambda2MAX", lambda1.maximum);
-  preferences.putInt("lambda2LOW", lambda1.alertLow);
-  preferences.putInt("lambda2HI", lambda1.alertHigh);
+   preferences.putInt("lambda1Prec", lambda1.precision);
+
+  preferences.putInt("lambda2MIN", lambda2.minimum);
+  preferences.putInt("lambda2MAX", lambda2.maximum);
+  preferences.putInt("lambda2LOW", lambda2.alertLow);
+  preferences.putInt("lambda2HI", lambda2.alertHigh);
+  preferences.putInt("lambda1Prec", lambda2.precision);
+
   preferences.putInt("cltCMIN", coolantTemperature.minimum);
   preferences.putInt("cltCMAX", coolantTemperature.maximum);
   preferences.putInt("cltCLOW", coolantTemperature.alertLow);
   preferences.putInt("cltCHI", coolantTemperature.alertHigh);
+  preferences.putInt("cltPrec", coolantTemperature.precision);
+
   preferences.putInt("iatCMIN", intakeTemperature.minimum);
   preferences.putInt("iatCMAX", intakeTemperature.maximum);
   preferences.putInt("iatCLOW", intakeTemperature.alertLow);
   preferences.putInt("iatCHI", intakeTemperature.alertHigh);
+  preferences.putInt("iatPrec", intakeTemperature.precision);
+
   preferences.putInt("aux1CMIN", auxTemp1.minimum);
   preferences.putInt("aux1CMAX", auxTemp1.maximum);
   preferences.putInt("aux1CLOW", auxTemp1.alertLow);
   preferences.putInt("aux1CHI", auxTemp1.alertHigh);
+  preferences.putInt("aux1Prec", auxTemp1.precision);
+
   preferences.putInt("aux2CMIN", auxTemp2.minimum);
   preferences.putInt("aux2CMAX", auxTemp2.maximum);
   preferences.putInt("aux2CLOW", auxTemp2.alertLow);
   preferences.putInt("aux2CHI", auxTemp2.alertHigh);
+  preferences.putInt("aux2Prec", auxTemp2.precision);
+
   preferences.putInt("mcuCMIN", mcuTemp.minimum);
   preferences.putInt("mcuCMAX", mcuTemp.maximum);
   preferences.putInt("mcuCLOW", mcuTemp.alertLow);
   preferences.putInt("mcuCHI", mcuTemp.alertHigh);
+  preferences.putInt("mcuCPrec", mcuTemp.precision);
+
   preferences.putInt("cltFMIN", coolantTemperature_f.minimum);
   preferences.putInt("cltFMAX", coolantTemperature_f.maximum);
   preferences.putInt("cltFLOW", coolantTemperature_f.alertLow);
   preferences.putInt("cltFHI", coolantTemperature_f.alertHigh);
+  preferences.putInt("cltFPrec", coolantTemperature_f.precision);
+  
   preferences.putInt("iatFMIN", intakeTemperature_f.minimum);
   preferences.putInt("iatFMAX", intakeTemperature_f.maximum);
   preferences.putInt("iatFLOW", intakeTemperature_f.alertLow);
   preferences.putInt("iatFHI", intakeTemperature_f.alertHigh);
+  preferences.putInt("iatPrec", intakeTemperature_f.precision);
+
   preferences.putInt("aux1FMIN", auxTemp1_f.minimum);
   preferences.putInt("aux1FMAX", auxTemp1_f.maximum);
   preferences.putInt("aux1FLOW", auxTemp1_f.alertLow);
   preferences.putInt("aux1FHI", auxTemp1_f.alertHigh);
+  preferences.putInt("aux1FPrec", auxTemp1_f.precision);
+
   preferences.putInt("aux2FMIN", auxTemp2_f.minimum);
   preferences.putInt("aux2FMAX", auxTemp2_f.maximum);
   preferences.putInt("aux2FLOW", auxTemp2_f.alertLow);
   preferences.putInt("aux2FHI", auxTemp2_f.alertHigh);
+  preferences.putInt("aux2Prec", auxTemp2_f.precision);
+
   preferences.putInt("mapKPAMIN", manifoldPressure.minimum);
   preferences.putInt("mapKPAMAX", manifoldPressure.maximum);
   preferences.putInt("mapKPALOW", manifoldPressure.alertLow);
   preferences.putInt("mapKPAHI", manifoldPressure.alertHigh);
+  preferences.putInt("mapKPrec", manifoldPressure.precision);
+  
   preferences.putInt("oilKPAMIN", oilPressure.minimum);
   preferences.putInt("oilKPAMAX", oilPressure.maximum);
   preferences.putInt("oilKPALOW", oilPressure.alertLow);
   preferences.putInt("oilKPAHI", oilPressure.alertHigh);
+  preferences.putInt("oilKPAPrec", oilPressure.precision);
+
   preferences.putInt("mapKPAMIN", manifoldPressure_psi.minimum);
   preferences.putInt("mapKPAMAX", manifoldPressure_psi.maximum);
   preferences.putInt("mapKPALOW", manifoldPressure_psi.alertLow);
   preferences.putInt("mapKPAHI", manifoldPressure_psi.alertHigh);
+  preferences.putInt("mapKPAPrec", manifoldPressure_psi.precision);
+
   preferences.putInt("oilKPAMIN", oilPressure_psi.minimum);
   preferences.putInt("oilKPAMAX", oilPressure_psi.maximum);
   preferences.putInt("oilKPALOW", oilPressure_psi.alertLow);
   preferences.putInt("oilKPAHI", oilPressure_psi.alertHigh);
+  preferences.putInt("oilKPAPrec", oilPressure_psi.precision);
+
   preferences.putInt("vvtMIN", vvtPosition.minimum);
   preferences.putInt("vvtMAX", vvtPosition.maximum);
   preferences.putInt("vvtLOW", vvtPosition.alertLow);
   preferences.putInt("vvtHI", vvtPosition.alertHigh);
+  preferences.putInt("vvtPrec", vvtPosition.precision);
+
   preferences.putInt("vvtEx1MIN", vvtExhaust1.minimum);
   preferences.putInt("vvtEx1MAX", vvtExhaust1.maximum);
   preferences.putInt("vvtEx1LOW", vvtExhaust1.alertLow);
   preferences.putInt("vvtEx1HI", vvtExhaust1.alertHigh);
+  preferences.putInt("vvtExtPrec", vvtExhaust1.precision);
+
   preferences.putInt("vvtEx2MIN", vvtExhaust2.minimum);
   preferences.putInt("vvtEx2MAX", vvtExhaust2.maximum);
   preferences.putInt("vvtEx2LOW", vvtExhaust2.alertLow);
   preferences.putInt("vvtEx2HI", vvtExhaust2.alertHigh);
+  preferences.putInt("vvtPrec", vvtExhaust2.precision);
+
   preferences.putInt("vvtIn1MIN", vvtIntake1.minimum);
   preferences.putInt("vvtIn1MAX", vvtIntake1.maximum);
   preferences.putInt("vvtIn1LOW", vvtIntake1.alertLow);
   preferences.putInt("vvtIn1HI", vvtIntake1.alertHigh);
+  preferences.putInt("vvtIn1Prec", vvtIntake1.precision);
+
   preferences.putInt("vvtIn2MIN", vvtIntake2.minimum);
   preferences.putInt("vvtIn2MAX", vvtIntake2.maximum);
   preferences.putInt("vvtIn2LOW", vvtIntake2.alertLow);
   preferences.putInt("vvtIn2HI", vvtIntake2.alertHigh);
+  preferences.putInt("vvtIn2Prec", vvtIntake2.precision);
+
   preferences.putInt("airMassMIN", airMass.minimum);
   preferences.putInt("airMassMAX", airMass.maximum);
   preferences.putInt("airMassLOW", airMass.alertLow);
   preferences.putInt("airMassHI", airMass.alertHigh);
+  preferences.putInt("airMassPrec", airMass.precision);
+
   preferences.putInt("estAirMIN", estimatedAirflow.minimum);
   preferences.putInt("estAirMAX", estimatedAirflow.maximum);
   preferences.putInt("estAirLOW", estimatedAirflow.alertLow);
   preferences.putInt("estAirHI", estimatedAirflow.alertHigh);
+  preferences.putInt("estAirPrec", estimatedAirflow.precision);
+
   preferences.putInt("batVMIN", batteryVoltage.minimum);
   preferences.putInt("batVMAX", batteryVoltage.maximum);
   preferences.putInt("batVLOW", batteryVoltage.alertLow);
   preferences.putInt("batVHI", batteryVoltage.alertHigh);
+  preferences.putInt("batVPrec", batteryVoltage.precision);
 
   preferences.end();
 
@@ -584,106 +663,158 @@ void restoreSensorMinMax()
   testData.maximum =    preferences.getInt("testMAX", testData.maximum);
   testData.alertLow =   preferences.getInt("testLOW", testData.alertLow);
   testData.alertHigh =  preferences.getInt("testHI", testData.alertHigh);
+  testData.precision =  preferences.getInt("testprecision", testData.precision);
+
   rpm.minimum = preferences.getInt("rpmMIN", rpm.minimum);
   rpm.maximum = preferences.getInt("rpmMAX", rpm.maximum);
   rpm.alertLow = preferences.getInt("rpmLOW", rpm.alertLow);
   rpm.alertHigh = preferences.getInt("rpmHI", rpm.alertHigh);
+  rpm.precision =  preferences.getInt("rpmprecision", .precision);rpm
+
   vss.minimum = preferences.getInt("vssMIN", vss.minimum);
   vss.maximum = preferences.getInt("vssMAX", vss.maximum);
   vss.alertLow = preferences.getInt("vssLOW", vss.alertLow);
   vss.alertHigh = preferences.getInt("vssHI", vss.alertHigh);
+  vss.precision =  preferences.getInt("vssprecision", vss.precision);
+
   vss_mph.minimum = preferences.getInt("vssMPHMIN", vss_mph.minimum);
   vss_mph.maximum = preferences.getInt("vssMPHMAX", vss_mph.maximum);
   vss_mph.alertLow = preferences.getInt("vssMPHLOW", vss_mph.alertLow);
   vss_mph.alertHigh = preferences.getInt("vssMPHHI", vss_mph.alertHigh);
+  vss_mph.precision =  preferences.getInt("vssMPHprecision", vss_mph.precision);
+
   accelerator.minimum = preferences.getInt("acceleratorMIN", accelerator.minimum);
   accelerator.maximum = preferences.getInt("acceleratorMAX", accelerator.maximum);
   accelerator.alertLow = preferences.getInt("acceleratorLOW", accelerator.alertLow);
   accelerator.alertHigh = preferences.getInt("acceleratorHI", accelerator.alertHigh);
+  accelerator.precision =  preferences.getInt("acceleratorprecision", accelerator.precision);
+
   throttle1.minimum = preferences.getInt("throttle1MIN", throttle1.minimum);
   throttle1.maximum = preferences.getInt("throttle1MAX", throttle1.maximum);
   throttle1.alertLow = preferences.getInt("throttle1LOW", throttle1.alertLow);
   throttle1.alertHigh = preferences.getInt("throttle1HI", throttle1.alertHigh);
-  throttle2.minimum = preferences.getInt("throttle1MIN", throttle2.minimum);
-  throttle2.maximum = preferences.getInt("throttle1MAX", throttle2.maximum);
-  throttle2.alertLow = preferences.getInt("throttle1LOW", throttle2.alertLow);
-  throttle2.alertHigh = preferences.getInt("throttle1HI", throttle2.alertHigh);
+  throttle1.precision =  preferences.getInt("throttle1precision", throttle1.precision);
+
+  throttle2.minimum = preferences.getInt("throttle2MIN", throttle2.minimum);
+  throttle2.maximum = preferences.getInt("throttle2MAX", throttle2.maximum);
+  throttle2.alertLow = preferences.getInt("throttle2LOW", throttle2.alertLow);
+  throttle2.alertHigh = preferences.getInt("throttle2HI", throttle2.alertHigh);
+  throttle2.precision =  preferences.getInt("throttle2precision", throttle2.precision);
+
   injectorDuty.minimum = preferences.getInt("injDutyMIN", injectorDuty.minimum);
   injectorDuty.maximum = preferences.getInt("injDutyMAX", injectorDuty.maximum);
   injectorDuty.alertLow = preferences.getInt("injDutyLOW", injectorDuty.alertLow);
   injectorDuty.alertHigh = preferences.getInt("injDutyHI", injectorDuty.alertHigh);
+  injectorDuty.precision =  preferences.getInt("injDutyprecision", injectorDuty.precision);
+
   injectorPulse.minimum = preferences.getInt("injPulseMIN", injectorPulse.minimum);
   injectorPulse.maximum = preferences.getInt("injPulseMAX", injectorPulse.maximum);
   injectorPulse.alertLow = preferences.getInt("injPulseLOW", injectorPulse.alertLow);
   injectorPulse.alertHigh = preferences.getInt("injPulseHI", injectorPulse.alertHigh);
+  injectorPulse.precision =  preferences.getInt("injPulseprecision", injectorPulse.precision);
+  
   fuelPressureHigh.minimum = preferences.getInt("fuelPresHighMIN", fuelPressureHigh.minimum);
   fuelPressureHigh.maximum = preferences.getInt("fuelPresHighMAX", fuelPressureHigh.maximum);
   fuelPressureHigh.alertLow = preferences.getInt("fuelPresHighLOW", fuelPressureHigh.alertLow);
   fuelPressureHigh.alertHigh = preferences.getInt("fuelPresHighHI", fuelPressureHigh.alertHigh);
+  fuelPressureHigh.precision =  preferences.getInt("fuelPresHighprecision", fuelPressureHigh.precision);
+
   fuelPressureLow.minimum = preferences.getInt("fuelPresLowMIN", fuelPressureLow.minimum);
   fuelPressureLow.maximum = preferences.getInt("fuelPresLowMAX", fuelPressureLow.maximum);
   fuelPressureLow.alertLow = preferences.getInt("fuelPresLowLOW", fuelPressureLow.alertLow);
   fuelPressureLow.alertHigh = preferences.getInt("fuelPresLowHI", fuelPressureLow.alertHigh);
+  fuelPressureLow.precision =  preferences.getInt("fuelPresLowprecision", fuelPressureLow.precision);
+
   ethanol.minimum = preferences.getInt("ethanolMIN", ethanol.minimum);
   ethanol.maximum = preferences.getInt("ethanolMAX", ethanol.maximum);
   ethanol.alertLow = preferences.getInt("ethanolLOW", ethanol.alertLow);
   ethanol.alertHigh = preferences.getInt("ethanolHI", ethanol.alertHigh);
+  ethanol.precision =  preferences.getInt("ethanolprecision", ethanol.precision);
+
   fuelTrim.minimum = preferences.getInt("fuelTrimMIN", fuelTrim.minimum);
   fuelTrim.maximum = preferences.getInt("fuelTrimMAX", fuelTrim.maximum);
   fuelTrim.alertLow = preferences.getInt("fuelTrimLOW", fuelTrim.alertLow);
   fuelTrim.alertHigh = preferences.getInt("fuelTrimHI", fuelTrim.alertHigh);
+  fuelTrim.precision =  preferences.getInt("fuelTrimprecision", fuelTrim.precision);
+
   fuel.minimum = preferences.getInt("fuelMIN", fuel.minimum);
   fuel.maximum = preferences.getInt("fuelMAX", fuel.maximum);
   fuel.alertLow = preferences.getInt("fuelLOW", fuel.alertLow);
   fuel.alertHigh = preferences.getInt("fuelHI", fuel.alertHigh);
+  fuel.precision =  preferences.getInt("fuelprecision", fuel.precision);
+
   fuelConsumed.minimum = preferences.getInt("fuelUsedMIN", fuelConsumed.minimum);
   fuelConsumed.maximum = preferences.getInt("fuelUsedMAX", fuelConsumed.maximum);
   fuelConsumed.alertLow = preferences.getInt("fuelUsedLOW", fuelConsumed.alertLow);
   fuelConsumed.alertHigh = preferences.getInt("fuelUsedHI", fuelConsumed.alertHigh);
+  fuelConsumed.precision =  preferences.getInt("fuelUsedprecision", fuelConsumed.precision);
+
   fuelConsumption.minimum = preferences.getInt("fuelFlowMIN", fuelConsumption.minimum);
   fuelConsumption.maximum = preferences.getInt("fuelFlowMAX", fuelConsumption.maximum);
   fuelConsumption.alertLow = preferences.getInt("fuelFlowLOW", fuelConsumption.alertLow);
   fuelConsumption.alertHigh = preferences.getInt("fuelFlowHI", fuelConsumption.alertHigh);
+  fuelConsumption.precision =  preferences.getInt("fuelFlowprecision", fuelConsumption.precision);
+
   afr.minimum =       preferences.getInt("afrMIN", afr.minimum);
   afr.maximum =       preferences.getInt("afrMAX", afr.maximum);
   afr.alertLow =      preferences.getInt("afrLOW", afr.alertLow);
   afr.alertHigh =     preferences.getInt("afrHI", afr.alertHigh);
+  afr.precision =  preferences.getInt("afrprecision", afr.precision);
+
   lambda1.minimum =   preferences.getInt("lambda1MIN", lambda1.minimum);
   lambda1.maximum =   preferences.getInt("lambda1MAX", lambda1.maximum);
   lambda1.alertLow =  preferences.getInt("lambda1LOW", lambda1.alertLow);
   lambda1.alertHigh = preferences.getInt("lambda1HI", lambda1.alertHigh);
+  lambda1.precision =  preferences.getInt("lambda1precision", lambda1.precision);
+
   lambda2.minimum =   preferences.getInt("lambda2MIN", lambda1.minimum);
   lambda2.maximum =   preferences.getInt("lambda2MAX", lambda1.maximum);
   lambda2.alertLow =  preferences.getInt("lambda2LOW", lambda1.alertLow);
   lambda2.alertHigh = preferences.getInt("lambda2HI", lambda1.alertHigh);
+  lambda2.precision =  preferences.getInt("lambda2precision", lambda2.precision);
+
   coolantTemperature.minimum = preferences.getInt("cltCMIN", coolantTemperature.minimum);
   coolantTemperature.maximum = preferences.getInt("cltCMAX", coolantTemperature.maximum);
   coolantTemperature.alertLow = preferences.getInt("cltCLOW", coolantTemperature.alertLow);
   coolantTemperature.alertHigh = preferences.getInt("cltCHI", coolantTemperature.alertHigh);
+  coolantTemperature.precision =  preferences.getInt("cltCprecision", coolantTemperature.precision);
+
   intakeTemperature.minimum = preferences.getInt("iatCMIN", intakeTemperature.minimum);
   intakeTemperature.maximum = preferences.getInt("iatCMAX", intakeTemperature.maximum);
   intakeTemperature.alertLow = preferences.getInt("iatCLOW", intakeTemperature.alertLow);
   intakeTemperature.alertHigh = preferences.getInt("iatCHI", intakeTemperature.alertHigh);
+  intakeTemperature.precision =  preferences.getInt("iatCprecision", intakeTemperature.precision);
+
   auxTemp1.minimum = preferences.getInt("aux1CMIN", auxTemp1.minimum);
   auxTemp1.maximum = preferences.getInt("aux1CMAX", auxTemp1.maximum);
   auxTemp1.alertLow = preferences.getInt("aux1CLOW", auxTemp1.alertLow);
   auxTemp1.alertHigh = preferences.getInt("aux1CHI", auxTemp1.alertHigh);
+  auxTemp1.precision =  preferences.getInt("aux1precision", auxTemp1.precision);
+
   auxTemp2.minimum = preferences.getInt("aux2CMIN", auxTemp2.minimum);
   auxTemp2.maximum = preferences.getInt("aux2CMAX", auxTemp2.maximum);
   auxTemp2.alertLow = preferences.getInt("aux2CLOW", auxTemp2.alertLow);
   auxTemp2.alertHigh = preferences.getInt("aux2CHI", auxTemp2.alertHigh);
+  auxTemp2.precision =  preferences.getInt("aux2Cprecision", auxTemp2.precision);
+
   mcuTemp.minimum = preferences.getInt("mcuCMIN", mcuTemp.minimum);
   mcuTemp.maximum = preferences.getInt("mcuCMAX", mcuTemp.maximum);
   mcuTemp.alertLow = preferences.getInt("mcuCLOW", mcuTemp.alertLow);
   mcuTemp.alertHigh = preferences.getInt("mcuCHI", mcuTemp.alertHigh);
+  mcuTemp.precision =  preferences.getInt("mcuCprecision", mcuTemp.precision);
+
   coolantTemperature_f.minimum = preferences.getInt("cltFMIN", coolantTemperature_f.minimum);
   coolantTemperature_f.maximum = preferences.getInt("cltFMAX", coolantTemperature_f.maximum);
   coolantTemperature_f.alertLow = preferences.getInt("cltFLOW", coolantTemperature_f.alertLow);
   coolantTemperature_f.alertHigh = preferences.getInt("cltFHI", coolantTemperature_f.alertHigh);
-  coolantTemperature_f.minimum = preferences.getInt("iatFMIN", intakeTemperature_f.minimum);
-  coolantTemperature_f.maximum = preferences.getInt("iatFMAX", intakeTemperature_f.maximum);
-  coolantTemperature_f.alertLow = preferences.getInt("iatFLOW", intakeTemperature_f.alertLow);
-  coolantTemperature_f.alertHigh = preferences.getInt("iatFHI", intakeTemperature_f.alertHigh);
+  coolantTemperature_f.precision =  preferences.getInt("cltFprecision", coolantTemperature_f.precision);
+
+  intakeTemperature_f.minimum = preferences.getInt("iatFMIN", intakeTemperature_f.minimum);
+  intakeTemperature_f.maximum = preferences.getInt("iatFMAX", intakeTemperature_f.maximum);
+  intakeTemperature_f.alertLow = preferences.getInt("iatFLOW", intakeTemperature_f.alertLow);
+  intakeTemperature_f.alertHigh = preferences.getInt("iatFHI", intakeTemperature_f.alertHigh);
+  intakeTemperature_f.precision =  preferences.getInt("iatprecision", intakeTemperature_f.precision);
+
   auxTemp1_f.minimum = preferences.getInt("aux1FMIN", auxTemp1_f.minimum);
   auxTemp1_f.maximum = preferences.getInt("aux1FMAX", auxTemp1_f.maximum);
   auxTemp1_f.alertLow = preferences.getInt("aux1FLOW", auxTemp1_f.alertLow);
@@ -692,54 +823,79 @@ void restoreSensorMinMax()
   auxTemp2_f.maximum = preferences.getInt("aux2FMAX", auxTemp2_f.maximum);
   auxTemp2_f.alertLow = preferences.getInt("aux2FLOW", auxTemp2_f.alertLow);
   auxTemp2_f.alertHigh = preferences.getInt("aux2FHI", auxTemp2_f.alertHigh);
+  auxTemp2_f.precision =  preferences.getInt("aux2precision",auxTemp2_f.precision);
+
   manifoldPressure.minimum = preferences.getInt("mapKPAMIN", manifoldPressure.minimum);
   manifoldPressure.maximum = preferences.getInt("mapKPAMAX", manifoldPressure.maximum);
   manifoldPressure.alertLow = preferences.getInt("mapKPALOW", manifoldPressure.alertLow);
   manifoldPressure.alertHigh = preferences.getInt("mapKPAHI", manifoldPressure.alertHigh);
+  manifoldPressure.precision =  preferences.getInt("mapKprecision", manifoldPressure.precision);
+
   oilPressure.minimum = preferences.getInt("oilKPAMIN", oilPressure.minimum);
   oilPressure.maximum = preferences.getInt("oilKPAMAX", oilPressure.maximum);
   oilPressure.alertLow = preferences.getInt("oilKPALOW", oilPressure.alertLow);
   oilPressure.alertHigh = preferences.getInt("oilKPAHI", oilPressure.alertHigh);
+  oilPressure.precision =  preferences.getInt("oilKPAprecision", oilPressure.precision);
+
   manifoldPressure_psi.minimum = preferences.getInt("mapKPAMIN", manifoldPressure_psi.minimum);
   manifoldPressure_psi.maximum = preferences.getInt("mapKPAMAX", manifoldPressure_psi.maximum);
   manifoldPressure_psi.alertLow = preferences.getInt("mapKPALOW", manifoldPressure_psi.alertLow);
   manifoldPressure_psi.alertHigh = preferences.getInt("mapKPAHI", manifoldPressure_psi.alertHigh);
+  manifoldPressure_psi.precision =  preferences.getInt("mapKPAprecision", manifoldPressure_psi.precision);
+
   oilPressure_psi.minimum = preferences.getInt("oilKPAMIN", oilPressure_psi.minimum);
   oilPressure_psi.maximum = preferences.getInt("oilKPAMAX", oilPressure_psi.maximum);
   oilPressure_psi.alertLow = preferences.getInt("oilKPALOW", oilPressure_psi.alertLow);
   oilPressure_psi.alertHigh = preferences.getInt("oilKPAHI", oilPressure_psi.alertHigh);
+  oilPressure_psi.precision =  preferences.getInt("oilKPAprecision", oilPressure_psi.precision);
+  
   vvtPosition.minimum = preferences.getInt("vvtMIN", vvtPosition.minimum);
   vvtPosition.maximum = preferences.getInt("vvtMAX", vvtPosition.maximum);
   vvtPosition.alertLow = preferences.getInt("vvtLOW", vvtPosition.alertLow);
   vvtPosition.alertHigh = preferences.getInt("vvtHI", vvtPosition.alertHigh);
+  vvtPosition.precision =  preferences.getInt("vvtprecision", vvtPosition.precision);
+
   vvtExhaust1.minimum = preferences.getInt("vvtEx1MIN", vvtExhaust1.minimum);
   vvtExhaust1.maximum = preferences.getInt("vvtEx1MAX", vvtExhaust1.maximum);
   vvtExhaust1.alertLow = preferences.getInt("vvtEx1LOW", vvtExhaust1.alertLow);
   vvtExhaust1.alertHigh = preferences.getInt("vvtEx1HI", vvtExhaust1.alertHigh);
+  vvtExhaust1.precision =  preferences.getInt("vvtEx1precision", vvtExhaust1.precision);
+
   vvtExhaust2.minimum = preferences.getInt("vvtEx2MIN", vvtExhaust2.minimum);
   vvtExhaust2.maximum = preferences.getInt("vvtEx2MAX", vvtExhaust2.maximum);
   vvtExhaust2.alertLow = preferences.getInt("vvtEx2LOW", vvtExhaust2.alertLow);
   vvtExhaust2.alertHigh = preferences.getInt("vvtEx2HI", vvtExhaust2.alertHigh);
+  vvtExhaust2.precision =  preferences.getInt("vvtEx2precision", vvtExhaust2.precision);
+
   vvtIntake1.minimum = preferences.getInt("vvtIn1MIN", vvtIntake1.minimum);
   vvtIntake1.maximum = preferences.getInt("vvtIn1MAX", vvtIntake1.maximum);
   vvtIntake1.alertLow = preferences.getInt("vvtIn1LOW", vvtIntake1.alertLow);
   vvtIntake1.alertHigh = preferences.getInt("vvtIn1HI", vvtIntake1.alertHigh);
+  vvtIntake1.precision =  preferences.getInt("vvtIn1precision", vvtIntake1.precision);
+
   vvtIntake2.minimum = preferences.getInt("vvtIn2MIN", vvtIntake2.minimum);
   vvtIntake2.maximum = preferences.getInt("vvtIn2MAX", vvtIntake2.maximum);
   vvtIntake2.alertLow = preferences.getInt("vvtIn2LOW", vvtIntake2.alertLow);
   vvtIntake2.alertHigh = preferences.getInt("vvtIn2HI", vvtIntake2.alertHigh);
+  vvtIntake2.precision =  preferences.getInt("vvtIn1precision", vvtIntake2.precision);
+
   airMass.minimum = preferences.getInt("airMassMIN", airMass.minimum);
   airMass.maximum = preferences.getInt("airMassMAX", airMass.maximum);
   airMass.alertLow = preferences.getInt("airMassLOW", airMass.alertLow);
   airMass.alertHigh = preferences.getInt("airMassHI", airMass.alertHigh);
+  airMass.precision =  preferences.getInt("airMassprecision", airMass.precision);
+
   estimatedAirflow.minimum = preferences.getInt("estAirMIN", estimatedAirflow.minimum);
   estimatedAirflow.maximum = preferences.getInt("estAirMAX", estimatedAirflow.maximum);
   estimatedAirflow.alertLow = preferences.getInt("estAirLOW", estimatedAirflow.alertLow);
   estimatedAirflow.alertHigh = preferences.getInt("estAirHI", estimatedAirflow.alertHigh);
+  estimatedAirflow.precision =  preferences.getInt("estAirprecision", estimatedAirflow.precision);
+
   batteryVoltage.minimum =    preferences.getInt("batVMIN", batteryVoltage.minimum);
   batteryVoltage.maximum =    preferences.getInt("batVMAX", batteryVoltage.maximum);
   batteryVoltage.alertLow =   preferences.getInt("batVLOW", batteryVoltage.alertLow);
   batteryVoltage.alertHigh =  preferences.getInt("batVHI", batteryVoltage.alertHigh);
+  batteryVoltage.precision =  preferences.getInt("batVprecision", batteryVoltage.precision);
 
   preferences.end();
 
@@ -1043,13 +1199,16 @@ int getPercent(float current, float minimum, float maximum)
 
 static void printDataFormatted(sensorData *data)
 {
-  if (data->useInt)
+  if (data->precision == 0)
   {
     u8g2.print((int)data->scaledValue);
   }
   else
   {
-    u8g2.print(data->scaledValue);
+    float precAdjustedValue =  (int) (data->scaledValue * 10^(data->precision));
+    precAdjustedValue =  precAdjustedValue / (10^(data->precision));
+
+    u8g2.print(precAdjustedValue);
   }
 }
 

@@ -14,7 +14,7 @@ struct sensorData
   int canID;
   float alertHigh;
   float alertLow;
-  bool useInt;
+  int precision;
 };
 
 
@@ -29,7 +29,7 @@ sensorData testData = {
   (0),         // Address
   75,          // Alert High
   25,          // Alert Low
-  false        // Show as int
+  0           // Number of decimal places
 };
 
 sensorData noData = {
@@ -43,7 +43,7 @@ sensorData noData = {
   (0),         // Address
   100,         // Alert High
   -100,         // Alert Low
-  false        // Show as int
+  0        // Show as int
 };
 
 // -- ID 512 --
@@ -58,7 +58,7 @@ sensorData warningStatus = {
   (BASE_CAN_ID + 0), // Address
   100,
   0,
-  false
+  0
 };
 
 int warningCounter;
@@ -82,8 +82,8 @@ sensorData rpm = {
   (BASE_CAN_ID + 1), // Address
   6800,              // Alert High
   -100,              // Alert Low
-  true
-};             // Show as int
+  0
+};             
 
 sensorData ignitionTiming = {
   "Ign Timing",      // Name
@@ -96,7 +96,7 @@ sensorData ignitionTiming = {
   (BASE_CAN_ID + 1), // Address
   50,
   -50,
-  true
+  2
 };
 
 sensorData injectorDuty = {
@@ -110,7 +110,7 @@ sensorData injectorDuty = {
   (BASE_CAN_ID + 1), // Address
   90,
   -100,
-  true
+  0
 };
 
 sensorData vss_mph = {
@@ -124,7 +124,7 @@ sensorData vss_mph = {
   (BASE_CAN_ID + 1), // Address
   255,
   -255,
-  true
+  0
 };
 
 sensorData vss = {
@@ -138,7 +138,7 @@ sensorData vss = {
   (BASE_CAN_ID + 1), // Address
   255,
   -255,
-  true
+  0
 };
 
 // -- ID 514 --
@@ -154,7 +154,7 @@ sensorData accelerator = {
   (BASE_CAN_ID + 2), // Address
   200,
   -100,
-  true
+  0
 };
 
 sensorData throttle1 = {
@@ -168,7 +168,7 @@ sensorData throttle1 = {
   (BASE_CAN_ID + 2), // Address
   200,
   -200,
-  true
+  0
 };
 
 sensorData throttle2 = {
@@ -182,7 +182,7 @@ sensorData throttle2 = {
   (BASE_CAN_ID + 2), // Address
   200,
   -200,
-  true
+  0
 };
 
 // -- ID 515 --
@@ -198,7 +198,7 @@ sensorData manifoldPressure_psi = {
   (BASE_CAN_ID + 3),           // Address
   999,
   -999,
-  false
+  2
 };
 
 sensorData manifoldPressure = {
@@ -212,7 +212,7 @@ sensorData manifoldPressure = {
   (BASE_CAN_ID + 3), // Address
   999,
   -999,
-  false
+  2
 };
 
 // Convert from C to F
@@ -227,7 +227,7 @@ sensorData coolantTemperature_f = {
   (BASE_CAN_ID + 3), // Address
   250,
   50,
-  true
+  0
 };
 
 // Convert from C to F
@@ -242,7 +242,7 @@ sensorData intakeTemperature_f = {
   (BASE_CAN_ID + 3), // Address
   120,
   50,
-  true
+  0
 };
 
 sensorData coolantTemperature = {
@@ -256,7 +256,7 @@ sensorData coolantTemperature = {
   (BASE_CAN_ID + 3), // Address
   120,
   10,
-  true
+  0
 };
 
 sensorData intakeTemperature = {
@@ -270,7 +270,7 @@ sensorData intakeTemperature = {
   (BASE_CAN_ID + 3), // Address
   100,
   10,
-  true
+  0
 };
 
 sensorData auxTemp1 = {
@@ -284,7 +284,7 @@ sensorData auxTemp1 = {
   (BASE_CAN_ID + 3), // Address
   100,
   10,
-  true
+  0
 };
 
 sensorData auxTemp1_f = {
@@ -298,7 +298,7 @@ sensorData auxTemp1_f = {
   (BASE_CAN_ID + 3), // Address
   100,
   10,
-  true
+  0
 };
 
 sensorData auxTemp2 = {
@@ -312,7 +312,7 @@ sensorData auxTemp2 = {
   (BASE_CAN_ID + 3), // Address
   100,
   10,
-  true
+  0
 };
 
 sensorData auxTemp2_f = {
@@ -326,7 +326,7 @@ sensorData auxTemp2_f = {
   (BASE_CAN_ID + 3), // Address
   100,
   10,
-  true
+  0
 };
 
 sensorData mcuTemp = {
@@ -340,7 +340,7 @@ sensorData mcuTemp = {
   (BASE_CAN_ID + 3), // Address
   80,
   -10,
-  true
+  0
 };
 
 sensorData fuel = {
@@ -354,7 +354,7 @@ sensorData fuel = {
   (BASE_CAN_ID + 3), // Address
   200,
   15,
-  true
+  0
 };
 
 // -- ID 516 --
@@ -369,7 +369,7 @@ sensorData afr = {
   (BASE_CAN_ID + 4), // Address
   28,
   -10,
-  false
+  2
 };
 
 sensorData oilPressure_psi = {
@@ -383,7 +383,7 @@ sensorData oilPressure_psi = {
   (BASE_CAN_ID + 4),         // Address
   999,
   -999,
-  false
+  0
 };
 
 sensorData oilPressure = {
@@ -397,7 +397,7 @@ sensorData oilPressure = {
   (BASE_CAN_ID + 4), // Address
   999,
   -999,
-  false
+  0
 };
 
 sensorData vvtPosition = {
@@ -411,7 +411,7 @@ sensorData vvtPosition = {
   (BASE_CAN_ID + 4), // Address
   100,
   -100,
-  false
+  2
 };
 
 sensorData batteryVoltage = {
@@ -425,7 +425,7 @@ sensorData batteryVoltage = {
   (BASE_CAN_ID + 4), // Address
   15,
   11,
-  false
+  2
 };
 
 // -- ID 517 --
@@ -441,7 +441,7 @@ sensorData airMass = {
   (BASE_CAN_ID + 5), // Address
   9999,
   -9999,
-  false
+  0
 };
 
 sensorData estimatedAirflow = {
@@ -455,7 +455,7 @@ sensorData estimatedAirflow = {
   (BASE_CAN_ID + 5), // Address
   999,
   -999,
-  false
+  0
 };
 
 sensorData injectorPulse = {
@@ -469,7 +469,7 @@ sensorData injectorPulse = {
   (BASE_CAN_ID + 5), // Address
   999,
   -999,
-  false
+  2
 };
 
 // NEW - Fueling 3
@@ -484,7 +484,7 @@ sensorData lambda1 = {
   (BASE_CAN_ID + 7), // Address
   10,               // Alert High
   -10,              // Alert Low
-  false
+  2
 };
 
 sensorData lambda2 = {
@@ -498,7 +498,7 @@ sensorData lambda2 = {
   (BASE_CAN_ID + 7), // Address
   100,               // Alert High
   -100,              // Alert Low
-  false              // Show as integer
+  2              // Show as integer
 };
 
 sensorData fuelPressureLow = {
@@ -512,7 +512,7 @@ sensorData fuelPressureLow = {
   (BASE_CAN_ID + 7), // Address
   999,               // Alert High
   -999,              // Alert Low
-  false              // Show as integer
+  2              // Show as integer
 };
 
 sensorData fuelPressureHigh = {
@@ -526,7 +526,7 @@ sensorData fuelPressureHigh = {
   (BASE_CAN_ID + 7), // Address
   999,               // Alert High
   -999,              // Alert Low
-  false              // Show as integer
+  1              // Show as integer
 };
 
 // NEW CAMs
@@ -541,7 +541,7 @@ sensorData vvtIntake1 = {
   (BASE_CAN_ID + 8), // Address
   999,               // Alert High
   -999,              // Alert Low
-  false              // Show as integer
+  2             // Show as integer
 };
 
 sensorData vvtIntake2 = {
@@ -555,7 +555,7 @@ sensorData vvtIntake2 = {
   (BASE_CAN_ID + 8), // Address
   999,               // Alert High
   -999,              // Alert Low
-  false              // Show as integer
+  2              // Show as integer
 };
 
 sensorData vvtExhaust1 = {
@@ -569,7 +569,7 @@ sensorData vvtExhaust1 = {
   (BASE_CAN_ID + 8), // Address
   999,               // Alert High
   -999,              // Alert Low
-  false              // Show as integer
+  2              // Show as integer
 };
 
 sensorData vvtExhaust2 = {
@@ -583,7 +583,7 @@ sensorData vvtExhaust2 = {
   (BASE_CAN_ID + 8), // Address
   999,               // Alert High
   -999,              // Alert Low
-  false              // Show as integer
+  2              // Show as integer
 };
 
 // NEW fueling 2
@@ -599,7 +599,7 @@ sensorData fuelConsumed = {
   (BASE_CAN_ID + 6), // Address
   999,               // Alert High
   -999,              // Alert Low
-  false              // Show as integer
+  0              // Show as integer
 };
 
 sensorData fuelConsumption = {
@@ -613,7 +613,7 @@ sensorData fuelConsumption = {
   (BASE_CAN_ID + 6), // Address
   999,               // Alert High
   -999,              // Alert Low
-  false              // Show as integer
+  2              // Show as integer
 };
 
 sensorData fuelTrim = {
@@ -627,7 +627,7 @@ sensorData fuelTrim = {
   (BASE_CAN_ID + 6), // Address
   999,               // Alert High
   -999,              // Alert Low
-  false              // Show as integer
+  2              // Show as integer
 };
 
 sensorData ethanol = {
@@ -641,5 +641,5 @@ sensorData ethanol = {
   (BASE_CAN_ID + 1), // Address
   999,               // Alert High
   -999,              // Alert Low
-  true              // Show as integer
+  0            // Show as integer
 };
