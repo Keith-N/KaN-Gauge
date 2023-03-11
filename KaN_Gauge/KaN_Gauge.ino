@@ -439,13 +439,13 @@ void saveSensorMinMax()
   preferences.putInt("injDutyMAX", injectorDuty.maximum);
   preferences.putInt("injDutyLOW", injectorDuty.alertLow);
   preferences.putInt("injDutyHI", injectorDuty.alertHigh);
-  preferences.putInt("injDutyPrec", injDuty.precision);
+  preferences.putInt("injDutyPrec", injectorDuty.precision);
 
   preferences.putInt("injPulseMIN", injectorPulse.minimum);
   preferences.putInt("injPulseMAX", injectorPulse.maximum);
   preferences.putInt("injPulseLOW", injectorPulse.alertLow);
   preferences.putInt("injPulseHI", injectorPulse.alertHigh);
-  preferences.putInt("injPulsePrec", injPulse.precision);
+  preferences.putInt("injPulsePrec", injectorPulse.precision);
 
   preferences.putInt("fuelPresHighMIN", fuelPressureHigh.minimum);
   preferences.putInt("fuelPresHighMAX", fuelPressureHigh.maximum);
@@ -669,7 +669,7 @@ void restoreSensorMinMax()
   rpm.maximum = preferences.getInt("rpmMAX", rpm.maximum);
   rpm.alertLow = preferences.getInt("rpmLOW", rpm.alertLow);
   rpm.alertHigh = preferences.getInt("rpmHI", rpm.alertHigh);
-  rpm.precision =  preferences.getInt("rpmprecision", .precision);rpm
+  rpm.precision =  preferences.getInt("rpmprecision", rpm.precision);
 
   vss.minimum = preferences.getInt("vssMIN", vss.minimum);
   vss.maximum = preferences.getInt("vssMAX", vss.maximum);
@@ -1209,8 +1209,8 @@ static void printDataFormatted(sensorData *data)
   }
   else
   {
-    float precAdjustedValue =  (int) (data->scaledValue * 10^(data->precision));
-    precAdjustedValue =  precAdjustedValue / (10^(data->precision));
+    float precAdjustedValue = ((int) (data->scaledValue * pow(10,data->precision)));
+    precAdjustedValue =  precAdjustedValue / (pow(10,(data->precision)));
 
     u8g2.print(precAdjustedValue);
   }
