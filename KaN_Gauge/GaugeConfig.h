@@ -4,7 +4,7 @@
    Use to enable/disable features
 */
 
-String build = "1.2.0";
+String build = "1.2.1";
 int nvsVersion = 5;
 
 // Enable first and second startup logos
@@ -19,8 +19,8 @@ int nvsVersion = 5;
 //#define SH1106
 
 // Select boot logos
-#define DEFAULT_START
-//#define BMM_START
+//#define DEFAULT_START
+#define BMM_START
 //#define GG_START
 //#define DEBUG_BUILD
 //#define SERIAL_DEBUG
@@ -45,7 +45,7 @@ int nvsVersion = 5;
 /*
    0 - Not Set, save new values, shows build version
    1 - KaN
-   2 - rusEFI
+   2 - FOME
    3 - BMM
    4 - GG
 

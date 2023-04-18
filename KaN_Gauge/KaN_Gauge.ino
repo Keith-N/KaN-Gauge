@@ -2021,7 +2021,7 @@ void setup()
       break;
 
     case 2:
-      printBMP_rusEFI();
+      printBMP_FOME();
       break;
 
     case 3:
@@ -2083,7 +2083,7 @@ void setup()
       break;
 
     case 2:
-      printBMP_rusEFI();
+      printBMP_FOME();
       while (millis() < (startTime + startTime))
       {
       }

@@ -108,10 +108,10 @@ void printBMP_KaN()
   u8g2.sendBuffer();
 }
 
-void printBMP_rusEFI()
+void printBMP_FOME()
 {
   u8g2.clearBuffer();
-  u8g2.drawXBM(0, 0, dispWidth, dispHeight, BMP_rusEFI);
+  u8g2.drawXBM(0, 0, dispWidth, dispHeight, FOME);
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setCursor(0, 0);
   // u8g2.print(BUILD);
