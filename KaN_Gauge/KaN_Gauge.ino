@@ -549,6 +549,12 @@ void saveSensorMinMax()
   preferences.putInt("iatFHI", intakeTemperature_f.alertHigh);
   preferences.putInt("iatprecision", intakeTemperature_f.precision);
 
+  preferences.putInt("ignMIN", ignitionTiming.minimum);
+  preferences.putInt("ignMAX", ignitionTiming.maximum);
+  preferences.putInt("ignLOW", ignitionTiming.alertLow);
+  preferences.putInt("ignHI", ignitionTiming.alertHigh);
+  preferences.putInt("ignprecision", ignitionTiming.precision);
+
   preferences.putInt("aux1FMIN", auxTemp1_f.minimum);
   preferences.putInt("aux1FMAX", auxTemp1_f.maximum);
   preferences.putInt("aux1FLOW", auxTemp1_f.alertLow);
@@ -814,6 +820,12 @@ void restoreSensorMinMax()
   intakeTemperature_f.alertLow = preferences.getInt("iatFLOW", intakeTemperature_f.alertLow);
   intakeTemperature_f.alertHigh = preferences.getInt("iatFHI", intakeTemperature_f.alertHigh);
   intakeTemperature_f.precision =  preferences.getInt("iatprecision", intakeTemperature_f.precision);
+
+  ignitionTiming.minimum = preferences.getInt("ignMIN", ignitionTiming.minimum);
+  ignitionTiming.maximum = preferences.getInt("ignMAX", ignitionTiming.maximum);
+  ignitionTiming.alertLow = preferences.getInt("ignLOW", ignitionTiming.alertLow);
+  ignitionTiming.alertHigh = preferences.getInt("ignHI", ignitionTiming.alertHigh);
+  ignitionTiming.precision =  preferences.getInt("ignprecision", ignitionTiming.precision);
 
   auxTemp1_f.minimum = preferences.getInt("aux1FMIN", auxTemp1_f.minimum);
   auxTemp1_f.maximum = preferences.getInt("aux1FMAX", auxTemp1_f.maximum);
