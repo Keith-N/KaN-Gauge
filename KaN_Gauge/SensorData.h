@@ -1,6 +1,7 @@
 
 
 const int BASE_CAN_ID = 512; // base ID in ECU broadcast
+int MAX_CAN_ID = 520;
 
 // Store recieved message and ID
 int canIDsel;
@@ -64,6 +65,20 @@ sensorData warningStatus = {
   0,                 // Scaled value
   0,                 // Minimum Value
   100,               // Maximum Value
+  (BASE_CAN_ID + 0), // Address
+  100,
+  0,
+  0
+};
+
+sensorData gear = {
+  "Gear",         // Name
+  "",                // Units
+  1,                 // Multiplier for scaling
+  0,                 // Data Offset
+  0,                 // Scaled value
+  0,                 // Minimum Value
+  6,               // Maximum Value
   (BASE_CAN_ID + 0), // Address
   100,
   0,

@@ -4,8 +4,8 @@
    Use to enable/disable features
 */
 
-String build = "1.2.1";
-int nvsVersion = 5;
+String build = "1.2.2";
+int nvsVersion = 6;
 
 // Enable first and second startup logos
 #define USE_BMP
@@ -22,7 +22,7 @@ int nvsVersion = 5;
 //#define DEFAULT_START
 #define BMM_START
 //#define GG_START
-#define DEBUG_BUILD
+//#define DEBUG_BUILD
 //#define SERIAL_DEBUG
 
 // Allow OTA updates

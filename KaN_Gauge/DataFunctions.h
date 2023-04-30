@@ -3,7 +3,6 @@
    Define data values
    ====================================================
 */
-#define DEBUG_BUILD
 #include "SensorData.h"
 
 // Configure how test data increments
@@ -96,6 +95,7 @@ void SAVE_DATA(CANMessage CANmsg)
       fuelPump = ((int)CANmsg.data[4]) & 0x04;
       checkEngine = ((int)CANmsg.data[4]) & 0x08;
       egoHeater = ((int)CANmsg.data[4]) & 0x10;
+      gear.scaledValue=((int)CANmsg.data[5]);
       break;
 
     case (513):

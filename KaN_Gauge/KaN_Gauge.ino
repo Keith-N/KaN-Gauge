@@ -1157,7 +1157,7 @@ void nextConfig()
 
     case 20:
       selFilterID++;
-      if (selFilterID > (BASE_CAN_ID + 10)){
+      if (selFilterID > (MAX_CAN_ID)){
         selFilterID = BASE_CAN_ID; 
       }
       break;
@@ -1623,6 +1623,7 @@ void printData(int g)
       u8g2.sendBuffer();
       break;
 
+    // Test warning counter
     case 17:
       u8g2.clearBuffer();
       u8g2.setFont(u8g2_font_6x10_tf);
@@ -1636,18 +1637,21 @@ void printData(int g)
       u8g2.sendBuffer();
       break;
 
+    // Show receieved CAN data at specified ID
     case 20:
       u8g2.clearBuffer();
       u8g2.setFont(u8g2_font_6x12_tf);
       u8g2.setCursor(0, 0);
-      u8g2.print("ID : ");
+      u8g2.print("CAN ID : ");
       u8g2.print(selFilterID);
-      u8g2.setCursor(0, 20);
+      u8g2.setCursor(0, 25);
       u8g2.setFont(u8g2_font_6x10_tf);
       for (int c = 7; c>-1; c--){
-        u8g2.print(canRxData[c]);
+        u8g2.print(canRxData[c], HEX);
         u8g2.print(" ");
-      }      
+      }
+      u8g2.setCursor(0, 45);
+      u8g2.print("Press -> ID+1");      
       u8g2.sendBuffer();
       break;
 
@@ -1830,10 +1834,14 @@ sensorData *selectData(int g)
       break;
 
     case 40:
-      return &noData;
+      return &gear;
       break;
 
     case 41:
+      return &noData;
+      break;
+
+    case 42:
       return &testData;
       break;
 
