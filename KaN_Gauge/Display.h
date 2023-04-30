@@ -144,3 +144,4 @@ void resetDisplay()
   u8g2.begin();
   reset = 1;
 }
+

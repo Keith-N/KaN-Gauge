@@ -3,13 +3,14 @@
    Define data values
    ====================================================
 */
-
+#define DEBUG_BUILD
 #include "SensorData.h"
 
 // Configure how test data increments
 int lastTestIncrement = 0;
 int testTime = 75;
 float testIncrementValue = 1.01;
+
 
 // Pointer for current data
 sensorData *ptrData;
@@ -32,10 +33,14 @@ float rollOverAdjust(float t, float scale, int b){
 switch (b){
   
   case 16:
-    if (t > (60000 * scale)){
-      t = t-(65535 * scale);
-    }
+
+     if (t > (65535/2 * scale)){
+       t = t-(65535 * scale);
+     }
+
+
     break;
+
 
  default:
     break;
@@ -68,6 +73,17 @@ void SAVE_DATA(CANMessage CANmsg)
 
   // Check the ID of the recieved CAN message, scale and store the sensor values
   // Some data is sent in two bytes and is combined into a word before scaling
+
+
+  #ifdef DEBUG_BUILD
+
+    if (CANmsg.id == selFilterID){
+      for (int c = 0; c<8; c++){
+        canRxData[c] = ((int)CANmsg.data[c]);
+       }}
+
+  #endif
+
 
   switch (CANmsg.id)
   {

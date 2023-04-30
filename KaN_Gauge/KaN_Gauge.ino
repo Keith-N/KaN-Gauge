@@ -36,6 +36,8 @@ CANMessage CANmsg;
 Preferences preferences;
 TaskHandle_t TASK_CAN;
 
+
+
 static void printDataNameAndUnits(sensorData *data)
 {
   u8g2.print(data->dataName);
@@ -1153,6 +1155,13 @@ void nextConfig()
       lastError++;
       break;
 
+    case 20:
+      selFilterID++;
+      if (selFilterID > (BASE_CAN_ID + 10)){
+        selFilterID = BASE_CAN_ID; 
+      }
+      break;
+
     default:
       gaugeType++;
       if (gaugeType > numGaugeType)
@@ -1627,6 +1636,21 @@ void printData(int g)
       u8g2.sendBuffer();
       break;
 
+    case 20:
+      u8g2.clearBuffer();
+      u8g2.setFont(u8g2_font_6x12_tf);
+      u8g2.setCursor(0, 0);
+      u8g2.print("ID : ");
+      u8g2.print(selFilterID);
+      u8g2.setCursor(0, 20);
+      u8g2.setFont(u8g2_font_6x10_tf);
+      for (int c = 7; c>-1; c--){
+        u8g2.print(canRxData[c]);
+        u8g2.print(" ");
+      }      
+      u8g2.sendBuffer();
+      break;
+
     // Use gauge type 0 as default
     default:
       gaugeType = 0;
@@ -1862,6 +1886,10 @@ void selectGauge(int g)
 
     case 8:
       gaugeType = 17;
+      break;
+
+    case 9:
+      gaugeType = 20;
       break;
 #endif
 

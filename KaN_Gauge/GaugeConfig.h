@@ -22,7 +22,7 @@ int nvsVersion = 5;
 //#define DEFAULT_START
 #define BMM_START
 //#define GG_START
-//#define DEBUG_BUILD
+#define DEBUG_BUILD
 //#define SERIAL_DEBUG
 
 // Allow OTA updates

@@ -1,5 +1,14 @@
 
+
 const int BASE_CAN_ID = 512; // base ID in ECU broadcast
+
+// Store recieved message and ID
+int canIDsel;
+int canRxId;
+int canRxData[8];
+
+// Filter ID for debug
+int selFilterID = BASE_CAN_ID;
 
 // Data structure
 struct sensorData
