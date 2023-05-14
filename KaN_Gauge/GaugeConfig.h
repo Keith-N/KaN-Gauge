@@ -4,7 +4,7 @@
    Use to enable/disable features
 */
 
-String build = "1.2.2";
+String build = "1.2.3";
 int nvsVersion = 6;
 
 // Enable first and second startup logos
