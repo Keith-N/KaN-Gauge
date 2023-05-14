@@ -643,7 +643,7 @@ sensorData fuelConsumption = {
 sensorData fuelTrim = {
   "FuelTrim",        // Name
   "%",               // Units
-  0.001,              // Multiplier for scaling
+  0.01,              // Multiplier for scaling
   0,                 // Data Offset
   0,                 // Scaled value
   0,                 // Minimum Value
