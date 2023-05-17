@@ -384,6 +384,8 @@ text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-tr
     <option value="40">Detected Gear</option>
     <option value="41">No Data</option>
     <option value="42">Test Data</option>
+    <option value="43">boost KPA</option>
+    <option value="44">boost PSI</option>
     </select>
 
   <br>
@@ -473,6 +475,8 @@ text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-tr
     <option value="40">Detected Gear</option>
     <option value="41">No Data</option>
     <option value="42">Test Data</option>
+    <option value="43">boost KPA</option>
+    <option value="44">boost PSI</option>
     </select>
   <br>
     

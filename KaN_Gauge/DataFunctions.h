@@ -123,7 +123,10 @@ void SAVE_DATA(CANMessage CANmsg)
     case (515):
 
       manifoldPressure.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (manifoldPressure.scaleMultiplier)) + manifoldPressure.offset);
+      boost_kpa.scaledValue = manifoldPressure.scaledValue + boost_kpa.offset;
       manifoldPressure_psi.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (manifoldPressure_psi.scaleMultiplier)) + manifoldPressure_psi.offset);
+      boost_psi.scaledValue = manifoldPressure_psi.scaledValue + boost_psi.offset;
+
       coolantTemperature.scaledValue = ((((float)(CANmsg.data[2])) * (coolantTemperature.scaleMultiplier)) + coolantTemperature.offset);
       coolantTemperature_f.scaledValue = ((coolantTemperature.scaledValue * (coolantTemperature_f.scaleMultiplier)) + coolantTemperature_f.offset);
       intakeTemperature.scaledValue = ((((float)(CANmsg.data[3])) * (intakeTemperature.scaleMultiplier)) + intakeTemperature.offset);

@@ -574,6 +574,18 @@ void saveSensorMinMax()
   preferences.putInt("mapKPALOW", manifoldPressure.alertLow);
   preferences.putInt("mapKPAHI", manifoldPressure.alertHigh);
   preferences.putInt("mapKprecision", manifoldPressure.precision);
+
+  preferences.putInt("boostKPAMIN", boost_kpa.minimum);
+  preferences.putInt("boostKPAMAX", boost_kpa.maximum);
+  preferences.putInt("boostKPALOW", boost_kpa.alertLow);
+  preferences.putInt("boostKPAHI", boost_kpa.alertHigh);
+  preferences.putInt("boostKprecision", boost_kpa.precision);
+
+  preferences.putInt("boostPSIMIN", boost_psi.minimum);
+  preferences.putInt("boostPSIMAX", boost_psi.maximum);
+  preferences.putInt("boostPSILOW", boost_psi.alertLow);
+  preferences.putInt("boostPSIHI", boost_psi.alertHigh);
+  preferences.putInt("boostPprecision", boost_psi.precision);
   
   preferences.putInt("oilKPAMIN", oilPressure.minimum);
   preferences.putInt("oilKPAMAX", oilPressure.maximum);
@@ -844,6 +856,18 @@ void restoreSensorMinMax()
   manifoldPressure.alertLow = preferences.getInt("mapKPALOW", manifoldPressure.alertLow);
   manifoldPressure.alertHigh = preferences.getInt("mapKPAHI", manifoldPressure.alertHigh);
   manifoldPressure.precision =  preferences.getInt("mapKprecision", manifoldPressure.precision);
+
+  boost_kpa.minimum = preferences.getInt("boostKPAMIN", boost_kpa.minimum);
+  boost_kpa.maximum = preferences.getInt("boostKPAMAX", boost_kpa.maximum);
+  boost_kpa.alertLow = preferences.getInt("boostKPALOW", boost_kpa.alertLow);
+  boost_kpa.alertHigh = preferences.getInt("boostKPAHI", boost_kpa.alertHigh);
+  boost_kpa.precision =  preferences.getInt("boostKprecision", boost_kpa.precision);
+
+  boost_psi.minimum = preferences.getInt("boostPSIMIN", boost_psi.minimum);
+  boost_psi.maximum = preferences.getInt("boostPSIMAX", boost_psi.maximum);
+  boost_psi.alertLow = preferences.getInt("boostPSILOW", boost_psi.alertLow);
+  boost_psi.alertHigh = preferences.getInt("boostPSIHI", boost_psi.alertHigh);
+  boost_psi.precision =  preferences.getInt("boostPprecision", boost_psi.precision);
 
   oilPressure.minimum = preferences.getInt("oilKPAMIN", oilPressure.minimum);
   oilPressure.maximum = preferences.getInt("oilKPAMAX", oilPressure.maximum);
@@ -1844,6 +1868,14 @@ sensorData *selectData(int g)
     case 42:
       return &testData;
       break;
+
+    case 43:
+      return &boost_kpa;
+      break;
+
+    case 44:
+      return &boost_psi;
+      break;     
 
     default:
       maxSet = 1;

@@ -225,12 +225,40 @@ sensorData manifoldPressure_psi = {
   2
 };
 
+sensorData boost_psi = {
+  "boost",                       // Name
+  "psi",                       // Units
+  1, // Multiplier for scaling
+  0,                           // Scaled value
+  -14.69595,                           // Data Offset
+  0,                           // Minimum Value
+  25,                          // Maximum Value
+  (BASE_CAN_ID + 3),           // Address
+  999,
+  -999,
+  2
+};
+
 sensorData manifoldPressure = {
   "MAP",             // Name
   "kpa",             // Units
   (0.033333),        // Multiplier for scaling
   0,                 // Scaled value
   0,                 // Data Offset
+  0,                 // Minimum Value
+  250,               // Maximum Value
+  (BASE_CAN_ID + 3), // Address
+  999,
+  -999,
+  2
+};
+
+sensorData boost_kpa = {
+  "boost",             // Name
+  "kpa",             // Units
+  1,        // Multiplier for scaling
+  0,                 // Scaled value
+  -101.325,                 // Data Offset
   0,                 // Minimum Value
   250,               // Maximum Value
   (BASE_CAN_ID + 3), // Address
