@@ -382,11 +382,11 @@ text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-tr
     <option value="38">Oil Pressure kpa</option>
     <option value="39">Oil Pressure psi</option>
     <option value="40">Detected Gear</option>
-    <option value="41">No Data</option>
-    <option value="42">Test Data</option>
     <option value="43">boost KPA</option>
     <option value="44">boost PSI</option>
-    <option value="44">wastegate</option>
+    <option value="45">wastegate</option>
+    <option value="41">No Data</option>
+    <option value="42">Test Data</option>
     </select>
 
   <br>
@@ -474,11 +474,11 @@ text-decoration: none;border: none;letter-spacing:1.25px;cursor: pointer;text-tr
     <option value="38">Oil Pressure kpa</option>
     <option value="39">Oil Pressure psi</option>
     <option value="40">Detected Gear</option>
-    <option value="41">No Data</option>
-    <option value="42">Test Data</option>
     <option value="43">boost KPA</option>
     <option value="44">boost PSI</option>
     <option value="45">wastegate</option>
+    <option value="41">No Data</option>
+    <option value="42">Test Data</option>
     </select>
   <br>
     
