@@ -17,7 +17,7 @@ struct sensorData
   String dataName;
   String units;
   float scaleMultiplier;
-  int offset;
+  float offset;
   float scaledValue;
   float minimum;
   float maximum;
@@ -229,7 +229,7 @@ sensorData boost_psi = {
   "boost",                       // Name
   "psi",                       // Units
   1, // Multiplier for scaling
-  0,                           // Scaled value
+  -14.69595,                           // Scaled value
   -14.69595,                           // Data Offset
   0,                           // Minimum Value
   25,                          // Maximum Value
@@ -257,7 +257,7 @@ sensorData boost_kpa = {
   "boost",             // Name
   "kpa",             // Units
   1,        // Multiplier for scaling
-  0,                 // Scaled value
+  -101.325,                 // Scaled value
   -101.325,                 // Data Offset
   0,                 // Minimum Value
   250,               // Maximum Value
