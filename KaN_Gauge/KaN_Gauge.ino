@@ -1875,7 +1875,11 @@ sensorData *selectData(int g)
 
     case 44:
       return &boost_psi;
-      break;     
+      break;
+
+    case 45:
+      return &wastegate;
+      break;        
 
     default:
       maxSet = 1;

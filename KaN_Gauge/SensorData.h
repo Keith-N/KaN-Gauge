@@ -209,6 +209,20 @@ sensorData throttle2 = {
   0
 };
 
+sensorData wastegate = {
+  "wastegate",      // Name
+  "%",               // Units
+  0.01,              // Multiplier for scaling
+  0,                 // Data Offset
+  0,                 // Scaled value
+  0,                 // Minimum Value
+  100,               // Maximum Value
+  (BASE_CAN_ID + 2), // Address
+  200,
+  -200,
+  0
+};
+
 // -- ID 515 --
 
 sensorData manifoldPressure_psi = {
