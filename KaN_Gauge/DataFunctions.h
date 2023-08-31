@@ -179,5 +179,52 @@ void SAVE_DATA(CANMessage CANmsg)
       vvtExhaust1.scaledValue = ((((float)word(CANmsg.data[5], CANmsg.data[4])) * (vvtExhaust1.scaleMultiplier)) + vvtExhaust1.offset);
       vvtExhaust2.scaledValue = ((((float)word(CANmsg.data[7], CANmsg.data[6])) * (vvtExhaust2.scaleMultiplier)) + vvtExhaust2.offset);
       break;
+
+    /////////////////////////////////////////////// MS /////////////////////////////////////////////////
+
+    case (1512):
+    manifoldPressure.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (manifoldPressure.scaleMultiplier)) + manifoldPressure.offset);
+    rpm.scaledValue = ((((int)word(CANmsg.data[3], CANmsg.data[2])) * (rpm.scaleMultiplier)) + rpm.offset);
+    coolantTemperature_f.scaledValue = ((((int)word(CANmsg.data[5], CANmsg.data[4])) * (coolantTemperature_f.scaleMultiplier)) + coolantTemperature_f.offset);
+    throttle1.scaledValue = ((((int)word(CANmsg.data[7], CANmsg.data[6])) * (throttle1.scaleMultiplier)) + throttle1.offset);
+    break;
+
+    case (1513):
+    // PW1
+      injectorPulse.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (injectorPulse.scaleMultiplier)) + injectorPulse.offset);
+    // PW2
+    // mat
+      intakeTemperature_f.scaledValue = ((((float)word((CANmsg.data[5]),(CANmsg.data[4])) * (intakeTemperature_f.scaleMultiplier)) + intakeTemperature_f.offset);
+    // adv_deg
+      ignitionTiming.scaledValue = ((((float)word(CANmsg.data[7], CANmsg.data[6])) * (ignitionTiming.scaleMultiplier)) + ignitionTiming.offset);  
+      break;
+
+    case (1514):
+    // b1 afr target
+    // AFR1
+      afr.scaledValue = ((((float)(CANmsg.data[1]) * (afr.scaleMultiplier)) + afr.offset);
+    // EGO corr 1
+      fuelTrim.scaledValue = ((((float)word(CANmsg.data[3], CANmsg.data[2])) * (fuelTrim.scaleMultiplier)) + fuelTrim.offset);
+    // EGT 1
+    // pwseq1
+      break;
+      
+    case (1515):
+    // Battery
+      batteryVoltage.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (batteryVoltage.scaleMultiplier)) + batteryVoltage.offset);
+    // Sensor 1
+    // Sensor 2
+    // knock retard
+      break;
+
+    case (1516):
+    // Vss 1
+      vss.scaledValue = ((((float)word(CANmsg.data[1], CANmsg.data[0])) * (vss.scaleMultiplier)) + vss.offset);
+    // tc_rtd
+    // Launch time
+      break;
+    
+
   }
 }
+
