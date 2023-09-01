@@ -25,6 +25,8 @@ struct sensorData
   float alertHigh;
   float alertLow;
   int precision;
+  float scaleMultiplier_MS;
+  float offset_MS;
 };
 
 
@@ -106,6 +108,8 @@ sensorData rpm = {
   (BASE_CAN_ID + 1), // Address
   6800,              // Alert High
   -100,              // Alert Low
+  0,
+  1,
   0
 };             
 
@@ -120,7 +124,9 @@ sensorData ignitionTiming = {
   (BASE_CAN_ID + 1), // Address
   50,
   -50,
-  2
+  2,
+  0.1,
+  0
 };
 
 sensorData injectorDuty = {
@@ -192,6 +198,8 @@ sensorData throttle1 = {
   (BASE_CAN_ID + 2), // Address
   200,
   -200,
+  0,
+  0.1,
   0
 };
 
@@ -264,7 +272,9 @@ sensorData manifoldPressure = {
   (BASE_CAN_ID + 3), // Address
   999,
   -999,
-  2
+  2,
+  0.1,
+  0
 };
 
 sensorData boost_kpa = {
@@ -293,6 +303,8 @@ sensorData coolantTemperature_f = {
   (BASE_CAN_ID + 3), // Address
   250,
   50,
+  0,
+  0.1,
   0
 };
 
@@ -308,6 +320,8 @@ sensorData intakeTemperature_f = {
   (BASE_CAN_ID + 3), // Address
   120,
   50,
+  0,
+  0.1,
   0
 };
 
@@ -435,7 +449,9 @@ sensorData afr = {
   (BASE_CAN_ID + 4), // Address
   28,
   -10,
-  2
+  2,
+  0.1,
+  0
 };
 
 sensorData oilPressure_psi = {
@@ -491,7 +507,9 @@ sensorData batteryVoltage = {
   (BASE_CAN_ID + 4), // Address
   15,
   11,
-  2
+  2,
+  0.1,
+  0
 };
 
 // -- ID 517 --
@@ -535,7 +553,9 @@ sensorData injectorPulse = {
   (BASE_CAN_ID + 5), // Address
   999,
   -999,
-  2
+  2,
+  0.001,
+  0
 };
 
 // NEW - Fueling 3
@@ -693,7 +713,9 @@ sensorData fuelTrim = {
   (BASE_CAN_ID + 6), // Address
   999,               // Alert High
   -999,              // Alert Low
-  2              // Show as integer
+  2,              // Show as integer
+  0.1,
+  0
 };
 
 sensorData ethanol = {

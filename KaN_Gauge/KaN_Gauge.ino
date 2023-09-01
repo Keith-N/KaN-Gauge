@@ -14,7 +14,6 @@
 
    Install Libraries
    u8g2
-   ACAN ESP32
 */
 
 // Libraries
